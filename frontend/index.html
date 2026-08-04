@@ -2,32 +2,55 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>luvlog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <main class="card">
-    <p class="eyebrow">luvlog · đã bên nhau</p>
-    <div class="counter">
-      <div class="unit"><span id="years">0</span><label>năm</label></div>
-      <div class="unit"><span id="months">0</span><label>tháng</label></div>
-      <div class="unit"><span id="days">0</span><label>ngày</label></div>
+  <div class="container">
+
+    <section id="loginSection" class="card login-box">
+      <p class="eyebrow">luvlog · đăng nhập</p>
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="Tên đăng nhập" autocomplete="username" required>
+        <input type="password" id="password" placeholder="Mật khẩu" autocomplete="current-password" required>
+        <p id="loginError" class="error-msg" hidden></p>
+        <button type="submit">Vào</button>
+      </form>
+    </section>
+
+    <div id="appSection" hidden>
+      <div class="user-bar">
+        <span id="userDisplay"></span>
+        <button id="logoutBtn" type="button">Đăng xuất</button>
+      </div>
+
+      <main class="card">
+        <p class="eyebrow">luvlog · đã bên nhau</p>
+        <div class="counter">
+          <div class="unit"><span id="years">0</span><label>năm</label></div>
+          <div class="unit"><span id="months">0</span><label>tháng</label></div>
+          <div class="unit"><span id="days">0</span><label>ngày</label></div>
+        </div>
+        <div class="counter counter--small">
+          <div class="unit"><span id="hours">0</span><label>giờ</label></div>
+          <div class="unit"><span id="minutes">0</span><label>phút</label></div>
+          <div class="unit"><span id="seconds">0</span><label>giây</label></div>
+        </div>
+      </main>
+
+      <section class="card message-box">
+        <p class="eyebrow">lời nhắn hôm nay</p>
+        <p id="messageDisplay">Đang tải...</p>
+        <textarea id="messageInput" placeholder="Nhắn gì đó..."></textarea>
+        <button id="messageSubmit" type="button">Gửi</button>
+      </section>
     </div>
-    <div class="counter counter--small">
-      <div class="unit"><span id="hours">0</span><label>giờ</label></div>
-      <div class="unit"><span id="minutes">0</span><label>phút</label></div>
-      <div class="unit"><span id="seconds">0</span><label>giây</label></div>
-    </div>
-  </main>
-  <section class="message-box">
-  <p class="eyebrow">lời nhắn hôm nay</p>
-  <p id="messageDisplay">Đang tải...</p>
-  <textarea id="messageInput" placeholder="Nhắn gì đó..."></textarea>
-  <button id="messageSubmit">Gửi</button>
-</section>
-<script src="js/message.js"></script>
+
+  </div>
+  <script src="js/message.js"></script>
   <script src="js/counter.js"></script>
 </body>
 </html>

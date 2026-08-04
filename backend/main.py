@@ -11,8 +11,10 @@ from dotenv import load_dotenv
 ## Load environment variables
 load_dotenv()
 USERS = {
-    os.getenv("ADMIN1_USER"): os.getenv("ADMIN1_PASS_HASH"),
-    os.getenv("ADMIN2_USER"): os.getenv("ADMIN2_PASS_HASH"),
+    k: v for k, v in {
+        os.getenv("ADMIN1_USER"): os.getenv("ADMIN1_PASS_HASH"),
+        os.getenv("ADMIN2_USER"): os.getenv("ADMIN2_PASS_HASH"),
+    }.items() if k and v
 }
 def require_login(request: Request):
     if not request.session.get("user"):
@@ -21,13 +23,18 @@ def require_login(request: Request):
 ## CORS and session middleware
 app = FastAPI()
 app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.getenv("SESSION_SECRET"),
+    same_site="none",
+    https_only=True,
+)
+app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://luvlog-frontend.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET"))
 
 ## Pydantic models
 class MessageIn(BaseModel):

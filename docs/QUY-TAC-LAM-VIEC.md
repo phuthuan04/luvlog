@@ -26,8 +26,8 @@ Khi có lỗi, theo đúng thứ tự: tái hiện lỗi → lấy traceback đ�
 - Từ Giai đoạn 1 trở đi, mỗi tính năng làm trên nhánh riêng `feature/ten-tinh-nang`, merge vào `main` khi xong & test ổn.
 
 ## 7. Documentation
-- Mỗi khi đổi/thêm tính năng: tự động cập nhật `docs/KE-HOACH-DU-AN.md` và `docs/CHANGELOG.md`, không cần nhắc.
-- Changelog theo định dạng: `### vX.Y — Tên thay đổi (DD/MM/YYYY)`.
+- Mỗi khi đổi/thêm tính năng: tự động cập nhật `Documentations.md`, `README.md`, và `docs/KE-HOACH-DU-AN.md`, không cần nhắc.
+- Changelog ghi trong `Documentations.md` mục 8, theo định dạng: `### vX.Y — Tên thay đổi (DD/MM/YYYY)`.
 
 ## 8. Hạ tầng (từ Giai đoạn 1.5)
 - Backend: FastAPI trên Vercel Serverless Functions (entrypoint `main.py`).

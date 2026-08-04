@@ -26,8 +26,8 @@ Tóm tắt: từng bước nhỏ, test xong mới qua bước tiếp; không l�
 | 0 — Trang tĩnh | ✅ Xong |
 | 0.5 — Git + GitHub Private | ✅ Xong (đang đổi nơi deploy sang Vercel) |
 | 1 — Backend FastAPI + SQLite (local) | ✅ Xong về logic, sẽ deploy lại trên hạ tầng mới |
-| 1.5 — Hạ tầng Vercel + Supabase | ⏳ Chưa làm (mới) |
-| 2 — Đăng nhập bảo mật | 🔄 Đang làm lại (đổi bcrypt trực tiếp, chỉ dùng VS Code Terminal) |
+| 1.5 — Hạ tầng Vercel + Supabase | ✅ Xong |
+| 2 — Đăng nhập bảo mật | ✅ Xong (session cookie + bcrypt, frontend login) |
 | 3 trở đi | ⏳ Chưa bắt đầu |
 
 ---
@@ -64,15 +64,13 @@ Trang HTML/CSS/JS đếm ngày yêu nhau. (Xong)
 ### Giai đoạn 1 — Backend cơ bản (local) ✅
 FastAPI 1 file + SQLite local + API lời nhắn hôm nay, frontend gọi API thật. (Xong)
 
-### Giai đoạn 1.5 — Hạ tầng Vercel + Supabase (MỚI)
-- Tạo project Supabase, lấy connection string Postgres (pooler cổng 6543)
-- Đổi `database.py` từ SQLite sang Postgres
+### Giai đoạn 1.5 — Hạ tầng Vercel + Supabase ✅
 - Deploy backend lên Vercel (Serverless Functions)
 - Deploy frontend lên Vercel (Static)
-- **Đầu ra:** Cùng chức năng như cũ (lời nhắn hôm nay) nhưng chạy trên hạ tầng mới, không còn lag 40s.
+- Database Supabase PostgreSQL qua Connection Pooler
 
-### Giai đoạn 2 — Đăng nhập bảo mật 🔄
-Session cookie + bcrypt trực tiếp, 2 tài khoản định sẵn. (Đang làm lại)
+### Giai đoạn 2 — Đăng nhập bảo mật ✅
+Session cookie + bcrypt trực tiếp, 2 tài khoản định sẵn, frontend login/logout.
 
 ### Giai đoạn 3 — Nhật ký & Timeline
 Bảng Journal, form nhập bài viết, hiển thị theo thời gian giảm dần.
@@ -127,10 +125,10 @@ luvlog/
 │   └── .env.example
 ├── docs/
 │   ├── KE-HOACH-DU-AN.md
-│   ├── QUY-TAC-LAM-VIEC.md
-│   └── CHANGELOG.md
+│   └── QUY-TAC-LAM-VIEC.md
+├── README.md
+├── Documentations.md
 ├── .gitignore
-└── README.md
 ```
 
 Triển khai: **2 project Vercel riêng** (1 cho `frontend/`, 1 cho `backend/`) — giống mô hình 2 service tách biệt đã dùng với Render trước đây, tránh cấu hình routing phức tạp trong 1 project.
@@ -149,4 +147,6 @@ Từ Giai đoạn 6, `backend/` tách thêm `routers/`, `services/`, `repositori
 
 ## 9. Bước tiếp theo
 
-Khi ra lệnh "làm", bắt đầu từ Giai đoạn 1.5 (hạ tầng Vercel + Supabase) trước, vì Giai đoạn 2 (đăng nhập) nên chạy thẳng trên hạ tầng mới luôn, tránh làm 2 lần.
+**Giai đoạn 3 — Nhật ký & Timeline:** bảng Journal, form nhập bài viết, hiển thị theo thời gian giảm dần.
+
+Tài liệu kỹ thuật: `Documentations.md` · Tổng quan: `README.md`
