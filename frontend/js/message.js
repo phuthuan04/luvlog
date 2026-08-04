@@ -18,6 +18,7 @@ function showApp(username) {
   appSection.hidden = false;
   userDisplay.textContent = username;
   loadMessage();
+  if (typeof loadJournal === "function") loadJournal();
 }
 
 async function checkSession() {

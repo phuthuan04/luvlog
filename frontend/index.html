@@ -47,10 +47,23 @@
         <textarea id="messageInput" placeholder="Nhắn gì đó..."></textarea>
         <button id="messageSubmit" type="button">Gửi</button>
       </section>
+
+      <section class="card journal-box">
+        <p class="eyebrow">nhật ký</p>
+        <form id="journalForm" class="journal-form">
+          <input type="text" id="journalTitle" placeholder="Tiêu đề..." required>
+          <textarea id="journalContent" placeholder="Hôm nay..." required></textarea>
+          <button type="submit">Lưu</button>
+        </form>
+        <ul id="journalList" class="journal-list">
+          <li class="journal-empty">Đang tải...</li>
+        </ul>
+      </section>
     </div>
 
   </div>
   <script src="js/message.js"></script>
+  <script src="js/journal.js"></script>
   <script src="js/counter.js"></script>
 </body>
 </html>

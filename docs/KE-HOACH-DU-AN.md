@@ -28,7 +28,8 @@ Tóm tắt: từng bước nhỏ, test xong mới qua bước tiếp; không l�
 | 1 — Backend FastAPI + SQLite (local) | ✅ Xong về logic, sẽ deploy lại trên hạ tầng mới |
 | 1.5 — Hạ tầng Vercel + Supabase | ✅ Xong |
 | 2 — Đăng nhập bảo mật | ✅ Xong (session cookie + bcrypt, frontend login) |
-| 3 trở đi | ⏳ Chưa bắt đầu |
+| 3 — Nhật ký & Timeline | ✅ Xong |
+| 4 trở đi | ⏳ Chưa bắt đầu |
 
 ---
 
@@ -72,7 +73,7 @@ FastAPI 1 file + SQLite local + API lời nhắn hôm nay, frontend gọi API th
 ### Giai đoạn 2 — Đăng nhập bảo mật ✅
 Session cookie + bcrypt trực tiếp, 2 tài khoản định sẵn, frontend login/logout.
 
-### Giai đoạn 3 — Nhật ký & Timeline
+### Giai đoạn 3 — Nhật ký & Timeline ✅
 Bảng Journal, form nhập bài viết, hiển thị theo thời gian giảm dần.
 
 ### Giai đoạn 4 — Album ảnh
@@ -147,6 +148,6 @@ Từ Giai đoạn 6, `backend/` tách thêm `routers/`, `services/`, `repositori
 
 ## 9. Bước tiếp theo
 
-**Giai đoạn 3 — Nhật ký & Timeline:** bảng Journal, form nhập bài viết, hiển thị theo thời gian giảm dần.
+**Giai đoạn 4 — Album ảnh:** upload lên Supabase Storage, tổ chức theo album.
 
 Tài liệu kỹ thuật: `Documentations.md` · Tổng quan: `README.md`

@@ -36,6 +36,8 @@ Base URL: `https://luvlog.vercel.app`
 | POST | `/api/logout` | Không | Xóa session |
 | GET | `/api/message` | Có | Lấy lời nhắn mới nhất |
 | POST | `/api/message` | Có | Body: `{ content }` → lưu lời nhắn mới |
+| GET | `/api/journal` | Có | Danh sách nhật ký (mới nhất trước) |
+| POST | `/api/journal` | Có | Body: `{ title, content }` → tạo bài viết |
 
 ### Ví dụ
 
@@ -91,15 +93,26 @@ Set trên Vercel: Project backend → Settings → Environment Variables.
 
 Schema tự tạo qua `Base.metadata.create_all()` trong `database.py` lúc khởi động.
 
+**Bảng `journals`**
+
+| Cột | Kiểu | Mô tả |
+|---|---|---|
+| `id` | Integer PK | Auto increment |
+| `title` | String | Tiêu đề bài viết |
+| `content` | String | Nội dung |
+| `author` | String | Tên user đăng nhập |
+| `created_at` | DateTime | Thời điểm tạo (UTC) |
+
 ---
 
 ## 5. Frontend
 
 | File | Vai trò |
 |---|---|
-| `index.html` | Layout: form login + app (counter + lời nhắn) |
+| `index.html` | Layout: form login + app (counter + lời nhắn + nhật ký) |
 | `js/counter.js` | Đồng hồ đếm ngày yêu (client-side) |
 | `js/message.js` | Auth flow + gọi API lời nhắn |
+| `js/journal.js` | Form nhập + timeline nhật ký |
 | `css/style.css` | Giao diện |
 
 **Luồng auth frontend:**
@@ -120,7 +133,7 @@ Schema tự tạo qua `Base.metadata.create_all()` trong `database.py` lúc kh�
 ### Frontend (Vercel)
 - Root directory: `frontend/`
 - Static deploy, không cần build step
-- `API_BASE` trong `js/message.js` trỏ tới URL backend
+- `API_BASE` trong `js/message.js` và `js/journal.js` trỏ tới URL backend
 
 ### CORS
 Backend chỉ cho phép origin `https://luvlog-frontend.vercel.app`. Thêm origin mới khi dev local hoặc đổi domain.
@@ -136,7 +149,7 @@ Backend chỉ cho phép origin `https://luvlog-frontend.vercel.app`. Thêm origi
 | 1 — Backend local | ✅ |
 | 1.5 — Vercel + Supabase | ✅ |
 | 2 — Đăng nhập bảo mật | ✅ |
-| 3 — Nhật ký & Timeline | ⏳ |
+| 3 — Nhật ký & Timeline | ✅ |
 | 4 — Album ảnh | ⏳ |
 | 5 — Quỹ chung | ⏳ |
 | 6 — Media Hub + Cron | ⏳ |
@@ -147,6 +160,11 @@ Chi tiết: [docs/KE-HOACH-DU-AN.md](./docs/KE-HOACH-DU-AN.md)
 ---
 
 ## 8. Changelog
+
+### v0.4 — Nhật ký & Timeline (04/08/2026)
+- Bảng `journals` trên Supabase PostgreSQL
+- API `GET/POST /api/journal`
+- Form nhập tiêu đề + nội dung, timeline hiển thị mới nhất trước
 
 ### v0.3 — Đăng nhập frontend (04/08/2026)
 - Form login/logout trên frontend

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from database import SessionLocal, Message
+from database import SessionLocal, Message, Journal
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from fastapi import Depends, HTTPException, Request
@@ -55,6 +55,35 @@ def get_message(user: str = Depends(require_login)):
 def set_message(data: MessageIn, user: str = Depends(require_login)):
     db = SessionLocal()
     db.add(Message(content=data.content))
+    db.commit()
+    db.close()
+    return {"status": "saved"}
+
+class JournalIn(BaseModel):
+    title: str
+    content: str
+
+@app.get("/api/journal")
+def list_journal(user: str = Depends(require_login)):
+    db = SessionLocal()
+    entries = db.query(Journal).order_by(Journal.created_at.desc()).all()
+    db.close()
+    return [
+        {
+            "id": e.id,
+            "title": e.title,
+            "content": e.content,
+            "author": e.author,
+            "created_at": e.created_at.isoformat() if e.created_at else None,
+        }
+        for e in entries
+    ]
+
+@app.post("/api/journal")
+def create_journal(data: JournalIn, user: str = Depends(require_login)):
+    db = SessionLocal()
+    entry = Journal(title=data.title, content=data.content, author=user)
+    db.add(entry)
     db.commit()
     db.close()
     return {"status": "saved"}

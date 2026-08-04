@@ -15,7 +15,8 @@ Website riêng tư cho hai người — đồng hồ đếm ngày yêu, lời nh
 - ✅ Backend FastAPI trên Vercel + Supabase PostgreSQL
 - ✅ Đăng nhập session cookie + bcrypt (2 tài khoản)
 - ✅ Lời nhắn hôm nay (yêu cầu đăng nhập)
-- ⏳ Nhật ký & Timeline (Giai đoạn 3 — chưa bắt đầu)
+- ✅ Nhật ký & Timeline (form nhập + hiển thị theo thời gian)
+- ⏳ Album ảnh (Giai đoạn 4 — chưa bắt đầu)
 
 ## Cấu trúc
 

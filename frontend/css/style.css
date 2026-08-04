@@ -57,3 +57,32 @@ body {
   margin-top: 8px; padding: 8px 20px; background: var(--berry);
   color: white; border: none; border-radius: 8px; cursor: pointer;
 }
+
+.journal-box { text-align: left; max-width: 560px; }
+.journal-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.journal-form input,
+.journal-form textarea {
+  padding: 10px 12px; border: 1px solid rgba(139, 94, 131, 0.3);
+  border-radius: 8px; font-family: inherit; font-size: 15px;
+}
+.journal-form textarea { min-height: 80px; resize: vertical; }
+.journal-form button {
+  align-self: flex-start; padding: 8px 20px; background: var(--berry);
+  color: white; border: none; border-radius: 8px; cursor: pointer;
+}
+.journal-list { list-style: none; margin: 0; padding: 0; }
+.journal-list li { padding: 0; }
+.journal-entry {
+  border-left: 3px solid var(--plum); padding: 0 0 24px 16px; margin-bottom: 8px;
+}
+.journal-entry time {
+  display: block; font-size: 12px; color: var(--plum); margin-bottom: 6px;
+}
+.journal-entry h3 {
+  margin: 0 0 8px; font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600;
+}
+.journal-entry p {
+  margin: 0 0 8px; line-height: 1.6; white-space: pre-wrap;
+}
+.journal-author { font-size: 12px; color: var(--plum); font-style: italic; }
+.journal-empty { text-align: center; color: var(--plum); font-size: 14px; padding: 16px 0; }
