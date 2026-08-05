@@ -207,8 +207,8 @@ Backend chỉ cho phép origin `https://luvlog-frontend.vercel.app`. Thêm origi
 | 1.5 — Vercel + Supabase | ✅ |
 | 2 — Đăng nhập bảo mật | ✅ |
 | 3 — Nhật ký & Timeline | ✅ |
-| 4 — Album ảnh | ⏳ |
-| 5 — Quỹ chung | ⏳ |
+| 4 — Album ảnh | ✅ Xong |
+| 5 — Quỹ chung & hoạt động đôi | ✅ Xong |
 | 6 — Media Hub + Cron | ⏳ |
 | 7 — Gamification + Mobile | ⏳ |
 
