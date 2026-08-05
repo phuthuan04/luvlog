@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from datetime import datetime
 from pydantic import BaseModel
 from database import SessionLocal, Message, Journal, Photo, FundTransaction, FundGoal, Activity
 from fastapi.middleware.cors import CORSMiddleware
