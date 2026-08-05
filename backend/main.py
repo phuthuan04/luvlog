@@ -148,6 +148,7 @@ def me(request: Request):
 class FundTransactionIn(BaseModel):
     amount: int
     description: str
+    goal_id: int | None = None
 
 class FundGoalIn(BaseModel):
     name: str
@@ -169,13 +170,18 @@ def get_fund(user: str = Depends(require_login)):
     return {
         "balance": balance,
         "transactions": [
-            {"id": t.id, "amount": t.amount, "description": t.description,
+            {"id": t.id, "amount": t.amount, "description": t.description, "goal_id": t.goal_id,
              "created_by": t.created_by, "created_at": t.created_at.isoformat()}
             for t in transactions
         ],
         "goals": [
-            {"id": g.id, "name": g.name, "target_amount": g.target_amount,
-             "progress": round(balance / g.target_amount * 100, 1) if g.target_amount else 0}
+            {
+                "id": g.id, "name": g.name, "target_amount": g.target_amount,
+                "current": sum(t.amount for t in transactions if t.goal_id == g.id),
+                "progress": round(
+                    sum(t.amount for t in transactions if t.goal_id == g.id) / g.target_amount * 100, 1
+                ) if g.target_amount else 0,
+            }
             for g in goals
         ],
     }
@@ -183,7 +189,7 @@ def get_fund(user: str = Depends(require_login)):
 @app.post("/api/fund/transactions")
 def add_fund_transaction(data: FundTransactionIn, user: str = Depends(require_login)):
     db = SessionLocal()
-    db.add(FundTransaction(amount=data.amount, description=data.description, created_by=user))
+    db.add(FundTransaction(amount=data.amount, description=data.description, goal_id=data.goal_id, created_by=user))
     db.commit()
     db.close()
     return {"status": "saved"}

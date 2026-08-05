@@ -11,30 +11,37 @@ function formatVND(n) {
 function renderGoals(goals) {
   if (!goals.length) {
     fundGoalsList.innerHTML = '<li class="fund-empty">Chưa có mục tiêu nào</li>';
-    return;
+  } else {
+    fundGoalsList.innerHTML = goals
+      .map((g) => `
+        <li class="goal-item">
+          <div class="goal-header">
+            <span>${escapeHtml(g.name)}</span>
+            <button type="button" class="delete-btn" data-goal-id="${g.id}">Xoá</button>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(g.progress, 100)}%"></div></div>
+          <span class="goal-meta">${formatVND(g.current)} / ${formatVND(g.target_amount)} · ${g.progress}%</span>
+        </li>`)
+      .join("");
   }
-  fundGoalsList.innerHTML = goals
-    .map((g) => `
-      <li class="goal-item">
-        <div class="goal-header">
-          <span>${escapeHtml(g.name)}</span>
-          <button type="button" class="delete-btn" data-goal-id="${g.id}">Xoá</button>
-        </div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(g.progress, 100)}%"></div></div>
-        <span class="goal-meta">${formatVND(g.target_amount)} · ${g.progress}%</span>
-      </li>`)
-    .join("");
+
+  const txGoalSelect = document.getElementById("txGoal");
+  const currentValue = txGoalSelect.value;
+  txGoalSelect.innerHTML = '<option value="">Quỹ chung (không thuộc mục tiêu)</option>' +
+    goals.map((g) => `<option value="${g.id}">${escapeHtml(g.name)}</option>`).join("");
+  txGoalSelect.value = currentValue;
 }
 
-function renderTransactions(transactions) {
+function renderTransactions(transactions, goals) {
   if (!transactions.length) {
     fundTransactionsList.innerHTML = '<li class="fund-empty">Chưa có giao dịch nào</li>';
     return;
   }
+  const goalName = (id) => goals.find((g) => g.id === id)?.name;
   fundTransactionsList.innerHTML = transactions
     .map((t) => `
       <li class="transaction-item ${t.amount < 0 ? "expense" : "income"}">
-        <span>${escapeHtml(t.description)}</span>
+        <span>${escapeHtml(t.description)}${t.goal_id ? ` <small>(${escapeHtml(goalName(t.goal_id) || "")})</small>` : ""}</span>
         <span>${t.amount > 0 ? "+" : ""}${formatVND(t.amount)}</span>
         <button type="button" class="delete-btn" data-tx-id="${t.id}">Xoá</button>
       </li>`)
@@ -50,7 +57,7 @@ async function loadFund() {
   const data = await res.json();
   fundBalance.textContent = formatVND(data.balance);
   renderGoals(data.goals);
-  renderTransactions(data.transactions);
+  renderTransactions(data.transactions, data.goals);
 }
 
 fundGoalForm.addEventListener("submit", async (e) => {
@@ -74,6 +81,7 @@ fundTransactionForm.addEventListener("submit", async (e) => {
   const description = document.getElementById("txDescription").value.trim();
   const rawAmount = parseInt(document.getElementById("txAmount").value, 10);
   const type = document.getElementById("txType").value;
+  const goalIdRaw = document.getElementById("txGoal").value;
   if (!description || !rawAmount) return;
   const amount = type === "chi" ? -Math.abs(rawAmount) : Math.abs(rawAmount);
 
@@ -81,7 +89,7 @@ fundTransactionForm.addEventListener("submit", async (e) => {
     ...FETCH_OPTS,
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ amount, description }),
+    body: JSON.stringify({ amount, description, goal_id: goalIdRaw ? parseInt(goalIdRaw, 10) : null }),
   });
   fundTransactionForm.reset();
   loadFund();

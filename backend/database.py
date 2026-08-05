@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
 
@@ -38,6 +38,7 @@ class FundTransaction(Base):
     id = Column(Integer, primary_key=True)
     amount = Column(Integer, nullable=False)
     description = Column(String, nullable=False)
+    goal_id = Column(Integer, ForeignKey("fund_goals.id"), nullable=True)
     created_by = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
