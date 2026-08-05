@@ -23,6 +23,12 @@ Khi có lỗi, theo đúng thứ tự: tái hiện lỗi → lấy traceback đ�
 
 ## 6. Git
 - Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`...).
++ feat: Thêm tính năng mới (feature).fix: Sửa lỗi (bug fix).
++ docs: Thay đổi tài liệu, hướng dẫn (documentation).
++ style: Định dạng code, sửa khoảng trắng, thiếu dấu chấm phẩy (không ảnh hưởng logic).
++ refactor: Tái cấu trúc code (không sửa lỗi, không thêm tính năng).
++ test: Thêm hoặc sửa các bài kiểm thử (unit test).
++ chore: Cấu hình, thay đổi công cụ build, file phụ trợ.
 - Từ Giai đoạn 1 trở đi, mỗi tính năng làm trên nhánh riêng `feature/ten-tinh-nang`, merge vào `main` khi xong & test ổn.
 
 ## 7. Documentation
