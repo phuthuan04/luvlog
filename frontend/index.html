@@ -59,11 +59,23 @@
           <li class="journal-empty">Đang tải...</li>
         </ul>
       </section>
+
+
+      <section class="card photo-box">
+  <p class="eyebrow">album ảnh</p>
+  <form id="photoForm" class="photo-form">
+    <input type="text" id="photoAlbum" placeholder="Tên album..." required>
+    <input type="file" id="photoFile" accept="image/*" required>
+    <button type="submit">Tải lên</button>
+  </form>
+  <div id="photoGrid" class="photo-grid"></div>
+</section>
     </div>
 
   </div>
   <script src="js/message.js"></script>
   <script src="js/journal.js"></script>
+  <script src="js/photos.js"></script>
   <script src="js/counter.js"></script>
 </body>
 </html>

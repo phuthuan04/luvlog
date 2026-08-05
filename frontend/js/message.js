@@ -19,6 +19,7 @@ function showApp(username) {
   userDisplay.textContent = username;
   loadMessage();
   if (typeof loadJournal === "function") loadJournal();
+  if (typeof loadPhotos === "function") loadPhotos();
 }
 
 async function checkSession() {

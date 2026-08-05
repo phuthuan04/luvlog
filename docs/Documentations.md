@@ -155,6 +155,10 @@ Backend chỉ cho phép origin `https://luvlog-frontend.vercel.app`. Thêm origi
 | 6 — Media Hub + Cron | ⏳ |
 | 7 — Gamification + Mobile | ⏳ |
 
+## 7.5. Known Issues (chưa sửa, để sau)
+
+- **Lag khi load lời nhắn lúc refresh trang:** `loadMessage()` gọi `/api/message` mất một khoảng chờ trước khi hiện nội dung, gây cảm giác giật. Ghi nhận từ 04/08/2026, chưa ảnh hưởng chức năng, sẽ tối ưu sau khi các tính năng chính hoàn thiện (khả năng do cold start Vercel Serverless — sẽ xác nhận và sửa ở giai đoạn polish cuối).
+
 Chi tiết: [docs/KE-HOACH-DU-AN.md](./docs/KE-HOACH-DU-AN.md)
 
 ---
