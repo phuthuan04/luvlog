@@ -25,4 +25,13 @@ class Journal(Base):
     author = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+class Photo(Base):
+    __tablename__ = "photos"
+    id = Column(Integer, primary_key=True)
+    album = Column(String, nullable=False)
+    url = Column(String, nullable=False)
+    uploaded_by = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
 Base.metadata.create_all(engine)
+

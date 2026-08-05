@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from database import SessionLocal, Message, Journal
+from database import SessionLocal, Message, Journal, Photo
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from fastapi import Depends, HTTPException, Request
@@ -16,6 +16,13 @@ USERS = {
         os.getenv("ADMIN2_USER"): os.getenv("ADMIN2_PASS_HASH"),
     }.items() if k and v
 }
+
+from supabase import create_client
+from fastapi import UploadFile, File, Form
+import uuid
+
+supabase_client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_SECRET_KEY"))
+
 def require_login(request: Request):
     if not request.session.get("user"):
         raise HTTPException(status_code=401, detail="Chưa đăng nhập")
@@ -87,6 +94,33 @@ def create_journal(data: JournalIn, user: str = Depends(require_login)):
     db.commit()
     db.close()
     return {"status": "saved"}
+
+@app.post("/api/photos")
+async def upload_photo(
+    album: str = Form(...),
+    file: UploadFile = File(...),
+    user: str = Depends(require_login),
+):
+    ext = file.filename.split(".")[-1]
+    path = f"{album}/{uuid.uuid4()}.{ext}"
+    content = await file.read()
+    supabase_client.storage.from_("photos").upload(
+        path, content, {"content-type": file.content_type}
+    )
+    public_url = supabase_client.storage.from_("photos").get_public_url(path)
+
+    db = SessionLocal()
+    db.add(Photo(album=album, url=public_url, uploaded_by=user))
+    db.commit()
+    db.close()
+    return {"status": "saved", "url": public_url}
+
+@app.get("/api/photos")
+def list_photos(user: str = Depends(require_login)):
+    db = SessionLocal()
+    photos = db.query(Photo).order_by(Photo.created_at.desc()).all()
+    db.close()
+    return [{"id": p.id, "album": p.album, "url": p.url, "created_at": p.created_at.isoformat()} for p in photos]
 
 ## Login and session management
 class LoginIn(BaseModel):
