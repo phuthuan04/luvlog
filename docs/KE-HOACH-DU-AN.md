@@ -29,7 +29,8 @@ Tóm tắt: từng bước nhỏ, test xong mới qua bước tiếp; không l�
 | 1.5 — Hạ tầng Vercel + Supabase | ✅ Xong |
 | 2 — Đăng nhập bảo mật | ✅ Xong (session cookie + bcrypt, frontend login) |
 | 3 — Nhật ký & Timeline | ✅ Xong |
-| 4 trở đi | ⏳ Chưa bắt đầu |
+| 4 — Album ảnh | ✅ Xong |
+| 5 trở đi | ⏳ Chưa bắt đầu |
 
 ---
 

@@ -16,7 +16,7 @@ Website riêng tư cho hai người — đồng hồ đếm ngày yêu, lời nh
 - ✅ Đăng nhập session cookie + bcrypt (2 tài khoản)
 - ✅ Lời nhắn hôm nay (yêu cầu đăng nhập)
 - ✅ Nhật ký & Timeline (form nhập + hiển thị theo thời gian)
-- ⏳ Album ảnh (Giai đoạn 4 — chưa bắt đầu)
+- ✅ Album ảnh (upload + xem theo album, lưu trên Supabase Storage)
 
 ## Cấu trúc
 

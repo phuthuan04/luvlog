@@ -38,6 +38,8 @@ Base URL: `https://luvlog.vercel.app`
 | POST | `/api/message` | Có | Body: `{ content }` → lưu lời nhắn mới |
 | GET | `/api/journal` | Có | Danh sách nhật ký (mới nhất trước) |
 | POST | `/api/journal` | Có | Body: `{ title, content }` → tạo bài viết |
+| POST | `/api/photos` | Có | Form-data: `album`, `file` → upload ảnh, lưu URL |
+| GET | `/api/photos` | Có | Danh sách ảnh (mới nhất trước) |
 
 ### Ví dụ
 
@@ -68,6 +70,8 @@ await fetch("https://luvlog.vercel.app/api/message", {
 | `ADMIN1_PASS_HASH` | Có | Bcrypt hash mật khẩu tài khoản 1 |
 | `ADMIN2_USER` | Có | Tên đăng nhập tài khoản 2 |
 | `ADMIN2_PASS_HASH` | Có | Bcrypt hash mật khẩu tài khoản 2 |
+| `SUPABASE_URL` | Có | URL project Supabase (dùng cho Storage) |
+| `SUPABASE_SECRET_KEY` | Có | Service role key — toàn quyền, không đưa vào frontend |
 
 Mẫu: `backend/.env.example`
 
@@ -103,6 +107,16 @@ Schema tự tạo qua `Base.metadata.create_all()` trong `database.py` lúc kh�
 | `author` | String | Tên user đăng nhập |
 | `created_at` | DateTime | Thời điểm tạo (UTC) |
 
+**Bảng `photos`**
+
+| Cột | Kiểu | Mô tả |
+|---|---|---|
+| `id` | Integer PK | Auto increment |
+| `album` | String | Tên album |
+| `url` | String | Public URL ảnh trên Supabase Storage |
+| `uploaded_by` | String | Tên user upload |
+| `created_at` | DateTime | Thời điểm tạo (UTC) |
+
 ---
 
 ## 5. Frontend
@@ -114,6 +128,7 @@ Schema tự tạo qua `Base.metadata.create_all()` trong `database.py` lúc kh�
 | `js/message.js` | Auth flow + gọi API lời nhắn |
 | `js/journal.js` | Form nhập + timeline nhật ký |
 | `css/style.css` | Giao diện |
+| `js/photos.js` | Form upload + hiển thị lưới ảnh theo album |
 
 **Luồng auth frontend:**
 1. Load trang → gọi `/api/me`
@@ -164,6 +179,11 @@ Chi tiết: [docs/KE-HOACH-DU-AN.md](./docs/KE-HOACH-DU-AN.md)
 ---
 
 ## 8. Changelog
+
+### v0.5 — Album ảnh (05/08/2026)
+- Bucket `photos` trên Supabase Storage (public)
+- Backend: `POST/GET /api/photos`, dùng Service Role Key để upload (bỏ qua RLS)
+- Frontend: form upload + lưới hiển thị ảnh theo album
 
 ### v0.4 — Nhật ký & Timeline (04/08/2026)
 - Bảng `journals` trên Supabase PostgreSQL
