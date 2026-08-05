@@ -20,6 +20,8 @@ function showApp(username) {
   loadMessage();
   if (typeof loadJournal === "function") loadJournal();
   if (typeof loadPhotos === "function") loadPhotos();
+  if (typeof loadFund === "function") loadFund();
+  if (typeof loadActivities === "function") loadActivities();
 }
 
 async function checkSession() {

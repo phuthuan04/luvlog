@@ -33,5 +33,30 @@ class Photo(Base):
     uploaded_by = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+class FundTransaction(Base):
+    __tablename__ = "fund_transactions"
+    id = Column(Integer, primary_key=True)
+    amount = Column(Integer, nullable=False)
+    description = Column(String, nullable=False)
+    created_by = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class FundGoal(Base):
+    __tablename__ = "fund_goals"
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    target_amount = Column(Integer, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class Activity(Base):
+    __tablename__ = "activities"
+    id = Column(Integer, primary_key=True)
+    place_name = Column(String, nullable=False)
+    category = Column(String, nullable=False)
+    note = Column(String)
+    visited_at = Column(DateTime, nullable=False)
+    created_by = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
 Base.metadata.create_all(engine)
 

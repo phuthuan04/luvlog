@@ -94,3 +94,23 @@ body {
 .photo-item img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; }
 .photo-item figcaption { font-size: 11px; color: var(--plum); text-align: center; margin-top: 4px; }
 .photo-empty { color: var(--plum); font-size: 13px; }
+
+.fund-balance-label { font-size: 12px; color: var(--plum); margin: 8px 0 0; }
+.fund-balance { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 600; margin: 0 0 16px; }
+.fund-box h4, .activity-box h4 { font-size: 13px; color: var(--plum); margin: 16px 0 8px; }
+.goal-list, .transaction-list, .activity-list { list-style: none; padding: 0; margin: 0 0 12px; display: flex; flex-direction: column; gap: 8px; }
+.goal-item, .activity-item { border: 1px solid rgba(139,94,131,0.2); border-radius: 8px; padding: 8px 10px; }
+.goal-header, .activity-header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+.progress-bar { background: rgba(139,94,131,0.15); border-radius: 6px; height: 8px; margin: 6px 0 4px; overflow: hidden; }
+.progress-fill { background: var(--berry); height: 100%; }
+.goal-meta, .activity-meta { font-size: 11px; color: var(--plum); }
+.transaction-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; border-bottom: 1px solid rgba(139,94,131,0.1); padding-bottom: 6px; gap: 8px; }
+.transaction-item.income span:nth-child(2) { color: #2e7d32; }
+.transaction-item.expense span:nth-child(2) { color: var(--berry); }
+.activity-note { font-size: 12px; margin: 4px 0 0; }
+.fund-form, .activity-form { display: flex; gap: 8px; flex-wrap: wrap; }
+.fund-form input, .fund-form select, .activity-form input, .activity-form select { padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; font-family: inherit; }
+.fund-form input[type="text"], .fund-form input[type="number"] { flex: 1; min-width: 100px; }
+.activity-form input[type="text"] { flex: 1; min-width: 100px; }
+.delete-btn { background: none; border: none; color: var(--berry); font-size: 12px; cursor: pointer; }
+.fund-empty, .activity-empty { color: var(--plum); font-size: 13px; list-style: none; }

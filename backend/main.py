@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from database import SessionLocal, Message, Journal, Photo
+from database import SessionLocal, Message, Journal, Photo, FundTransaction, FundGoal, Activity
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from fastapi import Depends, HTTPException, Request
@@ -143,3 +143,100 @@ def logout(request: Request):
 @app.get("/api/me")
 def me(request: Request):
     return {"user": request.session.get("user")}
+
+class FundTransactionIn(BaseModel):
+    amount: int
+    description: str
+
+class FundGoalIn(BaseModel):
+    name: str
+    target_amount: int
+
+class ActivityIn(BaseModel):
+    place_name: str
+    category: str
+    note: str = ""
+    visited_at: str  # "YYYY-MM-DD"
+
+@app.get("/api/fund")
+def get_fund(user: str = Depends(require_login)):
+    db = SessionLocal()
+    transactions = db.query(FundTransaction).order_by(FundTransaction.created_at.desc()).all()
+    goals = db.query(FundGoal).order_by(FundGoal.created_at.desc()).all()
+    balance = sum(t.amount for t in transactions)
+    db.close()
+    return {
+        "balance": balance,
+        "transactions": [
+            {"id": t.id, "amount": t.amount, "description": t.description,
+             "created_by": t.created_by, "created_at": t.created_at.isoformat()}
+            for t in transactions
+        ],
+        "goals": [
+            {"id": g.id, "name": g.name, "target_amount": g.target_amount,
+             "progress": round(balance / g.target_amount * 100, 1) if g.target_amount else 0}
+            for g in goals
+        ],
+    }
+
+@app.post("/api/fund/transactions")
+def add_fund_transaction(data: FundTransactionIn, user: str = Depends(require_login)):
+    db = SessionLocal()
+    db.add(FundTransaction(amount=data.amount, description=data.description, created_by=user))
+    db.commit()
+    db.close()
+    return {"status": "saved"}
+
+@app.delete("/api/fund/transactions/{transaction_id}")
+def delete_fund_transaction(transaction_id: int, user: str = Depends(require_login)):
+    db = SessionLocal()
+    db.query(FundTransaction).filter(FundTransaction.id == transaction_id).delete()
+    db.commit()
+    db.close()
+    return {"status": "deleted"}
+
+@app.post("/api/fund/goals")
+def add_fund_goal(data: FundGoalIn, user: str = Depends(require_login)):
+    db = SessionLocal()
+    db.add(FundGoal(name=data.name, target_amount=data.target_amount))
+    db.commit()
+    db.close()
+    return {"status": "saved"}
+
+@app.delete("/api/fund/goals/{goal_id}")
+def delete_fund_goal(goal_id: int, user: str = Depends(require_login)):
+    db = SessionLocal()
+    db.query(FundGoal).filter(FundGoal.id == goal_id).delete()
+    db.commit()
+    db.close()
+    return {"status": "deleted"}
+
+@app.get("/api/activities")
+def list_activities(user: str = Depends(require_login)):
+    db = SessionLocal()
+    items = db.query(Activity).order_by(Activity.visited_at.desc()).all()
+    db.close()
+    return [
+        {"id": a.id, "place_name": a.place_name, "category": a.category, "note": a.note,
+         "visited_at": a.visited_at.isoformat() if a.visited_at else None, "created_by": a.created_by}
+        for a in items
+    ]
+
+@app.post("/api/activities")
+def add_activity(data: ActivityIn, user: str = Depends(require_login)):
+    db = SessionLocal()
+    db.add(Activity(
+        place_name=data.place_name, category=data.category, note=data.note,
+        visited_at=datetime.fromisoformat(data.visited_at), created_by=user,
+    ))
+    db.commit()
+    db.close()
+    return {"status": "saved"}
+
+@app.delete("/api/activities/{activity_id}")
+def delete_activity(activity_id: int, user: str = Depends(require_login)):
+    db = SessionLocal()
+    db.query(Activity).filter(Activity.id == activity_id).delete()
+    db.commit()
+    db.close()
+    return {"status": "deleted"}

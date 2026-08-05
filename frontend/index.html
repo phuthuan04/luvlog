@@ -71,11 +71,53 @@
   <div id="photoGrid" class="photo-grid"></div>
 </section>
     </div>
+<section class="card fund-box">
+  <p class="eyebrow">quỹ chung</p>
+  <p class="fund-balance-label">Số dư hiện tại</p>
+  <p id="fundBalance" class="fund-balance">0đ</p>
 
+  <h4>Mục tiêu</h4>
+  <ul id="fundGoalsList" class="goal-list"></ul>
+  <form id="fundGoalForm" class="fund-form">
+    <input type="text" id="goalName" placeholder="Tên mục tiêu..." required>
+    <input type="number" id="goalTarget" placeholder="Số tiền mục tiêu (VNĐ)" required>
+    <button type="submit">Thêm mục tiêu</button>
+  </form>
+
+  <h4>Giao dịch</h4>
+  <ul id="fundTransactionsList" class="transaction-list"></ul>
+  <form id="fundTransactionForm" class="fund-form">
+    <select id="txType">
+      <option value="thu">Thu</option>
+      <option value="chi">Chi</option>
+    </select>
+    <input type="number" id="txAmount" placeholder="Số tiền (VNĐ)" required>
+    <input type="text" id="txDescription" placeholder="Mô tả..." required>
+    <button type="submit">Thêm giao dịch</button>
+  </form>
+</section>
+
+<section class="card activity-box">
+  <p class="eyebrow">hoạt động đôi</p>
+  <ul id="activityList" class="activity-list"></ul>
+  <form id="activityForm" class="activity-form">
+    <input type="text" id="activityPlace" placeholder="Tên địa điểm..." required>
+    <select id="activityCategory">
+      <option value="an_uong">Ăn uống</option>
+      <option value="vui_choi">Vui chơi</option>
+      <option value="khac">Khác</option>
+    </select>
+    <input type="date" id="activityDate" required>
+    <input type="text" id="activityNote" placeholder="Ghi chú (không bắt buộc)">
+    <button type="submit">Lưu</button>
+  </form>
+</section>
   </div>
   <script src="js/message.js"></script>
   <script src="js/journal.js"></script>
   <script src="js/photos.js"></script>
+  <script src="js/fund.js"></script>
+  <script src="js/activities.js"></script>
   <script src="js/counter.js"></script>
 </body>
 </html>
