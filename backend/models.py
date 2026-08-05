@@ -50,4 +50,24 @@ class Activity(Base):
     created_by = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+class MediaMixin:
+    id = Column(Integer, primary_key=True)
+    title = Column(String, nullable=False)
+    cover_url = Column(String)
+    status = Column(String, nullable=False)  # "muon" | "da"
+    rating = Column(Integer)
+    review = Column(String)
+    added_by = Column(String, nullable=False)
+    experienced_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class Movie(MediaMixin, Base):
+    __tablename__ = "movies"
+
+class Book(MediaMixin, Base):
+    __tablename__ = "books"
+
+class Song(MediaMixin, Base):
+    __tablename__ = "songs"
+
 Base.metadata.create_all(engine)

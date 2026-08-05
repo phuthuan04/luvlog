@@ -114,3 +114,16 @@ body {
 .activity-form input[type="text"] { flex: 1; min-width: 100px; }
 .delete-btn { background: none; border: none; color: var(--berry); font-size: 12px; cursor: pointer; }
 .fund-empty, .activity-empty { color: var(--plum); font-size: 13px; list-style: none; }
+
+.media-box h4 { font-size: 13px; color: var(--plum); margin: 12px 0 6px; }
+.media-list-wanted, .media-list-done { list-style: none; padding: 0; margin: 0 0 8px; display: flex; flex-direction: column; gap: 8px; }
+.media-item { display: flex; gap: 10px; border: 1px solid rgba(139,94,131,0.2); border-radius: 8px; padding: 8px; align-items: flex-start; }
+.media-cover-img { width: 48px; height: 64px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+.media-info { display: flex; flex-direction: column; gap: 4px; font-size: 13px; flex: 1; }
+.media-mark-form { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.media-mark-form select, .media-mark-form input { padding: 6px; border: 1px solid rgba(139,94,131,0.3); border-radius: 6px; font-size: 12px; }
+.media-rating { color: var(--berry); font-size: 13px; }
+.media-review { font-size: 12px; margin: 0; }
+.media-empty { color: var(--plum); font-size: 12px; list-style: none; }
+.media-form { display: flex; gap: 8px; flex-wrap: wrap; }
+.media-form input { flex: 1; min-width: 100px; padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; }
