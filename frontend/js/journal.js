@@ -1,5 +1,4 @@
-const API_BASE = "https://luvlog.vercel.app";
-const FETCH_OPTS = { credentials: "include" };
+
 
 const journalForm = document.getElementById("journalForm");
 const journalList = document.getElementById("journalList");
