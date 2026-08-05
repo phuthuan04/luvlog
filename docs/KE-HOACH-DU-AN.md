@@ -30,7 +30,8 @@ Tóm tắt: từng bước nhỏ, test xong mới qua bước tiếp; không l�
 | 2 — Đăng nhập bảo mật | ✅ Xong (session cookie + bcrypt, frontend login) |
 | 3 — Nhật ký & Timeline | ✅ Xong |
 | 4 — Album ảnh | ✅ Xong |
-| 5 trở đi | ⏳ Chưa bắt đầu |
+| 5 — Quỹ chung & hoạt động đôi | ✅ Xong |
+| 6 trở đi | ⏳ Chưa bắt đầu |
 
 ---
 

@@ -17,6 +17,8 @@ Website riêng tư cho hai người — đồng hồ đếm ngày yêu, lời nh
 - ✅ Lời nhắn hôm nay (yêu cầu đăng nhập)
 - ✅ Nhật ký & Timeline (form nhập + hiển thị theo thời gian)
 - ✅ Album ảnh (upload + xem theo album, lưu trên Supabase Storage)
+- ✅ Quỹ chung (nhiều mục tiêu song song, mỗi mục tiêu theo dõi tiến độ riêng)
+- ✅ Hoạt động đôi (địa điểm đã đi, phân loại, đếm số lần trùng)
 
 ## Cấu trúc
 

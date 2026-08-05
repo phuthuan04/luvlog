@@ -40,6 +40,15 @@ Base URL: `https://luvlog.vercel.app`
 | POST | `/api/journal` | Có | Body: `{ title, content }` → tạo bài viết |
 | POST | `/api/photos` | Có | Form-data: `album`, `file` → upload ảnh, lưu URL |
 | GET | `/api/photos` | Có | Danh sách ảnh (mới nhất trước) |
+| GET | `/api/fund` | Có | Số dư tổng + danh sách mục tiêu (kèm tiến độ) + giao dịch |
+| POST | `/api/fund/transactions` | Có | Body: `{ amount, description, goal_id? }` |
+| DELETE | `/api/fund/transactions/{id}` | Có | Xoá 1 giao dịch |
+| POST | `/api/fund/goals` | Có | Body: `{ name, target_amount }` |
+| DELETE | `/api/fund/goals/{id}` | Có | Xoá 1 mục tiêu |
+| GET | `/api/activities` | Có | Danh sách hoạt động (mới nhất trước) |
+| POST | `/api/activities` | Có | Body: `{ place_name, category, visited_at, note? }` |
+| DELETE | `/api/activities/{id}` | Có | Xoá 1 hoạt động |
+
 
 ### Ví dụ
 
@@ -117,6 +126,37 @@ Schema tự tạo qua `Base.metadata.create_all()` trong `database.py` lúc kh�
 | `uploaded_by` | String | Tên user upload |
 | `created_at` | DateTime | Thời điểm tạo (UTC) |
 
+**Bảng `fund_goals`**
+
+| Cột | Kiểu | Mô tả |
+|---|---|---|
+| `id` | Integer PK | |
+| `name` | String | Tên mục tiêu |
+| `target_amount` | Integer | Số tiền mục tiêu (VNĐ) |
+| `created_at` | DateTime | |
+
+**Bảng `fund_transactions`**
+
+| Cột | Kiểu | Mô tả |
+|---|---|---|
+| `id` | Integer PK | |
+| `amount` | Integer | Dương = thu, âm = chi |
+| `description` | String | |
+| `goal_id` | Integer FK (nullable) | Thuộc mục tiêu nào, trống = quỹ chung |
+| `created_by` | String | |
+| `created_at` | DateTime | |
+
+**Bảng `activities`**
+
+| Cột | Kiểu | Mô tả |
+|---|---|---|
+| `id` | Integer PK | |
+| `place_name` | String | |
+| `category` | String | `an_uong` / `vui_choi` / `khac` |
+| `note` | String | |
+| `visited_at` | DateTime | |
+| `created_by` | String | |
+
 ---
 
 ## 5. Frontend
@@ -129,6 +169,8 @@ Schema tự tạo qua `Base.metadata.create_all()` trong `database.py` lúc kh�
 | `js/journal.js` | Form nhập + timeline nhật ký |
 | `css/style.css` | Giao diện |
 | `js/photos.js` | Form upload + hiển thị lưới ảnh theo album |
+| `js/fund.js` | Quỹ chung: mục tiêu (theo dõi riêng) + giao dịch thu/chi |
+| `js/activities.js` | Form + danh sách hoạt động đôi, đếm trùng địa điểm |
 
 **Luồng auth frontend:**
 1. Load trang → gọi `/api/me`
@@ -179,6 +221,12 @@ Chi tiết: [docs/KE-HOACH-DU-AN.md](./docs/KE-HOACH-DU-AN.md)
 ---
 
 ## 8. Changelog
+
+### v0.6 — Quỹ chung & Hoạt động đôi (05/08/2026)
+- Bảng `fund_goals`, `fund_transactions` (có `goal_id`, mỗi mục tiêu theo dõi tiến độ riêng), `activities`
+- Backend: CRUD đầy đủ cho cả 3 (thêm + xoá)
+- Frontend: form quỹ (chọn mục tiêu khi góp/chi), form hoạt động (phân loại, đếm trùng địa điểm tự động)
+- Fix: thiếu `from datetime import datetime` trong `main.py` gây lỗi 500 ở `/api/activities` (hiển thị nhầm thành lỗi CORS)
 
 ### v0.5 — Album ảnh (05/08/2026)
 - Bucket `photos` trên Supabase Storage (public)
