@@ -21,6 +21,7 @@ Website riêng tư cho hai người — đồng hồ đếm ngày yêu, lời nh
 - ✅ Hoạt động đôi (địa điểm đã đi, phân loại, đếm số lần trùng)
 - ✅ Kiến trúc backend 3 tầng (routers/services/repositories)
 - ✅ Media Hub: phim/sách (tìm kiếm qua TMDB + Google Books, watchlist + đánh giá) và nhạc (nhập tay)
+- ✅ Cron tự động gợi ý phim/sách mỗi đêm (dựa trên đánh giá ≥ 4 sao), hiện riêng khung "Gợi ý cho hôm nay"
 
 ## Cấu trúc
 

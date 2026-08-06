@@ -60,6 +60,7 @@ Base URL: `https://luvlog.vercel.app`
 | DELETE | `/api/movies/{id}` \| `/api/books/{id}` \| `/api/songs/{id}` | Có | Xoá 1 mục |
 | GET | `/api/search/movies?q=` | Có | Tìm phim qua TMDB, trả `title/cover_url/year` |
 | GET | `/api/search/books?q=` | Có | Tìm sách qua Google Books, trả `title/cover_url/authors` |
+| GET | `/api/v1/cron/auto-crawl` | Cron secret (header `Authorization: Bearer <CRON_SECRET>`) | Tự động thêm gợi ý phim/sách tương tự dựa trên mục đánh giá cao |
 
 
 ### Ví dụ
@@ -95,6 +96,7 @@ await fetch("https://luvlog.vercel.app/api/message", {
 | `SUPABASE_SECRET_KEY` | Có | Service role key — toàn quyền, không đưa vào frontend |
 | `TMDB_API_KEY` | Có | Key TMDB, dùng cho tìm kiếm phim |
 | `GOOGLE_BOOKS_API_KEY` | Có | Key Google Books, dùng cho tìm kiếm sách |
+| `CRON_SECRET` | Có | Xác thực request từ Vercel Cron (header Authorization: Bearer) |
 
 Mẫu: `backend/.env.example`
 
@@ -184,6 +186,8 @@ Schema tự tạo qua `Base.metadata.create_all()` trong `database.py` lúc kh�
 | `added_by` | String | |
 | `experienced_at` | DateTime (nullable) | |
 | `created_at` | DateTime | |
+| `external_id` | String | ID gốc bên TMDB/Google Books, dùng để tìm gợi ý tương tự (chỉ movies/books) |
+| `category` | String | Thể loại, dùng cho gợi ý sách theo category (chỉ movies/books) |
 
 ---
 
@@ -224,6 +228,11 @@ Schema tự tạo qua `Base.metadata.create_all()` trong `database.py` lúc kh�
 ### CORS
 Backend chỉ cho phép origin `https://luvlog-frontend.vercel.app`. Thêm origin mới khi dev local hoặc đổi domain.
 
+### Cron (Vercel)
+- Cấu hình tại `backend/vercel.json`, chạy `0 17 * * *` UTC (00:00 giờ VN)
+- Vercel Hobby: tối đa 1 lần/ngày, giờ chạy có thể lệch trong khung 1 tiếng
+- Test tay: `curl -H "Authorization: Bearer $CRON_SECRET" https://luvlog.vercel.app/api/v1/cron/auto-crawl`
+
 ---
 
 ## 7. Lộ trình
@@ -250,6 +259,13 @@ Chi tiết: [docs/KE-HOACH-DU-AN.md](./docs/KE-HOACH-DU-AN.md)
 ---
 
 ## 8. Changelog
+
+### v0.8 — Cron tự động gợi ý (06/08/2026)
+- Thêm cột `external_id`, `category` cho `movies`/`books`
+- Service gọi TMDB "similar" và Google Books "theo category"
+- Endpoint `/api/v1/cron/auto-crawl`, xác thực qua `CRON_SECRET` (Vercel tự gửi header Authorization)
+- Vercel Cron Job chạy đêm, chống trùng theo `title`
+- Frontend: khung "Gợi ý cho hôm nay" tách riêng (đánh dấu qua `added_by = "luvlog-bot"`)
 
 ### v0.7 — Refactor kiến trúc + Media Hub (06/08/2026)
 - Backend tách 3 tầng: routers/services/repositories/models

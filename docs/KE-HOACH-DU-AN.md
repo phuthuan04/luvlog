@@ -31,7 +31,7 @@ Tóm tắt: từng bước nhỏ, test xong mới qua bước tiếp; không l�
 | 3 — Nhật ký & Timeline | ✅ Xong |
 | 4 — Album ảnh | ✅ Xong |
 | 5 — Quỹ chung & hoạt động đôi | ✅ Xong |
-| 6 — Kiến trúc 3 tầng + Media Hub + Cron | 🔄 Đang làm (6.1, 6.2, 6.3 xong; 6.4 Cron tiếp theo; JWT: bỏ qua) |
+| 6 — Kiến trúc 3 tầng + Media Hub + Cron | 🔄 Đang làm (6.1–6.4 xong; 6.5 Webhook Telegram/Discord còn lại; JWT: bỏ qua) |
 
 ---
 
