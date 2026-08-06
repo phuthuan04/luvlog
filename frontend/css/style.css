@@ -150,3 +150,10 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
 .suggested-badge { color: var(--berry); font-weight: 500; }
 .media-form { display: flex; gap: 8px; flex-wrap: wrap; }
 .media-form input { flex: 1; min-width: 100px; padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; }
+
+@media (min-width: 860px) {
+  .container { max-width: 1100px; }
+  .content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; align-items: start; }
+  #section-counter { grid-column: 1 / -1; }
+  .card { margin-bottom: 0; }
+}
