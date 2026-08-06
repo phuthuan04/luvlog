@@ -5,29 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>luvlog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div class="container">
 
-    <section id="loginSection" class="card login-box">
-      <p class="eyebrow">luvlog · đăng nhập</p>
-      <form id="loginForm">
-        <input type="text" id="username" placeholder="Tên đăng nhập" autocomplete="username" required>
-        <input type="password" id="password" placeholder="Mật khẩu" autocomplete="current-password" required>
-        <p id="loginError" class="error-msg" hidden></p>
-        <button type="submit">Vào</button>
-      </form>
+    <section id="loginSection" class="login-box">
+      <div class="login-card">
+        <p class="login-mark">💕</p>
+        <h1 class="login-title">luvlog</h1>
+        <p class="login-tagline">Nhật ký chung của hai đứa mình</p>
+        <form id="loginForm">
+          <input type="text" id="username" placeholder="Tên đăng nhập" autocomplete="username" required>
+          <input type="password" id="password" placeholder="Mật khẩu" autocomplete="current-password" required>
+          <p id="loginError" class="error-msg" hidden></p>
+          <button type="submit">Vào</button>
+        </form>
+      </div>
     </section>
 
     <div id="appSection" hidden>
       <div class="user-bar">
-        <span id="userDisplay"></span>
+        <span class="user-greeting">Xin chào, <span id="userDisplay"></span></span>
         <button id="logoutBtn" type="button">Đăng xuất</button>
       </div>
 
-      <main class="card">
+      <nav class="tabbar" aria-label="Chuyển section">
+        <a href="#section-counter" class="tab-link">💕 <span>Trang chủ</span></a>
+        <a href="#section-message" class="tab-link">💬 <span>Lời nhắn</span></a>
+        <a href="#section-journal" class="tab-link">📓 <span>Nhật ký</span></a>
+        <a href="#section-photos" class="tab-link">📷 <span>Ảnh</span></a>
+        <a href="#section-fund" class="tab-link">💰 <span>Quỹ chung</span></a>
+        <a href="#section-activities" class="tab-link">🗺️ <span>Hoạt động</span></a>
+        <a href="#section-movies" class="tab-link">🎬 <span>Phim</span></a>
+        <a href="#section-books" class="tab-link">📚 <span>Sách</span></a>
+        <a href="#section-songs" class="tab-link">🎵 <span>Nhạc</span></a>
+      </nav>
+
+      <main id="section-counter" class="card reveal">
         <p class="eyebrow">luvlog · đã bên nhau</p>
         <div class="counter">
           <div class="unit"><span id="years">0</span><label>năm</label></div>
@@ -41,15 +57,15 @@
         </div>
       </main>
 
-      <section class="card message-box">
-        <p class="eyebrow">lời nhắn hôm nay</p>
+      <section id="section-message" class="card message-box reveal">
+        <p class="eyebrow">💬 lời nhắn hôm nay</p>
         <p id="messageDisplay">Đang tải...</p>
         <textarea id="messageInput" placeholder="Nhắn gì đó..."></textarea>
         <button id="messageSubmit" type="button">Gửi</button>
       </section>
 
-      <section class="card journal-box">
-        <p class="eyebrow">nhật ký</p>
+      <section id="section-journal" class="card journal-box reveal">
+        <p class="eyebrow">📓 nhật ký</p>
         <form id="journalForm" class="journal-form">
           <input type="text" id="journalTitle" placeholder="Tiêu đề..." required>
           <textarea id="journalContent" placeholder="Hôm nay..." required></textarea>
@@ -60,8 +76,8 @@
         </ul>
       </section>
 
-      <section class="card photo-box">
-        <p class="eyebrow">album ảnh</p>
+      <section id="section-photos" class="card photo-box reveal">
+        <p class="eyebrow">📷 album ảnh</p>
         <form id="photoForm" class="photo-form">
           <input type="text" id="photoAlbum" placeholder="Tên album..." required>
           <input type="file" id="photoFile" accept="image/*" required>
@@ -70,8 +86,8 @@
         <div id="photoGrid" class="photo-grid"></div>
       </section>
 
-      <section class="card fund-box">
-        <p class="eyebrow">quỹ chung</p>
+      <section id="section-fund" class="card fund-box reveal">
+        <p class="eyebrow">💰 quỹ chung</p>
         <p class="fund-balance-label">Số dư hiện tại</p>
         <p id="fundBalance" class="fund-balance">0đ</p>
 
@@ -97,8 +113,8 @@
         </form>
       </section>
 
-      <section class="card activity-box">
-        <p class="eyebrow">hoạt động đôi</p>
+      <section id="section-activities" class="card activity-box reveal">
+        <p class="eyebrow">🗺️ hoạt động đôi</p>
         <ul id="activityList" class="activity-list"></ul>
         <form id="activityForm" class="activity-form">
           <input type="text" id="activityPlace" placeholder="Tên địa điểm..." required>
@@ -113,8 +129,8 @@
         </form>
       </section>
 
-      <section class="card media-box" data-media="movies">
-        <p class="eyebrow">phim</p>
+      <section id="section-movies" class="card media-box reveal" data-media="movies">
+        <p class="eyebrow">🎬 phim</p>
         <form class="media-search-form">
           <input type="text" class="media-search-input" placeholder="Tìm tên phim...">
           <button type="submit">Tìm</button>
@@ -123,8 +139,8 @@
         <div class="media-list"></div>
       </section>
 
-      <section class="card media-box" data-media="books">
-        <p class="eyebrow">sách</p>
+      <section id="section-books" class="card media-box reveal" data-media="books">
+        <p class="eyebrow">📚 sách</p>
         <form class="media-search-form">
           <input type="text" class="media-search-input" placeholder="Tìm tên sách...">
           <button type="submit">Tìm</button>
@@ -133,8 +149,8 @@
         <div class="media-list"></div>
       </section>
 
-      <section class="card media-box" data-media="songs">
-        <p class="eyebrow">nhạc</p>
+      <section id="section-songs" class="card media-box reveal" data-media="songs">
+        <p class="eyebrow">🎵 nhạc</p>
         <form class="media-form">
           <input type="text" class="media-title" placeholder="Tên bài hát..." required>
           <input type="text" class="media-cover" placeholder="Link ảnh bìa (không bắt buộc)">
@@ -152,5 +168,6 @@
   <script src="js/activities.js"></script>
   <script src="js/media.js"></script>
   <script src="js/counter.js"></script>
+  <script src="js/ui.js"></script>
 </body>
 </html>

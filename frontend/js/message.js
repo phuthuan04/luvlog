@@ -23,6 +23,7 @@ function showApp(username) {
   if (typeof loadFund === "function") loadFund();
   if (typeof loadActivities === "function") loadActivities();
   if (typeof loadMedia === "function") loadMedia();
+  if (typeof initUI === "function") initUI();
 }
 
 async function checkSession() {
