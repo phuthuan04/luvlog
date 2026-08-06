@@ -31,7 +31,7 @@ Tóm tắt: từng bước nhỏ, test xong mới qua bước tiếp; không l�
 | 3 — Nhật ký & Timeline | ✅ Xong |
 | 4 — Album ảnh | ✅ Xong |
 | 5 — Quỹ chung & hoạt động đôi | ✅ Xong |
-| 6 trở đi | ⏳ Chưa bắt đầu |
+| 6 — Kiến trúc 3 tầng + Media Hub + Cron | 🔄 Đang làm (6.1, 6.2, 6.3 xong; 6.4 Cron tiếp theo; JWT: bỏ qua) |
 
 ---
 
@@ -108,7 +108,7 @@ Thử thách cặp đôi, mua domain, responsive, chuẩn bị backend cho app F
 | 3 | Không có công nghệ mới lớn |
 | 4 | Supabase Storage |
 | 5 | Không có công nghệ mới lớn |
-| 6 | Kiến trúc 3 tầng, TMDB API, Google Books API, YouTube Data API, Vercel Cron Jobs, Webhook, (tuỳ chọn) JWT |
+| 6 | Kiến trúc 3 tầng (đã xong) · TMDB API (đã xong) · Google Books API (đã xong) · YouTube Data API, Vercel Cron Jobs, Webhook (chưa làm) |
 | 7 | Domain + SSL, Responsive design, (định hướng) Flutter |
 
 ---

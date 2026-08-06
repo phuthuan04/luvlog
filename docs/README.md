@@ -19,6 +19,8 @@ Website riêng tư cho hai người — đồng hồ đếm ngày yêu, lời nh
 - ✅ Album ảnh (upload + xem theo album, lưu trên Supabase Storage)
 - ✅ Quỹ chung (nhiều mục tiêu song song, mỗi mục tiêu theo dõi tiến độ riêng)
 - ✅ Hoạt động đôi (địa điểm đã đi, phân loại, đếm số lần trùng)
+- ✅ Kiến trúc backend 3 tầng (routers/services/repositories)
+- ✅ Media Hub: phim/sách (tìm kiếm qua TMDB + Google Books, watchlist + đánh giá) và nhạc (nhập tay)
 
 ## Cấu trúc
 

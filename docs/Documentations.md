@@ -22,6 +22,12 @@ Tài liệu kỹ thuật chính thức của dự án. Cập nhật song song v�
 - **Auth:** session cookie ký bằng `itsdangerous` (Starlette SessionMiddleware)
 - **Cross-origin cookie:** `SameSite=None; Secure` (frontend và backend khác subdomain)
 
+**Backend chia 3 tầng** (từ 05/08/2026):
+- `routers/` — nhận request, định nghĩa endpoint
+- `services/` — logic nghiệp vụ (auth, gọi API ngoài)
+- `repositories/` — truy vấn database
+- `models.py` — định nghĩa bảng (SQLAlchemy)
+
 ---
 
 ## 2. API Reference
@@ -48,6 +54,12 @@ Base URL: `https://luvlog.vercel.app`
 | GET | `/api/activities` | Có | Danh sách hoạt động (mới nhất trước) |
 | POST | `/api/activities` | Có | Body: `{ place_name, category, visited_at, note? }` |
 | DELETE | `/api/activities/{id}` | Có | Xoá 1 hoạt động |
+| GET | `/api/movies` \| `/api/books` \| `/api/songs` | Có | Danh sách (mới nhất trước) |
+| POST | `/api/movies` \| `/api/books` \| `/api/songs` | Có | Body: `{ title, cover_url?, status }` |
+| PATCH | `/api/movies/{id}` \| `/api/books/{id}` \| `/api/songs/{id}` | Có | Body: `{ status, rating?, review?, experienced_at? }` |
+| DELETE | `/api/movies/{id}` \| `/api/books/{id}` \| `/api/songs/{id}` | Có | Xoá 1 mục |
+| GET | `/api/search/movies?q=` | Có | Tìm phim qua TMDB, trả `title/cover_url/year` |
+| GET | `/api/search/books?q=` | Có | Tìm sách qua Google Books, trả `title/cover_url/authors` |
 
 
 ### Ví dụ
@@ -81,6 +93,8 @@ await fetch("https://luvlog.vercel.app/api/message", {
 | `ADMIN2_PASS_HASH` | Có | Bcrypt hash mật khẩu tài khoản 2 |
 | `SUPABASE_URL` | Có | URL project Supabase (dùng cho Storage) |
 | `SUPABASE_SECRET_KEY` | Có | Service role key — toàn quyền, không đưa vào frontend |
+| `TMDB_API_KEY` | Có | Key TMDB, dùng cho tìm kiếm phim |
+| `GOOGLE_BOOKS_API_KEY` | Có | Key Google Books, dùng cho tìm kiếm sách |
 
 Mẫu: `backend/.env.example`
 
@@ -157,6 +171,20 @@ Schema tự tạo qua `Base.metadata.create_all()` trong `database.py` lúc kh�
 | `visited_at` | DateTime | |
 | `created_by` | String | |
 
+**Bảng `movies` / `books` / `songs`** (cùng cấu trúc)
+
+| Cột | Kiểu | Mô tả |
+|---|---|---|
+| `id` | Integer PK | |
+| `title` | String | |
+| `cover_url` | String | Ảnh bìa/poster |
+| `status` | String | `muon` (muốn xem/đọc/nghe) / `da` (đã trải nghiệm) |
+| `rating` | Integer (nullable) | 1–5 |
+| `review` | String (nullable) | |
+| `added_by` | String | |
+| `experienced_at` | DateTime (nullable) | |
+| `created_at` | DateTime | |
+
 ---
 
 ## 5. Frontend
@@ -171,6 +199,7 @@ Schema tự tạo qua `Base.metadata.create_all()` trong `database.py` lúc kh�
 | `js/photos.js` | Form upload + hiển thị lưới ảnh theo album |
 | `js/fund.js` | Quỹ chung: mục tiêu (theo dõi riêng) + giao dịch thu/chi |
 | `js/activities.js` | Form + danh sách hoạt động đôi, đếm trùng địa điểm |
+| `js/media.js` | Phim/sách: tìm kiếm TMDB/Google Books + chọn thêm. Nhạc: nhập tay. Đánh dấu đã trải nghiệm (rating/review) cho cả 3 |
 
 **Luồng auth frontend:**
 1. Load trang → gọi `/api/me`
@@ -221,6 +250,13 @@ Chi tiết: [docs/KE-HOACH-DU-AN.md](./docs/KE-HOACH-DU-AN.md)
 ---
 
 ## 8. Changelog
+
+### v0.7 — Refactor kiến trúc + Media Hub (06/08/2026)
+- Backend tách 3 tầng: routers/services/repositories/models
+- Bảng `movies`, `books`, `songs` — watchlist + đánh giá sau khi trải nghiệm
+- Tích hợp tìm kiếm TMDB (phim) và Google Books (sách) — tự động điền poster
+- Fix: lỗi 500 khi album ảnh có dấu tiếng Việt (slugify đường dẫn lưu trữ)
+- Fix: `goal_id: 0` và `visited_at` sai định dạng gây crash 500 → trả 400 rõ ràng
 
 ### v0.6 — Quỹ chung & Hoạt động đôi (05/08/2026)
 - Bảng `fund_goals`, `fund_transactions` (có `goal_id`, mỗi mục tiêu theo dõi tiến độ riêng), `activities`
