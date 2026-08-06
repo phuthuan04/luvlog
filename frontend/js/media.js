@@ -129,7 +129,6 @@ Object.entries(SEARCHABLE_TYPES).forEach(([type, searchEndpoint]) => {
 });
 
 document.addEventListener("click", async (e) => {
-  document.addEventListener("click", async (e) => {
   const resultEl = e.target.closest(".search-result");
   if (resultEl) {
     const container = resultEl.parentElement;
