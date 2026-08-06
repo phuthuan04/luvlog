@@ -15,6 +15,8 @@ class MediaIn(BaseModel):
     title: str
     cover_url: str = ""
     status: str = "muon"
+    external_id: str = ""
+    category: str = ""
 
 class MediaUpdateIn(BaseModel):
     status: str
@@ -26,6 +28,7 @@ def serialize(item):
     return {
         "id": item.id, "title": item.title, "cover_url": item.cover_url,
         "status": item.status, "rating": item.rating, "review": item.review,
+        "external_id": item.external_id, "category": item.category,
         "added_by": item.added_by,
         "experienced_at": item.experienced_at.isoformat() if item.experienced_at else None,
         "created_at": item.created_at.isoformat() if item.created_at else None,
@@ -46,7 +49,7 @@ def list_movies(user: str = Depends(require_login), db: Session = Depends(get_db
 
 @router.post("/api/movies")
 def add_movie(data: MediaIn, user: str = Depends(require_login), db: Session = Depends(get_db)):
-    media_repo.create_item(db, Movie, data.title, data.cover_url, data.status, user)
+    media_repo.create_item(db, Movie, data.title, data.cover_url, data.status, user, data.external_id, data.category)
     return {"status": "saved"}
 
 @router.patch("/api/movies/{item_id}")
@@ -68,7 +71,7 @@ def list_books(user: str = Depends(require_login), db: Session = Depends(get_db)
 
 @router.post("/api/books")
 def add_book(data: MediaIn, user: str = Depends(require_login), db: Session = Depends(get_db)):
-    media_repo.create_item(db, Book, data.title, data.cover_url, data.status, user)
+    media_repo.create_item(db, Book, data.title, data.cover_url, data.status, user, data.external_id, data.category)
     return {"status": "saved"}
 
 @router.patch("/api/books/{item_id}")
@@ -90,7 +93,7 @@ def list_songs(user: str = Depends(require_login), db: Session = Depends(get_db)
 
 @router.post("/api/songs")
 def add_song(data: MediaIn, user: str = Depends(require_login), db: Session = Depends(get_db)):
-    media_repo.create_item(db, Song, data.title, data.cover_url, data.status, user)
+    media_repo.create_item(db, Song, data.title, data.cover_url, data.status, user, data.external_id, data.category)
     return {"status": "saved"}
 
 @router.patch("/api/songs/{item_id}")

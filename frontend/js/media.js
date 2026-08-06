@@ -9,16 +9,12 @@ function ratingStars(n) {
   return "★".repeat(n) + "☆".repeat(5 - n);
 }
 
-function renderMediaList(container, items, endpoint) {
-  const wanted = items.filter((i) => i.status === "muon");
-  const done = items.filter((i) => i.status === "da");
-
-  const wantedHtml = wanted.length
-    ? wanted.map((i) => `
+function wantedItemHtml(i, endpoint, isSuggested) {
+  return `
       <li class="media-item" data-id="${i.id}">
         ${i.cover_url ? `<img src="${i.cover_url}" alt="" class="media-cover-img">` : ""}
         <div class="media-info">
-          <span>${escapeHtml(i.title)}</span>
+          <span>${escapeHtml(i.title)}${isSuggested ? ' <small class="suggested-badge">🤖 gợi ý</small>' : ""}</span>
           <div>
             <button type="button" class="mark-done-btn">Đánh dấu đã trải nghiệm</button>
             <button type="button" class="delete-btn" data-endpoint="${endpoint}" data-id="${i.id}">Xoá</button>
@@ -33,9 +29,18 @@ function renderMediaList(container, items, endpoint) {
             <button type="button" class="save-mark-btn" data-endpoint="${endpoint}" data-id="${i.id}">Lưu</button>
           </div>
         </div>
-      </li>`).join("")
-    : '<li class="media-empty">Chưa có gì trong danh sách</li>';
+      </li>`;
+}
 
+function renderMediaList(container, items, endpoint) {
+  const suggested = items.filter((i) => i.status === "muon" && i.added_by === "luvlog-bot");
+  const wanted = items.filter((i) => i.status === "muon" && i.added_by !== "luvlog-bot");
+  const done = items.filter((i) => i.status === "da");
+
+  const suggestedHtml = suggested.map((i) => wantedItemHtml(i, endpoint, true)).join("");
+  const wantedHtml = wanted.length
+    ? wanted.map((i) => wantedItemHtml(i, endpoint, false)).join("")
+    : '<li class="media-empty">Chưa có gì trong danh sách</li>';
   const doneHtml = done.length
     ? done.map((i) => `
       <li class="media-item done" data-id="${i.id}">
@@ -50,6 +55,7 @@ function renderMediaList(container, items, endpoint) {
     : '<li class="media-empty">Chưa trải nghiệm gì</li>';
 
   container.innerHTML = `
+    ${suggested.length ? `<h4>Gợi ý cho hôm nay</h4><ul class="media-list-suggested">${suggestedHtml}</ul>` : ""}
     <h4>Muốn xem</h4>
     <ul class="media-list-wanted">${wantedHtml}</ul>
     <h4>Đã trải nghiệm</h4>
@@ -139,7 +145,10 @@ document.addEventListener("click", async (e) => {
       ...FETCH_OPTS,
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: item.title, cover_url: item.cover_url || "", status: "muon" }),
+      body: JSON.stringify({
+        title: item.title, cover_url: item.cover_url || "", status: "muon",
+        external_id: item.external_id || "", category: item.category || "",
+      }),
     });
     container.innerHTML = "";
     const type = MEDIA_SECTIONS.find((s) => s.endpoint === endpoint).type;

@@ -134,3 +134,6 @@ body {
 .search-result { display: flex; gap: 8px; align-items: center; border: 1px solid rgba(139,94,131,0.2); border-radius: 8px; padding: 6px; cursor: pointer; font-size: 13px; }
 .search-result:hover { background: rgba(139,94,131,0.08); }
 
+.suggested-badge { color: var(--berry); font-weight: 500; }
+.media-list-suggested { border-left: 3px solid var(--berry); padding-left: 8px; margin-bottom: 12px; }
+

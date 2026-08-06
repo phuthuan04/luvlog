@@ -54,6 +54,8 @@ class MediaMixin:
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
     cover_url = Column(String)
+    external_id = Column(String)  # ID gốc bên TMDB/Google Books, dùng để tìm gợi ý tương tự
+    category = Column(String)      # thể loại, dùng cho gợi ý sách theo category
     status = Column(String, nullable=False)  # "muon" | "da"
     rating = Column(Integer)
     review = Column(String)
