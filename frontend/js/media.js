@@ -74,6 +74,7 @@ function loadMedia() {
 MEDIA_SECTIONS.forEach((s) => {
   const section = document.querySelector(`[data-media="${s.type}"]`);
   const form = section.querySelector(".media-form");
+  if (!form) return;
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const title = form.querySelector(".media-title").value.trim();
@@ -90,7 +91,62 @@ MEDIA_SECTIONS.forEach((s) => {
   });
 });
 
+const SEARCHABLE_TYPES = { movies: "/api/search/movies", books: "/api/search/books" };
+
+function renderSearchResults(container, results, endpoint) {
+  if (!results.length) {
+    container.innerHTML = '<p class="media-empty">Không tìm thấy kết quả</p>';
+    return;
+  }
+  container.innerHTML = results
+    .map((r, idx) => `
+      <div class="search-result" data-index="${idx}" data-endpoint="${endpoint}">
+        ${r.cover_url ? `<img src="${r.cover_url}" alt="" class="media-cover-img">` : ""}
+        <span>${escapeHtml(r.title)}${r.year ? ` (${r.year})` : ""}${r.authors ? ` — ${escapeHtml(r.authors)}` : ""}</span>
+      </div>`)
+    .join("");
+  container.dataset.results = JSON.stringify(results);
+}
+
+Object.entries(SEARCHABLE_TYPES).forEach(([type, searchEndpoint]) => {
+  const section = document.querySelector(`[data-media="${type}"]`);
+  const form = section.querySelector(".media-search-form");
+  const resultsBox = section.querySelector(".media-search-results");
+  const addEndpoint = MEDIA_SECTIONS.find((s) => s.type === type).endpoint;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const q = form.querySelector(".media-search-input").value.trim();
+    if (!q) return;
+    const res = await fetch(`${API_BASE}${searchEndpoint}?q=${encodeURIComponent(q)}`, FETCH_OPTS);
+    if (res.status === 401) {
+      if (typeof showLogin === "function") showLogin();
+      return;
+    }
+    const results = await res.json();
+    renderSearchResults(resultsBox, results, addEndpoint);
+  });
+});
+
 document.addEventListener("click", async (e) => {
+  document.addEventListener("click", async (e) => {
+  const resultEl = e.target.closest(".search-result");
+  if (resultEl) {
+    const container = resultEl.parentElement;
+    const results = JSON.parse(container.dataset.results || "[]");
+    const item = results[resultEl.dataset.index];
+    const endpoint = resultEl.dataset.endpoint;
+    await fetch(`${API_BASE}${endpoint}`, {
+      ...FETCH_OPTS,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: item.title, cover_url: item.cover_url || "", status: "muon" }),
+    });
+    container.innerHTML = "";
+    const type = MEDIA_SECTIONS.find((s) => s.endpoint === endpoint).type;
+    loadMediaSection(type, endpoint);
+    return;
+  }
   if (e.target.matches(".mark-done-btn")) {
     e.target.parentElement.nextElementSibling.hidden = false;
     return;

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from services import media_service
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from datetime import datetime
@@ -6,6 +7,7 @@ from database import get_db
 from services.auth_service import require_login
 from repositories import media_repo
 from models import Movie, Book, Song
+import requests
 
 router = APIRouter()
 
@@ -102,3 +104,17 @@ def update_song(item_id: int, data: MediaUpdateIn, user: str = Depends(require_l
 def delete_song(item_id: int, user: str = Depends(require_login), db: Session = Depends(get_db)):
     media_repo.delete_item(db, Song, item_id)
     return {"status": "deleted"}
+
+@router.get("/api/search/movies")
+def search_movies_endpoint(q: str, user: str = Depends(require_login)):
+    try:
+        return media_service.search_movies(q)
+    except requests.RequestException:
+        raise HTTPException(status_code=502, detail="Không thể kết nối tới TMDB")
+
+@router.get("/api/search/books")
+def search_books_endpoint(q: str, user: str = Depends(require_login)):
+    try:
+        return media_service.search_books(q)
+    except requests.RequestException:
+        raise HTTPException(status_code=502, detail="Không thể kết nối tới Google Books")

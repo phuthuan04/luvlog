@@ -127,3 +127,10 @@ body {
 .media-empty { color: var(--plum); font-size: 12px; list-style: none; }
 .media-form { display: flex; gap: 8px; flex-wrap: wrap; }
 .media-form input { flex: 1; min-width: 100px; padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; }
+
+.media-search-form { display: flex; gap: 8px; margin-bottom: 8px; }
+.media-search-form input { flex: 1; padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; }
+.media-search-results { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.search-result { display: flex; gap: 8px; align-items: center; border: 1px solid rgba(139,94,131,0.2); border-radius: 8px; padding: 6px; cursor: pointer; font-size: 13px; }
+.search-result:hover { background: rgba(139,94,131,0.08); }
+
