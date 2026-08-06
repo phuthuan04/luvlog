@@ -13,6 +13,7 @@ app.add_middleware(
     secret_key=os.getenv("SESSION_SECRET"),
     same_site="none",
     https_only=True,
+    max_age=900,
 )
 app.add_middleware(
     CORSMiddleware,

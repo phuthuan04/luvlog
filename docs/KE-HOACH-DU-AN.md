@@ -153,3 +153,32 @@ Từ Giai đoạn 6, `backend/` tách thêm `routers/`, `services/`, `repositori
 **Giai đoạn 4 — Album ảnh:** upload lên Supabase Storage, tổ chức theo album.
 
 Tài liệu kỹ thuật: `Documentations.md` · Tổng quan: `README.md`
+
+---
+
+## 10. Brainstorm — Nâng cấp UI/UX (chưa chốt, đang thảo luận)
+ 
+> Ghi lại từ phiên brainstorm 06/08/2026. Chưa triển khai, chưa chia giai đoạn chính thức — cần chốt xong mới đưa vào lộ trình chính.
+ 
+**Đồng hồ / Hero:**
+- Bỏ đếm giờ:phút:giây chạy liên tục → thay bằng "Quen nhau từ 07/04/2024 – nay" (tĩnh) + đồng hồ giờ thật GMT+7
+- Đổi bố cục desktop sang dạng dashboard nhiều khối nhỏ (đồng hồ là 1 khối vuông góc trên trái), không phải lưới card đều như hiện tại
+**Cơ chế chung — card thu gọn/mở rộng:**
+- Mỗi card có thể thu gọn (chỉ hiện nội dung mới nhất) / mở rộng (hiện đủ) — làm 1 cơ chế dùng chung cho mọi card
+**Media Hub (áp dụng mẫu cho phim trước, sau đó lặp lại cho sách/nhạc):**
+- Thẻ gợi ý: ẩn rating/review, nút "thêm" hiện khi hover, nút "làm mới gợi ý" (cần endpoint mới dùng `require_login`, không dùng chung `CRON_SECRET` với cron vì sẽ lộ secret ở frontend)
+- Chỉ hiện 2-3 thẻ/lượt, cuộn xem thêm — áp dụng cho cả "muốn xem" và "đã xem"
+- "Đã xem": hiện ngày đánh dấu + rating cá nhân, sort theo ngày (asc/desc)
+- Tóm tắt phim: **dùng bản tóm tắt tiếng Việt có sẵn từ TMDB trước** (đã gọi `language=vi-VN`), chưa cần thêm AI tóm tắt riêng
+- Điểm IMDb + Tomatometer: cần thêm tích hợp **OMDb API** (miễn phí, giới hạn 1000 request/ngày)
+**Album ảnh:**
+- Cần thêm bảng `albums` riêng (hiện tại album chỉ là text tự do gắn trên mỗi ảnh, chưa phải entity thật)
+- Tạo album qua UI, sort theo tên/ngày
+**Lời nhắn:**
+- Tách card hiển thị và card viết lời nhắn riêng
+- Cần thêm endpoint liệt kê lịch sử lời nhắn (hiện chỉ có API lấy 1 tin mới nhất)
+- Lời nhắn mới nhất đậm, cũ hơn mờ dần khi cuộn lên
+- **Chưa chốt:** mức độ "tương tác" — đang chờ chọn giữa (a) nút ❤️ đã đọc, (b) thả cảm xúc nhiều loại, (c) trả lời/bình luận qua lại
+**Nhật ký:** áp dụng pattern feed cuộn + mờ dần tương tự lời nhắn/album — chi tiết chưa chốt.
+ 
+---
