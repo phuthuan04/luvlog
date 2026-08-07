@@ -1,22 +1,24 @@
 // ⚠️ SỬA NGÀY NÀY THÀNH NGÀY BẮT ĐẦU YÊU NHAU
 const startDate = new Date("2025-04-07T00:00:00");
 
-function getElapsed(start, now) {
+function formatDMY(date) {
+  const d = String(date.getDate()).padStart(2, "0");
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const y = date.getFullYear();
+  return `${d}/${m}/${y}`;
+}
+
+function getElapsedYMD(start, now) {
   let years = now.getFullYear() - start.getFullYear();
   let months = now.getMonth() - start.getMonth();
   let days = now.getDate() - start.getDate();
-  let hours = now.getHours() - start.getHours();
-  let minutes = now.getMinutes() - start.getMinutes();
-  let seconds = now.getSeconds() - start.getSeconds();
-  if (seconds < 0) { seconds += 60; minutes--; }
-  if (minutes < 0) { minutes += 60; hours--; }
-  if (hours < 0) { hours += 24; days--; }
   if (days < 0) {
     const daysInPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
-    days += daysInPrevMonth; months--;
+    days += daysInPrevMonth;
+    months--;
   }
   if (months < 0) { months += 12; years--; }
-  return { years, months, days, hours, minutes, seconds };
+  return { years, months, days };
 }
 
 function updateCounter() {
@@ -25,7 +27,20 @@ function updateCounter() {
   const totalDays = Math.floor((now - startDate) / 86400000);
   document.getElementById("totalDays").textContent = totalDays;
   document.getElementById("years").textContent = e.years;
+  document.getElementById("months").textContent = e.months;
+  document.getElementById("days").textContent = e.days;
+  document.getElementById("sinceLabel").textContent = `Quen nhau từ ${formatDMY(startDate)} – nay (${formatDMY(now)})`;
+}
+
+function updateClock() {
+  const timeStr = new Intl.DateTimeFormat("vi-VN", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+  }).format(new Date());
+  document.getElementById("liveClock").textContent = timeStr;
 }
 
 updateCounter();
-setInterval(updateCounter, 1000);
+updateClock();
+setInterval(updateCounter, 60000);
+setInterval(updateClock, 1000);
