@@ -11,7 +11,7 @@ function ratingStars(n) {
 
 function wantedItemHtml(i, endpoint, isSuggested) {
   return `
-      <li class="media-item" data-id="${i.id}">
+        <li class="media-item" data-id="${i.id}" data-external-id="${i.external_id || ""}" data-title="${escapeHtml(i.title)}">
         ${i.cover_url ? `<img src="${i.cover_url}" alt="" class="media-cover-img">` : ""}
         <div class="media-info">
           <span>${escapeHtml(i.title)}${isSuggested ? ' <small class="suggested-badge">🤖 gợi ý</small>' : ""}</span>
@@ -204,7 +204,7 @@ const REFRESH_ENDPOINTS = { movies: "/api/movies/refresh-suggestions", books: "/
 function renderSuggestions(listEl, suggestions) {
   listEl.innerHTML = suggestions.length
     ? suggestions.map((s) => `
-      <li class="media-item suggestion-item" data-id="${s.id}">
+      <li class="media-item suggestion-item" data-id="${s.id}" data-external-id="${s.external_id || ""}" data-title="${escapeHtml(s.title)}">
         ${s.cover_url ? `<img src="${s.cover_url}" alt="" class="media-cover-img">` : ""}
         <div class="media-info">
           <span>${escapeHtml(s.title)}</span>
@@ -239,6 +239,14 @@ document.querySelectorAll(".refresh-suggestions-btn").forEach((btn) => {
 });
 
 document.addEventListener("click", async (e) => {
+  document.addEventListener("click", async (e) => {
+  const clickedItem = e.target.closest(".media-item");
+  if (clickedItem && !e.target.closest("button")) {
+    const type = clickedItem.closest("[data-media]")?.dataset.media;
+    if (type === "movies") { toggleMovieDetail(clickedItem); }
+    return;
+  }
+  if (e.target.matches(".accept-suggestion-btn")) {
   if (e.target.matches(".accept-suggestion-btn")) {
     const type = e.target.closest("[data-media]").dataset.media;
     await fetch(`${API_BASE}/api/suggestions/${e.target.dataset.id}/accept`, { ...FETCH_OPTS, method: "POST" });
@@ -252,3 +260,22 @@ document.addEventListener("click", async (e) => {
     loadSuggestions(type);
   }
 });
+
+async function toggleMovieDetail(item) {
+  let detailEl = item.querySelector(".media-detail");
+  if (detailEl) { detailEl.remove(); return; }
+
+  detailEl = document.createElement("div");
+  detailEl.className = "media-detail";
+  detailEl.textContent = "Đang tải...";
+  item.querySelector(".media-info").appendChild(detailEl);
+
+  const externalId = item.dataset.externalId;
+  const title = item.dataset.title;
+  const res = await fetch(`${API_BASE}/api/movies/detail?external_id=${encodeURIComponent(externalId)}&title=${encodeURIComponent(title)}`, FETCH_OPTS);
+  if (res.status === 401) { if (typeof showLogin === "function") showLogin(); return; }
+  const data = await res.json();
+  detailEl.innerHTML = `
+    <p class="media-overview">${escapeHtml(data.overview)}</p>
+    <p class="media-ratings">${data.imdb ? `⭐ IMDb ${data.imdb}` : ""}${data.tomatometer ? ` · 🍅 ${data.tomatometer}` : ""}</p>`;
+}

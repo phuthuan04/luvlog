@@ -104,3 +104,38 @@ def crawl_book_suggestions(db):
                 suggestion_repo.create_suggestion(db, "books", b["title"], b["cover_url"], b["external_id"], b["category"])
                 added += 1
     return added
+
+
+
+OMDB_API_KEY = os.getenv("OMDB_API_KEY")
+
+def get_movie_detail(external_id: str, title: str):
+    overview = ""
+    if external_id:
+        try:
+            resp = requests.get(
+                f"https://api.themoviedb.org/3/movie/{external_id}",
+                params={"api_key": TMDB_API_KEY, "language": "vi-VN"},
+                timeout=5,
+            )
+            resp.raise_for_status()
+            overview = resp.json().get("overview", "")
+        except requests.RequestException:
+            overview = ""
+
+    imdb, tomatometer = None, None
+    try:
+        resp = requests.get(
+            "http://www.omdbapi.com/",
+            params={"apikey": OMDB_API_KEY, "t": title},
+            timeout=5,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        if data.get("Response") != "False":
+            imdb = data.get("imdbRating")
+            tomatometer = next((r["Value"] for r in data.get("Ratings", []) if r["Source"] == "Rotten Tomatoes"), None)
+    except requests.RequestException:
+        pass
+
+    return {"overview": overview or "Chưa có tóm tắt.", "imdb": imdb, "tomatometer": tomatometer}
