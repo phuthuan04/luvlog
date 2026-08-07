@@ -14,8 +14,8 @@
     <section id="loginSection" class="login-box">
       <div class="login-card">
         <p class="login-mark">💕</p>
-        <h1 class="login-title">LUVLOG</h1>
-        <p class="login-tagline">Nhật ký của hai đứa mình</p>
+        <h1 class="login-title">luvlog</h1>
+        <p class="login-tagline">Nhật ký chung của hai đứa mình</p>
         <form id="loginForm">
           <input type="text" id="username" placeholder="Tên đăng nhập" autocomplete="username" required>
           <input type="password" id="password" placeholder="Mật khẩu" autocomplete="current-password" required>
@@ -32,6 +32,10 @@
       </div>
 
       <nav class="tabbar" aria-label="Chuyển section">
+        <div class="sidebar-brand">
+          <span class="sidebar-brand-mark">💕</span>
+          <span class="sidebar-brand-text">luvlog<br><small>Không gian của hai đứa</small></span>
+        </div>
         <a href="#section-counter" class="tab-link">💕 <span>Trang chủ</span></a>
         <a href="#section-message" class="tab-link">💬 <span>Lời nhắn</span></a>
         <a href="#section-journal" class="tab-link">📓 <span>Nhật ký</span></a>
@@ -45,22 +49,23 @@
 
       <div class="content-grid">
       <main id="section-counter" class="card hero-card reveal">
-        <p class="eyebrow">💕 TỤI MÌNH ĐÃ BÊN NHAU 💕</p>
+        <p class="eyebrow">💕 tụi mình đã bên nhau</p>
         <p class="hero-days-total"><span id="totalDays">0</span> ngày</p>
         <div class="counter">
-          <div class="unit"><span id="years">0</span><label>NĂM</label></div>
-          <div class="unit"><span id="months">0</span><label>THÁNG</label></div>
-          <div class="unit"><span id="days">0</span><label>NGÀY</label></div>
+          <div class="unit"><span id="years">0</span><label>năm</label></div>
+          <div class="unit"><span id="months">0</span><label>tháng</label></div>
+          <div class="unit"><span id="days">0</span><label>ngày</label></div>
         </div>
         <p class="hero-since" id="sinceLabel">Đang tải...</p>
         <div class="hero-clock">
           <span id="liveClock">00:00:00</span>
+          <span class="hero-clock-label">GMT+7</span>
         </div>
       </main>
 
       <section id="section-message" class="card message-box reveal collapsed" data-collapsible>
         <button type="button" class="card-header">
-          <p class="eyebrow">💬 LỜI NHẮN HÔM NAY 💬</p>
+          <p class="eyebrow">💬 lời nhắn hôm nay</p>
           <span class="card-chevron">▾</span>
         </button>
         <p class="card-summary">Đang tải...</p>
@@ -73,7 +78,7 @@
 
       <section id="section-journal" class="card journal-box reveal collapsed" data-collapsible>
         <button type="button" class="card-header">
-          <p class="eyebrow">📓 NHẬT KÝ 📓</p>
+          <p class="eyebrow">📓 nhật ký</p>
           <span class="card-chevron">▾</span>
         </button>
         <p class="card-summary">Đang tải...</p>
@@ -91,7 +96,7 @@
 
       <section id="section-photos" class="card photo-box reveal collapsed" data-collapsible>
         <button type="button" class="card-header">
-          <p class="eyebrow">📷 ALBUM ẢNH 📷</p>
+          <p class="eyebrow">📷 album ảnh</p>
           <span class="card-chevron">▾</span>
         </button>
         <p class="card-summary">Đang tải...</p>
@@ -107,7 +112,7 @@
 
       <section id="section-fund" class="card fund-box reveal collapsed" data-collapsible>
         <button type="button" class="card-header">
-          <p class="eyebrow">💰 QUỸ CHUNG 💰</p>
+          <p class="eyebrow">💰 quỹ chung</p>
           <span class="card-chevron">▾</span>
         </button>
         <p class="card-summary">Đang tải...</p>
@@ -126,7 +131,7 @@
           <h4>Giao dịch</h4>
           <ul id="fundTransactionsList" class="transaction-list"></ul>
           <form id="fundTransactionForm" class="fund-form">
-            <select id="txGoal"><option value="">Quỹ chung</option></select>
+            <select id="txGoal"><option value="">Quỹ chung (không thuộc mục tiêu)</option></select>
             <select id="txType">
               <option value="thu">Thu</option>
               <option value="chi">Chi</option>
@@ -140,7 +145,7 @@
 
       <section id="section-activities" class="card activity-box reveal collapsed" data-collapsible>
         <button type="button" class="card-header">
-          <p class="eyebrow">🗺️ HOẠT ĐỘNG CỦA TỤI MÌNH 🗺️</p>
+          <p class="eyebrow">🗺️ hoạt động đôi</p>
           <span class="card-chevron">▾</span>
         </button>
         <p class="card-summary">Đang tải...</p>
@@ -162,7 +167,7 @@
 
       <section id="section-movies" class="card media-box reveal collapsed" data-collapsible data-media="movies">
         <button type="button" class="card-header">
-          <p class="eyebrow">🎬 PHIM 🎬</p>
+          <p class="eyebrow">🎬 phim</p>
           <span class="card-chevron">▾</span>
         </button>
         <p class="card-summary">Đang tải...</p>
@@ -178,7 +183,7 @@
 
       <section id="section-books" class="card media-box reveal collapsed" data-collapsible data-media="books">
         <button type="button" class="card-header">
-          <p class="eyebrow">📚 SÁCH 📚</p>
+          <p class="eyebrow">📚 sách</p>
           <span class="card-chevron">▾</span>
         </button>
         <p class="card-summary">Đang tải...</p>
@@ -194,7 +199,7 @@
 
       <section id="section-songs" class="card media-box reveal collapsed" data-collapsible data-media="songs">
         <button type="button" class="card-header">
-          <p class="eyebrow">🎵 NHẠC 🎵</p>
+          <p class="eyebrow">🎵 nhạc</p>
           <span class="card-chevron">▾</span>
         </button>
         <p class="card-summary">Đang tải...</p>
