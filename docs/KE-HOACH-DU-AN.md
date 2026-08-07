@@ -21,17 +21,21 @@ Tóm tắt: từng bước nhỏ, test xong mới qua bước tiếp; không l�
 
 ## 3. Trạng thái hiện tại
 
+> Làm lại toàn bộ từ đầu theo cấu trúc thư mục và hạ tầng mới (Vercel + Supabase) — coi như chưa làm bước nào.
+
 | Giai đoạn | Trạng thái |
 |---|---|
 | 0 — Trang tĩnh | ✅ Xong |
-| 0.5 — Git + GitHub Private | ✅ Xong (đang đổi nơi deploy sang Vercel) |
-| 1 — Backend FastAPI + SQLite (local) | ✅ Xong về logic, sẽ deploy lại trên hạ tầng mới |
+| 0.5 — Git + GitHub Private | ✅ Xong |
+| 1 — Backend FastAPI (local) | ✅ Xong |
 | 1.5 — Hạ tầng Vercel + Supabase | ✅ Xong |
-| 2 — Đăng nhập bảo mật | ✅ Xong (session cookie + bcrypt, frontend login) |
+| 2 — Đăng nhập bảo mật | ✅ Xong |
 | 3 — Nhật ký & Timeline | ✅ Xong |
 | 4 — Album ảnh | ✅ Xong |
 | 5 — Quỹ chung & hoạt động đôi | ✅ Xong |
-| 6 — Kiến trúc 3 tầng + Media Hub + Cron | 🔄 Đang làm (6.1–6.4 xong; 6.5 Webhook Telegram/Discord còn lại; JWT: bỏ qua) |
+| 6 — Kiến trúc 3 tầng + Media Hub + Cron | 🔄 Đang làm (6.1–6.4 xong; 6.5 Webhook còn lại; JWT: bỏ qua) |
+| 7 — Nâng cấp UI/UX | ⏳ Chưa bắt đầu (đã chốt kế hoạch 7.1–7.6) |
+| 8 — Gamification, domain, mobile | ⏳ Chưa bắt đầu |
 
 ---
 
@@ -67,15 +71,17 @@ Trang HTML/CSS/JS đếm ngày yêu nhau. (Xong)
 ### Giai đoạn 1 — Backend cơ bản (local) ✅
 FastAPI 1 file + SQLite local + API lời nhắn hôm nay, frontend gọi API thật. (Xong)
 
-### Giai đoạn 1.5 — Hạ tầng Vercel + Supabase ✅
+### Giai đoạn 1.5 — Hạ tầng Vercel + Supabase (MỚI)
+- Tạo project Supabase, lấy connection string Postgres (pooler cổng 6543)
+- Đổi `database.py` từ SQLite sang Postgres
 - Deploy backend lên Vercel (Serverless Functions)
 - Deploy frontend lên Vercel (Static)
-- Database Supabase PostgreSQL qua Connection Pooler
+- **Đầu ra:** Cùng chức năng như cũ (lời nhắn hôm nay) nhưng chạy trên hạ tầng mới, không còn lag 40s.
 
-### Giai đoạn 2 — Đăng nhập bảo mật ✅
-Session cookie + bcrypt trực tiếp, 2 tài khoản định sẵn, frontend login/logout.
+### Giai đoạn 2 — Đăng nhập bảo mật 🔄
+Session cookie + bcrypt trực tiếp, 2 tài khoản định sẵn. (Đang làm lại)
 
-### Giai đoạn 3 — Nhật ký & Timeline ✅
+### Giai đoạn 3 — Nhật ký & Timeline
 Bảng Journal, form nhập bài viết, hiển thị theo thời gian giảm dần.
 
 ### Giai đoạn 4 — Album ảnh
@@ -91,8 +97,17 @@ Thu/chi quỹ chung, thanh tiến độ mục tiêu, danh sách địa điểm �
 - Webhook Telegram/Discord báo cập nhật mới
 - (Tuỳ chọn) đổi session sang JWT
 
-### Giai đoạn 7 — Gamification, domain riêng, tối ưu, định hướng mobile
-Thử thách cặp đôi, mua domain, responsive, chuẩn bị backend cho app Flutter nếu cần sau này.
+### Giai đoạn 7 — Nâng cấp UI/UX (đã chốt 06/08/2026)
+- **7.1** — Cơ chế card thu gọn/mở rộng dùng chung cho mọi khung
+- **7.2** — Đồng hồ: bỏ đếm giây chạy liên tục, thay bằng "Quen nhau từ 07/04/2024 – nay" (tĩnh) + đồng hồ giờ thật GMT+7; đổi bố cục desktop sang dashboard nhiều khối nhỏ
+- **7.3** — Media Hub: ẩn rating/review ở thẻ gợi ý, nút "thêm" hiện khi hover, nút "làm mới gợi ý" (endpoint mới dùng `require_login`, tách khỏi `CRON_SECRET`), carousel 2-3 thẻ + xem thêm (áp dụng cho gợi ý/muốn xem/đã xem), sort "đã xem" theo ngày, tích hợp **OMDb API** (điểm IMDb + Tomatometer), giữ tóm tắt tiếng Việt có sẵn từ TMDB (không thêm AI tóm tắt riêng)
+- **7.4** — Album ảnh: thêm bảng `albums` riêng, tạo/sort qua UI (theo tên/ngày)
+- **7.5** — Lời nhắn: tách card hiển thị và card viết riêng, thêm endpoint lịch sử, hiệu ứng đậm/mờ khi cuộn, hệ thống **bình luận/trả lời qua lại** dưới mỗi lời nhắn (đã chốt mức "đầy đủ")
+- **7.6** — Nhật ký: áp dụng pattern feed cuộn + mờ dần tương tự lời nhắn/album
+- Áp dụng pattern phim (7.3) tương tự cho sách, nhạc sau khi 7.3 hoàn thiện
+
+### Giai đoạn 8 — Gamification, domain riêng, tối ưu, định hướng mobile
+Thử thách cặp đôi, mua domain riêng (cũng giải quyết luôn lỗi cookie Safari — xem Known Issues), responsive, chuẩn bị backend cho app Flutter nếu cần sau này.
 
 ---
 
@@ -108,8 +123,9 @@ Thử thách cặp đôi, mua domain, responsive, chuẩn bị backend cho app F
 | 3 | Không có công nghệ mới lớn |
 | 4 | Supabase Storage |
 | 5 | Không có công nghệ mới lớn |
-| 6 | Kiến trúc 3 tầng (đã xong) · TMDB API (đã xong) · Google Books API (đã xong) · YouTube Data API, Vercel Cron Jobs, Webhook (chưa làm) |
-| 7 | Domain + SSL, Responsive design, (định hướng) Flutter |
+| 6 | Kiến trúc 3 tầng, TMDB API, Google Books API, YouTube Data API, Vercel Cron Jobs, Webhook, (tuỳ chọn) JWT |
+| 7 | OMDb API (IMDb + Tomatometer), không có hạ tầng lớn mới khác |
+| 8 | Domain + SSL, Responsive design, (định hướng) Flutter |
 
 ---
 
@@ -128,10 +144,10 @@ luvlog/
 │   └── .env.example
 ├── docs/
 │   ├── KE-HOACH-DU-AN.md
-│   └── QUY-TAC-LAM-VIEC.md
-├── README.md
-├── Documentations.md
+│   ├── QUY-TAC-LAM-VIEC.md
+│   └── CHANGELOG.md
 ├── .gitignore
+└── README.md
 ```
 
 Triển khai: **2 project Vercel riêng** (1 cho `frontend/`, 1 cho `backend/`) — giống mô hình 2 service tách biệt đã dùng với Render trước đây, tránh cấu hình routing phức tạp trong 1 project.
@@ -150,35 +166,4 @@ Từ Giai đoạn 6, `backend/` tách thêm `routers/`, `services/`, `repositori
 
 ## 9. Bước tiếp theo
 
-**Giai đoạn 4 — Album ảnh:** upload lên Supabase Storage, tổ chức theo album.
-
-Tài liệu kỹ thuật: `Documentations.md` · Tổng quan: `README.md`
-
----
-
-## 10. Brainstorm — Nâng cấp UI/UX (chưa chốt, đang thảo luận)
- 
-> Ghi lại từ phiên brainstorm 06/08/2026. Chưa triển khai, chưa chia giai đoạn chính thức — cần chốt xong mới đưa vào lộ trình chính.
- 
-**Đồng hồ / Hero:**
-- Bỏ đếm giờ:phút:giây chạy liên tục → thay bằng "Quen nhau từ 07/04/2024 – nay" (tĩnh) + đồng hồ giờ thật GMT+7
-- Đổi bố cục desktop sang dạng dashboard nhiều khối nhỏ (đồng hồ là 1 khối vuông góc trên trái), không phải lưới card đều như hiện tại
-**Cơ chế chung — card thu gọn/mở rộng:**
-- Mỗi card có thể thu gọn (chỉ hiện nội dung mới nhất) / mở rộng (hiện đủ) — làm 1 cơ chế dùng chung cho mọi card
-**Media Hub (áp dụng mẫu cho phim trước, sau đó lặp lại cho sách/nhạc):**
-- Thẻ gợi ý: ẩn rating/review, nút "thêm" hiện khi hover, nút "làm mới gợi ý" (cần endpoint mới dùng `require_login`, không dùng chung `CRON_SECRET` với cron vì sẽ lộ secret ở frontend)
-- Chỉ hiện 2-3 thẻ/lượt, cuộn xem thêm — áp dụng cho cả "muốn xem" và "đã xem"
-- "Đã xem": hiện ngày đánh dấu + rating cá nhân, sort theo ngày (asc/desc)
-- Tóm tắt phim: **dùng bản tóm tắt tiếng Việt có sẵn từ TMDB trước** (đã gọi `language=vi-VN`), chưa cần thêm AI tóm tắt riêng
-- Điểm IMDb + Tomatometer: cần thêm tích hợp **OMDb API** (miễn phí, giới hạn 1000 request/ngày)
-**Album ảnh:**
-- Cần thêm bảng `albums` riêng (hiện tại album chỉ là text tự do gắn trên mỗi ảnh, chưa phải entity thật)
-- Tạo album qua UI, sort theo tên/ngày
-**Lời nhắn:**
-- Tách card hiển thị và card viết lời nhắn riêng
-- Cần thêm endpoint liệt kê lịch sử lời nhắn (hiện chỉ có API lấy 1 tin mới nhất)
-- Lời nhắn mới nhất đậm, cũ hơn mờ dần khi cuộn lên
-- **Chưa chốt:** mức độ "tương tác" — đang chờ chọn giữa (a) nút ❤️ đã đọc, (b) thả cảm xúc nhiều loại, (c) trả lời/bình luận qua lại
-**Nhật ký:** áp dụng pattern feed cuộn + mờ dần tương tự lời nhắn/album — chi tiết chưa chốt.
- 
----
+Đang ở Giai đoạn 6 (6.1 xong, tiếp 6.2 Media Hub). Giai đoạn 7 (UI/UX) đã chốt kế hoạch, làm sau khi xong Giai đoạn 6.
