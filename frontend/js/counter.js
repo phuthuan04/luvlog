@@ -33,15 +33,15 @@ function updateCounter() {
 }
 
 function updateClock() {
-  const timeStr = new Intl.DateTimeFormat("vi-VN", {
-    timeZone: "Asia/Ho_Chi_Minh",
-    hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
-  }).format(new Date());
-
-  // Lọc chỉ lấy đúng phần HH:mm:ss (xóa bỏ chữ GMT+7 nếu có)
-  const cleanTime = timeStr.replace(/\s*GMT.*$/, "");
+  const now = new Date();
   
-  document.getElementById("liveClock").textContent = cleanTime;
+  // Lấy các giá trị giờ, phút, giây định dạng 2 chữ số
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
+
+  // Ghép lại chỉ còn HH:mm:ss
+  document.getElementById("liveClock").textContent = `${hours}:${minutes}:${seconds}`;
 }
 
 updateCounter();
