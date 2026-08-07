@@ -58,6 +58,9 @@ async function loadFund() {
   fundBalance.textContent = formatVND(data.balance);
   renderGoals(data.goals);
   renderTransactions(data.transactions, data.goals);
+  if (typeof setCardSummary === "function") {
+    setCardSummary("section-fund", `Số dư: ${formatVND(data.balance)}`);
+  }
 }
 
 fundGoalForm.addEventListener("submit", async (e) => {

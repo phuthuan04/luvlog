@@ -167,3 +167,5 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
 .card-body { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .3s ease; }
 .card.collapsed .card-body { grid-template-rows: 0fr; }
 .card-body-inner { overflow: hidden; }
+
+.hero-days-total { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 700; color: var(--berry); margin: 0 0 14px; }

@@ -20,13 +20,11 @@ function getElapsed(start, now) {
 }
 
 function updateCounter() {
-  const e = getElapsed(startDate, new Date());
+  const now = new Date();
+  const e = getElapsedYMD(startDate, now);
+  const totalDays = Math.floor((now - startDate) / 86400000);
+  document.getElementById("totalDays").textContent = totalDays;
   document.getElementById("years").textContent = e.years;
-  document.getElementById("months").textContent = e.months;
-  document.getElementById("days").textContent = e.days;
-  document.getElementById("hours").textContent = e.hours;
-  document.getElementById("minutes").textContent = e.minutes;
-  document.getElementById("seconds").textContent = e.seconds;
 }
 
 updateCounter();
