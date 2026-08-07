@@ -1,7 +1,6 @@
 function initUI() {
   initCollapsibleCards();
   const sections = document.querySelectorAll(".reveal");
-  const sections = document.querySelectorAll(".reveal");
   const tabs = document.querySelectorAll(".tab-link");
 
   const revealObserver = new IntersectionObserver(
