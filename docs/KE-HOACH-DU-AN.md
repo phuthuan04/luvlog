@@ -34,7 +34,7 @@ Tóm tắt: từng bước nhỏ, test xong mới qua bước tiếp; không l�
 | 4 — Album ảnh | ✅ Xong |
 | 5 — Quỹ chung & hoạt động đôi | ✅ Xong |
 | 6 — Kiến trúc 3 tầng + Media Hub + Cron | 🔄 Đang làm (6.1–6.4 xong; 6.5 Webhook còn lại; JWT: bỏ qua) |
-| 7 — Nâng cấp UI/UX | ⏳ Chưa bắt đầu (đã chốt kế hoạch 7.1–7.6) |
+| 7 — Nâng cấp UI/UX | 🔄 Đang làm (7.1, 7.2 xong; 7.2.5 điều hướng sidebar tiếp theo) |
 | 8 — Gamification, domain, mobile | ⏳ Chưa bắt đầu |
 
 ---
@@ -97,17 +97,24 @@ Thu/chi quỹ chung, thanh tiến độ mục tiêu, danh sách địa điểm �
 - Webhook Telegram/Discord báo cập nhật mới
 - (Tuỳ chọn) đổi session sang JWT
 
-### Giai đoạn 7 — Nâng cấp UI/UX (đã chốt 06/08/2026)
-- **7.1** — Cơ chế card thu gọn/mở rộng dùng chung cho mọi khung
-- **7.2** — Đồng hồ: bỏ đếm giây chạy liên tục, thay bằng "Quen nhau từ 07/04/2024 – nay" (tĩnh) + đồng hồ giờ thật GMT+7; đổi bố cục desktop sang dashboard nhiều khối nhỏ
-- **7.3** — Media Hub: ẩn rating/review ở thẻ gợi ý, nút "thêm" hiện khi hover, nút "làm mới gợi ý" (endpoint mới dùng `require_login`, tách khỏi `CRON_SECRET`), carousel 2-3 thẻ + xem thêm (áp dụng cho gợi ý/muốn xem/đã xem), sort "đã xem" theo ngày, tích hợp **OMDb API** (điểm IMDb + Tomatometer), giữ tóm tắt tiếng Việt có sẵn từ TMDB (không thêm AI tóm tắt riêng)
-- **7.4** — Album ảnh: thêm bảng `albums` riêng, tạo/sort qua UI (theo tên/ngày)
-- **7.5** — Lời nhắn: tách card hiển thị và card viết riêng, thêm endpoint lịch sử, hiệu ứng đậm/mờ khi cuộn, hệ thống **bình luận/trả lời qua lại** dưới mỗi lời nhắn (đã chốt mức "đầy đủ")
-- **7.6** — Nhật ký: áp dụng pattern feed cuộn + mờ dần tương tự lời nhắn/album
-- Áp dụng pattern phim (7.3) tương tự cho sách, nhạc sau khi 7.3 hoàn thiện
+### Giai đoạn 7 — Nâng cấp UI/UX (cập nhật 06/08/2026 sau khi đối chiếu PRD v2)
+- **7.1** ✅ Cơ chế card thu gọn/mở rộng dùng chung
+- **7.2** ✅ Đồng hồ: tổng số ngày + năm/tháng/ngày + "Quen nhau từ...–nay" + đồng hồ giờ thật
+- **7.2.5** (mới) — Đổi điều hướng: thanh tab ngang → **sidebar cố định (desktop) + thanh điều hướng dưới (mobile)**
+- **7.3** — Media Hub: ẩn rating/review ở gợi ý, nút thêm khi hover, nút làm mới gợi ý (endpoint `require_login` riêng), carousel 2-3 thẻ, sort đã xem theo ngày, tích hợp OMDb (IMDb + Tomatometer), giữ tóm tắt TMDB tiếng Việt có sẵn
+- **7.4** — Album: bảng `albums` riêng, tạo/sort qua UI
+- **7.5** — Lời nhắn: tách card hiển thị/viết, lịch sử, đậm/mờ khi cuộn, bình luận/trả lời qua lại
+- **7.6** — Nhật ký: pattern feed tương tự lời nhắn/album
+- **7.7** (mới) — Trang Settings: sửa ngày kỷ niệm qua UI (thay vì sửa code `startDate`), quản lý danh sách daily quote — không phân quyền admin/member (giữ đơn giản, 2 người cùng sửa được)
+- **7.8** (mới) — Daily quote card ở trang chủ, lấy ngẫu nhiên từ danh sách quản lý ở 7.7
+
+**Ý tưởng dự phòng (chưa thêm vào giai đoạn nào):** Wishlist riêng biệt (khác quỹ chung + mục tiêu hiện tại).
 
 ### Giai đoạn 8 — Gamification, domain riêng, tối ưu, định hướng mobile
-Thử thách cặp đôi, mua domain riêng (cũng giải quyết luôn lỗi cookie Safari — xem Known Issues), responsive, chuẩn bị backend cho app Flutter nếu cần sau này.
+Thử thách cặp đôi, mua domain riêng (cũng giải quyết lỗi cookie Safari), responsive, chuẩn bị backend cho app Flutter. Badge ý tưởng tham khảo từ PRD v2: Khởi đầu, Nhà văn, Nhiếp ảnh gia, Quản gia, Du hành gia, 100 ngày, Một năm...
+
+### Giai đoạn 9 (mới) — Tích hợp nâng cao
+Google Calendar auto-sync (Activities/Wishlist → Calendar, cần OAuth), Discord slash command nhập liệu nhanh (`/nhatky`, `/quy`, `/hoatdong` — cần dựng Discord Bot riêng, phức tạp hơn Webhook thông báo ở 6.5).
 
 ---
 
