@@ -29,7 +29,7 @@ function updateCounter() {
   document.getElementById("years").textContent = e.years;
   document.getElementById("months").textContent = e.months;
   document.getElementById("days").textContent = e.days;
-  document.getElementById("sinceLabel").textContent = `Quen nhau từ ${formatDMY(startDate)} – nay (${formatDMY(now)})`;
+  document.getElementById("sinceLabel").textContent = `${formatDMY(startDate)} – ${formatDMY(now)}`;
 }
 
 function updateClock() {
@@ -37,7 +37,11 @@ function updateClock() {
     timeZone: "Asia/Ho_Chi_Minh",
     hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
   }).format(new Date());
-  document.getElementById("liveClock").textContent = timeStr;
+
+  // Lọc chỉ lấy đúng phần HH:mm:ss (xóa bỏ chữ GMT+7 nếu có)
+  const cleanTime = timeStr.replace(/\s*GMT.*$/, "");
+  
+  document.getElementById("liveClock").textContent = cleanTime;
 }
 
 updateCounter();
