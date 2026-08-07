@@ -1,4 +1,6 @@
 function initUI() {
+  initCollapsibleCards();
+  const sections = document.querySelectorAll(".reveal");
   const sections = document.querySelectorAll(".reveal");
   const tabs = document.querySelectorAll(".tab-link");
 
@@ -23,4 +25,17 @@ function initUI() {
     { threshold: 0.5 }
   );
   sections.forEach((s) => { if (s.id) tabObserver.observe(s); });
+}
+
+function initCollapsibleCards() {
+  document.querySelectorAll(".card[data-collapsible]").forEach((card) => {
+    const header = card.querySelector(".card-header");
+    if (!header) return;
+    header.addEventListener("click", () => card.classList.toggle("collapsed"));
+  });
+}
+
+function setCardSummary(sectionId, text) {
+  const el = document.querySelector(`#${sectionId} .card-summary`);
+  if (el) el.textContent = text;
 }

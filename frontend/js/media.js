@@ -71,6 +71,11 @@ async function loadMediaSection(type, endpoint) {
   const items = await res.json();
   const container = document.querySelector(`[data-media="${type}"] .media-list`);
   renderMediaList(container, items, endpoint);
+  if (typeof setCardSummary === "function") {
+    const wanted = items.filter((i) => i.status === "muon").length;
+    const done = items.filter((i) => i.status === "da").length;
+    setCardSummary(`section-${type}`, `${wanted} muốn · ${done} đã trải nghiệm`);
+  }
 }
 
 function loadMedia() {

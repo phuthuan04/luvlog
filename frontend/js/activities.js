@@ -31,6 +31,9 @@ async function loadActivities() {
   }
   const items = await res.json();
   renderActivities(items);
+  if (typeof setCardSummary === "function") {
+    setCardSummary("section-activities", items.length ? `${items.length} hoạt động đã ghi` : "Chưa có hoạt động nào");
+  }
 }
 
 activityForm.addEventListener("submit", async (e) => {

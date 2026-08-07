@@ -47,6 +47,9 @@ async function loadJournal() {
   }
   const entries = await res.json();
   renderJournal(entries);
+  if (typeof setCardSummary === "function") {
+    setCardSummary("section-journal", entries.length ? `Mới nhất: "${entries[0].title}"` : "Chưa có bài viết nào");
+  }
 }
 
 journalForm.addEventListener("submit", async (e) => {

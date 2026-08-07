@@ -157,3 +157,13 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
   #section-counter { grid-column: 1 / -1; }
   .card { margin-bottom: 0; }
 }
+
+.card-header { display: flex; justify-content: space-between; align-items: center; width: 100%; background: none; border: none; padding: 0; margin: 0 0 18px; cursor: pointer; font-family: inherit; text-align: left; }
+.card-header .eyebrow { margin: 0; }
+.card-chevron { color: var(--plum); font-size: 12px; transition: transform .25s ease; flex-shrink: 0; margin-left: 8px; }
+.card.collapsed .card-chevron { transform: rotate(-90deg); }
+.card-summary { display: none; font-size: 13px; color: var(--plum); margin: -10px 0 0; }
+.card.collapsed .card-summary { display: block; }
+.card-body { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .3s ease; }
+.card.collapsed .card-body { grid-template-rows: 0fr; }
+.card-body-inner { overflow: hidden; }

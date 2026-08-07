@@ -69,6 +69,9 @@ async function loadMessage() {
   }
   const data = await res.json();
   document.getElementById("messageDisplay").textContent = data.content || "(chưa có lời nhắn)";
+   if (typeof setCardSummary === "function") {
+    setCardSummary("section-message", data.content ? `"${data.content}"` : "Chưa có lời nhắn nào");
+  }
 }
 
 document.getElementById("messageSubmit").addEventListener("click", async () => {

@@ -23,6 +23,9 @@ async function loadPhotos() {
   }
   const photos = await res.json();
   renderPhotos(photos);
+  if (typeof setCardSummary === "function") {
+    setCardSummary("section-photos", photos.length ? `${photos.length} ảnh đã lưu` : "Chưa có ảnh nào");
+  }
 }
 
 photoForm.addEventListener("submit", async (e) => {
