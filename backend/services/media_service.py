@@ -1,5 +1,7 @@
 import os
 import requests
+from repositories import media_repo, suggestion_repo
+from models import Movie, Book
 
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 GOOGLE_BOOKS_API_KEY = os.getenv("GOOGLE_BOOKS_API_KEY")
@@ -80,3 +82,25 @@ def get_books_by_category(category: str, limit: int = 5):
             "category": ", ".join(info.get("categories", [])),
         })
     return results
+
+def crawl_movie_suggestions(db):
+    added = 0
+    seed = media_repo.get_random_high_rated(db, Movie)
+    if seed and seed.external_id:
+        for m in get_similar_movies(seed.external_id):
+            exists = media_repo.title_exists(db, Movie, m["title"]) or suggestion_repo.title_exists_in_suggestions(db, "movies", m["title"])
+            if not exists:
+                suggestion_repo.create_suggestion(db, "movies", m["title"], m["cover_url"], m["external_id"], m["category"])
+                added += 1
+    return added
+
+def crawl_book_suggestions(db):
+    added = 0
+    seed = media_repo.get_random_high_rated(db, Book)
+    if seed and seed.category:
+        for b in get_books_by_category(seed.category):
+            exists = media_repo.title_exists(db, Book, b["title"]) or suggestion_repo.title_exists_in_suggestions(db, "books", b["title"])
+            if not exists:
+                suggestion_repo.create_suggestion(db, "books", b["title"], b["cover_url"], b["external_id"], b["category"])
+                added += 1
+    return added

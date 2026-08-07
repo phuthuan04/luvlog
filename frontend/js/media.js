@@ -79,7 +79,10 @@ async function loadMediaSection(type, endpoint) {
 }
 
 function loadMedia() {
-  MEDIA_SECTIONS.forEach((s) => loadMediaSection(s.type, s.endpoint));
+  MEDIA_SECTIONS.forEach((s) => {
+    loadMediaSection(s.type, s.endpoint);
+    loadSuggestions(s.type);
+  });
 }
 
 MEDIA_SECTIONS.forEach((s) => {
@@ -192,5 +195,60 @@ document.addEventListener("click", async (e) => {
     await fetch(`${API_BASE}${endpoint}/${id}`, { ...FETCH_OPTS, method: "DELETE" });
     const type = MEDIA_SECTIONS.find((s) => s.endpoint === endpoint).type;
     loadMediaSection(type, endpoint);
+  }
+});
+
+const SUGGESTABLE_TYPES = ["movies", "books"];
+const REFRESH_ENDPOINTS = { movies: "/api/movies/refresh-suggestions", books: "/api/books/refresh-suggestions" };
+
+function renderSuggestions(listEl, suggestions) {
+  listEl.innerHTML = suggestions.length
+    ? suggestions.map((s) => `
+      <li class="media-item suggestion-item" data-id="${s.id}">
+        ${s.cover_url ? `<img src="${s.cover_url}" alt="" class="media-cover-img">` : ""}
+        <div class="media-info">
+          <span>${escapeHtml(s.title)}</span>
+          <div class="suggestion-actions">
+            <button type="button" class="accept-suggestion-btn" data-id="${s.id}">+ Thêm</button>
+            <button type="button" class="dismiss-suggestion-btn" data-id="${s.id}">Bỏ qua</button>
+          </div>
+        </div>
+      </li>`).join("")
+    : '<li class="media-empty">Chưa có gợi ý mới</li>';
+}
+
+async function loadSuggestions(type) {
+  if (!SUGGESTABLE_TYPES.includes(type)) return;
+  const res = await fetch(`${API_BASE}/api/suggestions/${type}`, FETCH_OPTS);
+  if (res.status === 401) { if (typeof showLogin === "function") showLogin(); return; }
+  const suggestions = await res.json();
+  const listEl = document.querySelector(`[data-media="${type}"] .media-list-suggested`);
+  if (listEl) renderSuggestions(listEl, suggestions);
+}
+
+document.querySelectorAll(".refresh-suggestions-btn").forEach((btn) => {
+  btn.addEventListener("click", async () => {
+    const type = btn.closest("[data-media]").dataset.media;
+    btn.disabled = true;
+    btn.textContent = "Đang tìm...";
+    await fetch(`${API_BASE}${REFRESH_ENDPOINTS[type]}`, { ...FETCH_OPTS, method: "POST" });
+    await loadSuggestions(type);
+    btn.disabled = false;
+    btn.textContent = "🔄 Làm mới";
+  });
+});
+
+document.addEventListener("click", async (e) => {
+  if (e.target.matches(".accept-suggestion-btn")) {
+    const type = e.target.closest("[data-media]").dataset.media;
+    await fetch(`${API_BASE}/api/suggestions/${e.target.dataset.id}/accept`, { ...FETCH_OPTS, method: "POST" });
+    loadSuggestions(type);
+    loadMediaSection(type, MEDIA_SECTIONS.find((s) => s.type === type).endpoint);
+    return;
+  }
+  if (e.target.matches(".dismiss-suggestion-btn")) {
+    const type = e.target.closest("[data-media]").dataset.media;
+    await fetch(`${API_BASE}/api/suggestions/${e.target.dataset.id}`, { ...FETCH_OPTS, method: "DELETE" });
+    loadSuggestions(type);
   }
 });

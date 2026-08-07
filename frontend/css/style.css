@@ -193,3 +193,11 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
   .tab-link { justify-content: flex-start; border-radius: 12px; }
   .container { margin-left: 240px; margin-right: 24px; padding: 24px 0 40px; }
 }
+
+.suggestions-header { display: flex; justify-content: space-between; align-items: center; margin: 0; }
+.refresh-suggestions-btn { background: none; border: 1px solid rgba(139,94,131,.3); color: var(--plum); border-radius: 8px; padding: 4px 10px; font-size: 11px; transition: border-color .2s, color .2s; }
+.refresh-suggestions-btn:hover { border-color: var(--berry); color: var(--berry); }
+.suggestion-actions { display: flex; gap: 8px; opacity: 0.55; transition: opacity .2s; }
+.suggestion-item:hover .suggestion-actions, .suggestion-item:focus-within .suggestion-actions { opacity: 1; }
+.accept-suggestion-btn { background: var(--berry); color: #fff; border: none; border-radius: 8px; padding: 6px 10px; font-size: 11px; }
+.dismiss-suggestion-btn { background: none; border: 1px solid rgba(139,94,131,.3); color: var(--plum); border-radius: 8px; padding: 6px 10px; font-size: 11px; }

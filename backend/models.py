@@ -72,4 +72,14 @@ class Book(MediaMixin, Base):
 class Song(MediaMixin, Base):
     __tablename__ = "songs"
 
+class Suggestion(Base):
+    __tablename__ = "suggestions"
+    id = Column(Integer, primary_key=True)
+    media_type = Column(String, nullable=False)
+    title = Column(String, nullable=False)
+    cover_url = Column(String)
+    external_id = Column(String)
+    category = Column(String)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
 Base.metadata.create_all(engine)
