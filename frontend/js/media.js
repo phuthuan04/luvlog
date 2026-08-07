@@ -239,14 +239,12 @@ document.querySelectorAll(".refresh-suggestions-btn").forEach((btn) => {
 });
 
 document.addEventListener("click", async (e) => {
-  document.addEventListener("click", async (e) => {
   const clickedItem = e.target.closest(".media-item");
   if (clickedItem && !e.target.closest("button")) {
     const type = clickedItem.closest("[data-media]")?.dataset.media;
     if (type === "movies") { toggleMovieDetail(clickedItem); }
     return;
   }
-  if (e.target.matches(".accept-suggestion-btn")) {
   if (e.target.matches(".accept-suggestion-btn")) {
     const type = e.target.closest("[data-media]").dataset.media;
     await fetch(`${API_BASE}/api/suggestions/${e.target.dataset.id}/accept`, { ...FETCH_OPTS, method: "POST" });
