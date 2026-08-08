@@ -16,10 +16,17 @@ class Journal(Base):
     author = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+class Album(Base):
+    __tablename__ = "albums"
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    created_by = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
 class Photo(Base):
     __tablename__ = "photos"
     id = Column(Integer, primary_key=True)
-    album = Column(String, nullable=False)
+    album_id = Column(Integer, ForeignKey("albums.id"), nullable=True)
     url = Column(String, nullable=False)
     uploaded_by = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)

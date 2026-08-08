@@ -100,12 +100,19 @@
         </button>
         <p class="card-summary">Đang tải...</p>
         <div class="card-body"><div class="card-body-inner">
+          <form id="newAlbumForm" class="album-create-form">
+            <input type="text" id="newAlbumName" placeholder="Tên album mới..." required>
+            <button type="submit">Tạo album</button>
+          </form>
           <form id="photoForm" class="photo-form">
-            <input type="text" id="photoAlbum" placeholder="Tên album..." required>
+            <select id="photoAlbumSelect" required><option value="">Chọn album...</option></select>
             <input type="file" id="photoFile" accept="image/*" required>
             <button type="submit">Tải lên</button>
           </form>
-          <div id="photoGrid" class="photo-grid"></div>
+          <div class="album-sort-controls">
+            <button type="button" id="sortAlbumsBtn" data-sort="date">Sắp xếp: Mới nhất</button>
+          </div>
+          <div id="photoGrid" class="album-list"></div>
         </div></div>
       </section>
 

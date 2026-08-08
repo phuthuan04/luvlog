@@ -1,13 +1,17 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form
+from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 import os
 import uuid
+import unicodedata
+import re
 from supabase import create_client
 from database import get_db
 from services.auth_service import require_login
-from repositories import photo_repo
-import unicodedata
-import re
+from repositories import photo_repo, album_repo
+
+router = APIRouter()
+supabase_client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_SECRET_KEY"))
 
 def slugify(text: str) -> str:
     text = unicodedata.normalize("NFKD", text)
@@ -15,23 +19,48 @@ def slugify(text: str) -> str:
     text = re.sub(r"[^\w\s-]", "", text).strip().lower()
     return re.sub(r"[-\s]+", "-", text) or "album"
 
-router = APIRouter()
-supabase_client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_SECRET_KEY"))
+class AlbumIn(BaseModel):
+    name: str
+
+@router.get("/api/albums")
+def list_albums(user: str = Depends(require_login), db: Session = Depends(get_db)):
+    items = album_repo.list_albums(db)
+    return [{"id": a.id, "name": a.name, "photo_count": count, "created_at": a.created_at.isoformat()} for a, count in items]
+
+@router.post("/api/albums")
+def create_album(data: AlbumIn, user: str = Depends(require_login), db: Session = Depends(get_db)):
+    album_repo.create_album(db, data.name, user)
+    return {"status": "saved"}
+
+@router.delete("/api/albums/{album_id}")
+def delete_album(album_id: int, user: str = Depends(require_login), db: Session = Depends(get_db)):
+    if album_repo.photo_count_in_album(db, album_id) > 0:
+        raise HTTPException(status_code=400, detail="Album còn ảnh, không xoá được")
+    album_repo.delete_album(db, album_id)
+    return {"status": "deleted"}
 
 @router.post("/api/photos")
 async def upload_photo(
-    album: str = Form(...), file: UploadFile = File(...),
+    album_id: int = Form(...), file: UploadFile = File(...),
     user: str = Depends(require_login), db: Session = Depends(get_db),
 ):
+    album = album_repo.get_album(db, album_id)
+    if not album:
+        raise HTTPException(status_code=400, detail="Album không tồn tại")
     ext = file.filename.split(".")[-1]
-    path = f"{slugify(album)}/{uuid.uuid4()}.{ext}"
+    path = f"{slugify(album.name)}/{uuid.uuid4()}.{ext}"
     content = await file.read()
     supabase_client.storage.from_("photos").upload(path, content, {"content-type": file.content_type})
     public_url = supabase_client.storage.from_("photos").get_public_url(path)
-    photo_repo.create_photo(db, album, public_url, user)
+    photo_repo.create_photo(db, album_id, public_url, user)
     return {"status": "saved", "url": public_url}
 
 @router.get("/api/photos")
 def list_photos(user: str = Depends(require_login), db: Session = Depends(get_db)):
     photos = photo_repo.list_photos(db)
-    return [{"id": p.id, "album": p.album, "url": p.url, "created_at": p.created_at.isoformat()} for p in photos]
+    albums = {a.id: a.name for a, _ in album_repo.list_albums(db)}
+    return [
+        {"id": p.id, "album_id": p.album_id, "album_name": albums.get(p.album_id, "Chưa phân loại"),
+         "url": p.url, "created_at": p.created_at.isoformat()}
+        for p in photos
+    ]

@@ -137,7 +137,8 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
 .media-search-results { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
 .search-result { display: flex; gap: 8px; align-items: center; border: 1px solid rgba(139,94,131,0.2); border-radius: 8px; padding: 6px; cursor: pointer; font-size: 13px; transition: background .15s; }
 .search-result:hover { background: rgba(139,94,131,0.08); }
-.media-list-wanted, .media-list-done, .media-list-suggested { list-style: none; padding: 0; margin: 0 0 8px; display: flex; flex-direction: column; gap: 8px; }
+.media-list-wanted, .media-list-done, .media-list-suggested { list-style: none; padding: 0 0 6px; margin: 0 0 8px; display: flex; flex-direction: row; overflow-x: auto; gap: 10px; scroll-snap-type: x proximity; }
+.media-list-wanted .media-item, .media-list-done .media-item, .media-list-suggested .media-item { flex: 0 0 190px; scroll-snap-align: start; }
 .media-list-suggested { border-left: 3px solid var(--berry); padding-left: 8px; }
 .media-item { display: flex; gap: 10px; border: 1px solid rgba(139,94,131,0.2); border-radius: 10px; padding: 8px; align-items: flex-start; }
 .media-cover-img { width: 48px; height: 64px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
@@ -209,4 +210,12 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
 .media-ratings { font-size: 12px; color: var(--berry); font-weight: 600; margin: 0; }
 
 .suggestion-based-on { display: block; font-size: 10px; color: var(--plum); }
+
+.album-create-form { display: flex; gap: 8px; margin-bottom: 12px; }
+.album-create-form input { flex: 1; padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; }
+.photo-form select { flex: 1; min-width: 100px; padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; }
+.album-sort-controls { margin: 8px 0; }
+#sortAlbumsBtn { background: none; border: 1px solid rgba(139,94,131,.3); color: var(--plum); border-radius: 8px; padding: 4px 10px; font-size: 11px; }
+.album-group { margin-bottom: 16px; }
+.album-group-title { font-size: 13px; font-weight: 600; color: var(--ink); margin: 0 0 8px; border-left: 3px solid var(--berry); padding-left: 8px; }
 

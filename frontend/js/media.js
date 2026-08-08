@@ -32,22 +32,32 @@ function wantedItemHtml(i, endpoint, isSuggested) {
       </li>`;
 }
 
+const doneSortState = {};
+
 function renderMediaList(container, items, endpoint) {
   const suggested = items.filter((i) => i.status === "muon" && i.added_by === "luvlog-bot");
   const wanted = items.filter((i) => i.status === "muon" && i.added_by !== "luvlog-bot");
   const done = items.filter((i) => i.status === "da");
 
+  const sortDir = doneSortState[endpoint] || "desc";
+  const sortedDone = [...done].sort((a, b) => {
+    const da = a.experienced_at ? new Date(a.experienced_at) : new Date(0);
+    const db_ = b.experienced_at ? new Date(b.experienced_at) : new Date(0);
+    return sortDir === "asc" ? da - db_ : db_ - da;
+  });
+
   const suggestedHtml = suggested.map((i) => wantedItemHtml(i, endpoint, true)).join("");
   const wantedHtml = wanted.length
     ? wanted.map((i) => wantedItemHtml(i, endpoint, false)).join("")
     : '<li class="media-empty">Chưa có gì trong danh sách</li>';
-  const doneHtml = done.length
-    ? done.map((i) => `
+  const doneHtml = sortedDone.length
+    ? sortedDone.map((i) => `
       <li class="media-item done" data-id="${i.id}" data-external-id="${i.external_id || ""}" data-title="${escapeHtml(i.title)}">
         ${i.cover_url ? `<img src="${i.cover_url}" alt="" class="media-cover-img">` : ""}
         <div class="media-info">
           <span>${escapeHtml(i.title)}</span>
           <span class="media-rating">${ratingStars(i.rating)}</span>
+          ${i.experienced_at ? `<small class="media-experienced-date">${i.experienced_at.slice(0, 10)}</small>` : ""}
           ${i.review ? `<p class="media-review">${escapeHtml(i.review)}</p>` : ""}
           <button type="button" class="delete-btn" data-endpoint="${endpoint}" data-id="${i.id}">Xoá</button>
         </div>
@@ -58,7 +68,10 @@ function renderMediaList(container, items, endpoint) {
     ${suggested.length ? `<h4>Gợi ý cho hôm nay</h4><ul class="media-list-suggested">${suggestedHtml}</ul>` : ""}
     <h4>Muốn xem</h4>
     <ul class="media-list-wanted">${wantedHtml}</ul>
-    <h4>Đã trải nghiệm</h4>
+    <div class="done-header">
+      <h4>Đã trải nghiệm</h4>
+      <button type="button" class="sort-done-btn" data-endpoint="${endpoint}">${sortDir === "asc" ? "↑ Cũ nhất" : "↓ Mới nhất"}</button>
+    </div>
     <ul class="media-list-done">${doneHtml}</ul>`;
 }
 
