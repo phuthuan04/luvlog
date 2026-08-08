@@ -10,6 +10,9 @@ router = APIRouter()
 class MessageIn(BaseModel):
     content: str
 
+class CommentIn(BaseModel):
+    content: str
+
 @router.get("/api/message")
 def get_message(user: str = Depends(require_login), db: Session = Depends(get_db)):
     msg = message_repo.get_latest_message(db)
@@ -17,5 +20,24 @@ def get_message(user: str = Depends(require_login), db: Session = Depends(get_db
 
 @router.post("/api/message")
 def set_message(data: MessageIn, user: str = Depends(require_login), db: Session = Depends(get_db)):
-    message_repo.create_message(db, data.content)
+    message_repo.create_message(db, data.content, user)
+    return {"status": "saved"}
+
+@router.get("/api/messages")
+def list_messages(user: str = Depends(require_login), db: Session = Depends(get_db)):
+    items = message_repo.list_messages(db)
+    return [
+        {"id": m.id, "content": m.content, "created_by": m.created_by,
+         "updated_at": m.updated_at.isoformat() if m.updated_at else None}
+        for m in items
+    ]
+
+@router.get("/api/messages/{message_id}/comments")
+def get_comments(message_id: int, user: str = Depends(require_login), db: Session = Depends(get_db)):
+    items = message_repo.list_comments(db, message_id)
+    return [{"id": c.id, "content": c.content, "created_by": c.created_by, "created_at": c.created_at.isoformat()} for c in items]
+
+@router.post("/api/messages/{message_id}/comments")
+def add_comment(message_id: int, data: CommentIn, user: str = Depends(require_login), db: Session = Depends(get_db)):
+    message_repo.create_comment(db, message_id, data.content, user)
     return {"status": "saved"}

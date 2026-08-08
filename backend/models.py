@@ -6,7 +6,16 @@ class Message(Base):
     __tablename__ = "messages"
     id = Column(Integer, primary_key=True)
     content = Column(String, nullable=False)
+    created_by = Column(String)
     updated_at = Column(DateTime, default=datetime.utcnow)
+
+class MessageComment(Base):
+    __tablename__ = "message_comments"
+    id = Column(Integer, primary_key=True)
+    message_id = Column(Integer, ForeignKey("messages.id"), nullable=False)
+    content = Column(String, nullable=False)
+    created_by = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 class Journal(Base):
     __tablename__ = "journals"
