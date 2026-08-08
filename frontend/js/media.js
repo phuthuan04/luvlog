@@ -43,7 +43,7 @@ function renderMediaList(container, items, endpoint) {
     : '<li class="media-empty">Chưa có gì trong danh sách</li>';
   const doneHtml = done.length
     ? done.map((i) => `
-      <li class="media-item done" data-id="${i.id}">
+      <li class="media-item done" data-id="${i.id}" data-external-id="${i.external_id || ""}" data-title="${escapeHtml(i.title)}">
         ${i.cover_url ? `<img src="${i.cover_url}" alt="" class="media-cover-img">` : ""}
         <div class="media-info">
           <span>${escapeHtml(i.title)}</span>
@@ -208,6 +208,7 @@ function renderSuggestions(listEl, suggestions) {
         ${s.cover_url ? `<img src="${s.cover_url}" alt="" class="media-cover-img">` : ""}
         <div class="media-info">
           <span>${escapeHtml(s.title)}</span>
+          ${s.based_on ? `<small class="suggestion-based-on">Dựa trên: ${escapeHtml(s.based_on)}</small>` : ""}
           <div class="suggestion-actions">
             <button type="button" class="accept-suggestion-btn" data-id="${s.id}">+ Thêm</button>
             <button type="button" class="dismiss-suggestion-btn" data-id="${s.id}">Bỏ qua</button>

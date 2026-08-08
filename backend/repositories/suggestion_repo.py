@@ -4,8 +4,8 @@ from models import Suggestion
 def list_suggestions(db: Session, media_type: str):
     return db.query(Suggestion).filter(Suggestion.media_type == media_type).order_by(Suggestion.created_at.desc()).all()
 
-def create_suggestion(db: Session, media_type: str, title: str, cover_url: str, external_id: str, category: str):
-    s = Suggestion(media_type=media_type, title=title, cover_url=cover_url, external_id=external_id, category=category)
+def create_suggestion(db: Session, media_type: str, title: str, cover_url: str, external_id: str, category: str, based_on: str = ""):
+    s = Suggestion(media_type=media_type, title=title, cover_url=cover_url, external_id=external_id, category=category, based_on=based_on)
     db.add(s)
     db.commit()
     return s

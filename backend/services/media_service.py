@@ -90,8 +90,7 @@ def crawl_movie_suggestions(db):
         for m in get_similar_movies(seed.external_id):
             exists = media_repo.title_exists(db, Movie, m["title"]) or suggestion_repo.title_exists_in_suggestions(db, "movies", m["title"])
             if not exists:
-                suggestion_repo.create_suggestion(db, "movies", m["title"], m["cover_url"], m["external_id"], m["category"])
-                added += 1
+                suggestion_repo.create_suggestion(db, "movies", m["title"], m["cover_url"], m["external_id"], m["category"], seed.title)                added += 1
     return added
 
 def crawl_book_suggestions(db):
@@ -101,7 +100,7 @@ def crawl_book_suggestions(db):
         for b in get_books_by_category(seed.category):
             exists = media_repo.title_exists(db, Book, b["title"]) or suggestion_repo.title_exists_in_suggestions(db, "books", b["title"])
             if not exists:
-                suggestion_repo.create_suggestion(db, "books", b["title"], b["cover_url"], b["external_id"], b["category"])
+                suggestion_repo.create_suggestion(db, "books", b["title"], b["cover_url"], b["external_id"], b["category"], seed.title)
                 added += 1
     return added
 
@@ -111,6 +110,7 @@ OMDB_API_KEY = os.getenv("OMDB_API_KEY")
 
 def get_movie_detail(external_id: str, title: str):
     overview = ""
+    imdb_id = None
     if external_id:
         try:
             resp = requests.get(
@@ -121,15 +121,22 @@ def get_movie_detail(external_id: str, title: str):
             resp.raise_for_status()
             overview = resp.json().get("overview", "")
         except requests.RequestException:
-            overview = ""
+            pass
+        try:
+            resp2 = requests.get(
+                f"https://api.themoviedb.org/3/movie/{external_id}/external_ids",
+                params={"api_key": TMDB_API_KEY},
+                timeout=5,
+            )
+            resp2.raise_for_status()
+            imdb_id = resp2.json().get("imdb_id")
+        except requests.RequestException:
+            pass
 
     imdb, tomatometer = None, None
     try:
-        resp = requests.get(
-            "http://www.omdbapi.com/",
-            params={"apikey": OMDB_API_KEY, "t": title},
-            timeout=5,
-        )
+        params = {"apikey": OMDB_API_KEY, "i": imdb_id} if imdb_id else {"apikey": OMDB_API_KEY, "t": title}
+        resp = requests.get("http://www.omdbapi.com/", params=params, timeout=5)
         resp.raise_for_status()
         data = resp.json()
         if data.get("Response") != "False":

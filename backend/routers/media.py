@@ -127,7 +127,7 @@ def search_books_endpoint(q: str, user: str = Depends(require_login)):
 @router.get("/api/suggestions/{media_type}")
 def list_suggestions(media_type: str, user: str = Depends(require_login), db: Session = Depends(get_db)):
     items = suggestion_repo.list_suggestions(db, media_type)
-    return [{"id": s.id, "title": s.title, "cover_url": s.cover_url, "external_id": s.external_id} for s in items]
+    return [{"id": s.id, "title": s.title, "cover_url": s.cover_url, "external_id": s.external_id, "based_on": s.based_on} for s in items]
 
 @router.post("/api/suggestions/{suggestion_id}/accept")
 def accept_suggestion(suggestion_id: int, user: str = Depends(require_login), db: Session = Depends(get_db)):

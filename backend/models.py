@@ -80,6 +80,7 @@ class Suggestion(Base):
     cover_url = Column(String)
     external_id = Column(String)
     category = Column(String)
+    based_on = Column(String)
     created_at = Column(DateTime, default=datetime.utcnow)
 
 Base.metadata.create_all(engine)
