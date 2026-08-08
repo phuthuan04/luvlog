@@ -1,6 +1,7 @@
-const API_BASE = "https://luvlog.vercel.app";
+const API_BASE = (location.hostname === "127.0.0.1" || location.hostname === "localhost")
+  ? "http://127.0.0.1:8000"
+  : "https://luvlog.vercel.app";
 const FETCH_OPTS = { credentials: "include" };
-
 const loginSection = document.getElementById("loginSection");
 const appSection = document.getElementById("appSection");
 const loginForm = document.getElementById("loginForm");

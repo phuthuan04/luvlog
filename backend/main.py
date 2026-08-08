@@ -8,16 +8,25 @@ from routers import auth, message, journal, photos, fund, activities, media, cro
 load_dotenv()
 
 app = FastAPI()
+
+
+IS_LOCAL = os.getenv("ENVIRONMENT") == "local"
+
 app.add_middleware(
     SessionMiddleware,
     secret_key=os.getenv("SESSION_SECRET"),
-    same_site="none",
-    https_only=True,
-    max_age=900,
+    same_site="lax" if IS_LOCAL else "none",
+    https_only=not IS_LOCAL,
+    max_age=6400,
 )
+
+allowed_origins = ["https://luvlog-frontend.vercel.app"]
+if IS_LOCAL:
+    allowed_origins += ["http://127.0.0.1:5500", "http://localhost:5500"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://luvlog-frontend.vercel.app"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

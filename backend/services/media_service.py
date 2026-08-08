@@ -90,7 +90,8 @@ def crawl_movie_suggestions(db):
         for m in get_similar_movies(seed.external_id):
             exists = media_repo.title_exists(db, Movie, m["title"]) or suggestion_repo.title_exists_in_suggestions(db, "movies", m["title"])
             if not exists:
-                suggestion_repo.create_suggestion(db, "movies", m["title"], m["cover_url"], m["external_id"], m["category"], seed.title)                added += 1
+                suggestion_repo.create_suggestion(db, "movies", m["title"], m["cover_url"], m["external_id"], m["category"], seed.title)                
+                added += 1
     return added
 
 def crawl_book_suggestions(db):
