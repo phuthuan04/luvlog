@@ -37,6 +37,11 @@ class Photo(Base):
     id = Column(Integer, primary_key=True)
     album_id = Column(Integer, ForeignKey("albums.id"), nullable=True)
     url = Column(String, nullable=False)
+    filename = Column(String)
+    file_size = Column(Integer)
+    file_hash = Column(String)
+    caption = Column(String)
+    sort_order = Column(Integer, default=0)
     uploaded_by = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 

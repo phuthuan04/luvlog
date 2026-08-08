@@ -41,18 +41,22 @@ def delete_album(album_id: int, user: str = Depends(require_login), db: Session 
 
 @router.post("/api/photos")
 async def upload_photo(
-    album_id: int = Form(...), file: UploadFile = File(...),
+    album_id: int = Form(...), file: UploadFile = File(...), file_hash: str = Form(""),
     user: str = Depends(require_login), db: Session = Depends(get_db),
 ):
     album = album_repo.get_album(db, album_id)
     if not album:
         raise HTTPException(status_code=400, detail="Album không tồn tại")
+
+    if photo_repo.hash_exists(db, file_hash):
+        return {"status": "skipped_duplicate", "filename": file.filename}
+
     ext = file.filename.split(".")[-1]
     path = f"{slugify(album.name)}/{uuid.uuid4()}.{ext}"
     content = await file.read()
     supabase_client.storage.from_("photos").upload(path, content, {"content-type": file.content_type})
     public_url = supabase_client.storage.from_("photos").get_public_url(path)
-    photo_repo.create_photo(db, album_id, public_url, user)
+    photo_repo.create_photo(db, album_id, public_url, user, file.filename, len(content), file_hash)
     return {"status": "saved", "url": public_url}
 
 @router.get("/api/photos")
@@ -61,6 +65,7 @@ def list_photos(user: str = Depends(require_login), db: Session = Depends(get_db
     albums = {a.id: a.name for a, _ in album_repo.list_albums(db)}
     return [
         {"id": p.id, "album_id": p.album_id, "album_name": albums.get(p.album_id, "Chưa phân loại"),
-         "url": p.url, "created_at": p.created_at.isoformat()}
+         "url": p.url, "filename": p.filename, "file_size": p.file_size, "caption": p.caption,
+         "uploaded_by": p.uploaded_by, "created_at": p.created_at.isoformat()}
         for p in photos
     ]
