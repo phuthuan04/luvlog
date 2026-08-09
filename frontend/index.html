@@ -69,9 +69,13 @@
         </button>
         <p class="card-summary">Đang tải...</p>
         <div class="card-body"><div class="card-body-inner">
-          <p id="messageDisplay">Đang tải...</p>
-          <textarea id="messageInput" placeholder="Nhắn gì đó..."></textarea>
-          <button id="messageSubmit" type="button">Gửi</button>
+          <div class="message-compose-card">
+            <textarea id="messageInput" placeholder="Nhắn gì đó..."></textarea>
+            <button id="messageSubmit" type="button">Gửi</button>
+          </div>
+          <div class="message-feed-card">
+            <ul id="messageFeed" class="message-feed"></ul>
+          </div>
         </div></div>
       </section>
 
@@ -106,8 +110,8 @@
           </form>
           <form id="photoForm" class="photo-form">
             <select id="photoAlbumSelect" required><option value="">Chọn album...</option></select>
-            <input type="file" id="photoFile" accept="image/*" required>
-            <button type="submit">Tải lên</button>
+            <input type="file" id="photoFile" accept="image/*" multiple required>
+            <button type="submit" id="photoUploadBtn">Tải lên</button>
           </form>
           <div class="album-sort-controls">
             <button type="button" id="sortAlbumsBtn" data-sort="date">Sắp xếp: Mới nhất</button>
@@ -236,6 +240,20 @@
     </div>
 
   </div>
+  
+  <div id="lightbox" class="lightbox" hidden>
+    <button type="button" class="lightbox-close">✕</button>
+    <button type="button" class="lightbox-prev">‹</button>
+    <img id="lightboxImg" src="" alt="">
+    <button type="button" class="lightbox-next">›</button>
+    <div class="lightbox-detail">
+      <p class="lightbox-filename" id="lightboxFilename"></p>
+      <p class="lightbox-meta" id="lightboxMeta"></p>
+      <textarea id="lightboxCaption" placeholder="Thêm ghi chú cho ảnh này..."></textarea>
+      <button type="button" id="lightboxSaveCaption">Lưu ghi chú</button>
+    </div>
+  </div>
+
   <script src="js/message.js"></script>
   <script src="js/journal.js"></script>
   <script src="js/photos.js"></script>

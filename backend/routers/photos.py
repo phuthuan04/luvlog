@@ -22,6 +22,10 @@ def slugify(text: str) -> str:
 class AlbumIn(BaseModel):
     name: str
 
+class CaptionIn(BaseModel):
+    caption: str
+
+
 @router.get("/api/albums")
 def list_albums(user: str = Depends(require_login), db: Session = Depends(get_db)):
     items = album_repo.list_albums(db)
@@ -69,3 +73,11 @@ def list_photos(user: str = Depends(require_login), db: Session = Depends(get_db
          "uploaded_by": p.uploaded_by, "created_at": p.created_at.isoformat()}
         for p in photos
     ]
+
+
+@router.patch("/api/photos/{photo_id}")
+def update_photo_caption(photo_id: int, data: CaptionIn, user: str = Depends(require_login), db: Session = Depends(get_db)):
+    photo = photo_repo.update_caption(db, photo_id, data.caption)
+    if not photo:
+        raise HTTPException(status_code=404, detail="Không tìm thấy ảnh")
+    return {"status": "updated"}

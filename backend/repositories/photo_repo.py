@@ -14,3 +14,11 @@ def hash_exists(db: Session, file_hash: str):
     if not file_hash:
         return False
     return db.query(Photo).filter(Photo.file_hash == file_hash).first() is not None
+
+def update_caption(db: Session, photo_id: int, caption: str):
+    photo = db.query(Photo).filter(Photo.id == photo_id).first()
+    if not photo:
+        return None
+    photo.caption = caption
+    db.commit()
+    return photo

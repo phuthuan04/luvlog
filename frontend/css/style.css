@@ -102,10 +102,31 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
 /* ---------- Photos ---------- */
 .photo-form { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .photo-form input[type="text"] { flex: 1; min-width: 100px; padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; }
-.photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+
+/* Grid cố định 2 cột x 3 hàng */
+.photo-grid, 
+.album-photo-grid { 
+  display: grid; 
+  grid-template-columns: repeat(2, 1fr); /* Cố định đúng 2 cột */
+  grid-template-rows: repeat(3, auto);   /* Tạo tối đa 3 hàng */
+  gap: 12px; 
+}
+
 .photo-item { margin: 0; }
-.photo-item img { width: 100%; height: 110px; object-fit: cover; border-radius: 10px; transition: transform .2s; }
-.photo-item img:hover { transform: scale(1.03); }
+.photo-item img { 
+  width: 100%; 
+  height: 140px; /* Tăng nhẹ chiều cao để ảnh hiển thị cân đối hơn khi ở dạng 2 cột */
+  object-fit: cover; 
+  border-radius: 10px; 
+  transition: transform .2s, box-shadow .2s; 
+  cursor: pointer;
+}
+
+.photo-item img:hover { 
+  transform: scale(1.02); 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 .photo-item figcaption { font-size: 11px; color: var(--plum); text-align: center; margin-top: 4px; }
 .photo-empty { color: var(--plum); font-size: 13px; }
 
@@ -195,6 +216,7 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
   .container { margin-left: 240px; margin-right: 24px; padding: 24px 0 40px; }
 }
 
+// ---------- Suggestions ----------
 .suggestions-header { display: flex; justify-content: space-between; align-items: center; margin: 0; }
 .refresh-suggestions-btn { background: none; border: 1px solid rgba(139,94,131,.3); color: var(--plum); border-radius: 8px; padding: 4px 10px; font-size: 11px; transition: border-color .2s, color .2s; }
 .refresh-suggestions-btn:hover { border-color: var(--berry); color: var(--berry); }
@@ -203,14 +225,17 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
 .accept-suggestion-btn { background: var(--berry); color: #fff; border: none; border-radius: 8px; padding: 6px 10px; font-size: 11px; }
 .dismiss-suggestion-btn { background: none; border: 1px solid rgba(139,94,131,.3); color: var(--plum); border-radius: 8px; padding: 6px 10px; font-size: 11px; }
 
+// ---------- Media items ----------
 .media-item { cursor: default; }
 .media-item.suggestion-item, [data-media="movies"] .media-item { cursor: pointer; }
 .media-detail { margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(139,94,131,0.2); }
 .media-overview { font-size: 12px; margin: 0 0 6px; }
 .media-ratings { font-size: 12px; color: var(--berry); font-weight: 600; margin: 0; }
 
+// ---------- Suggestion-based-on ----------
 .suggestion-based-on { display: block; font-size: 10px; color: var(--plum); }
 
+// ---------- Albums ----------
 .album-create-form { display: flex; gap: 8px; margin-bottom: 12px; }
 .album-create-form input { flex: 1; padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; }
 .photo-form select { flex: 1; min-width: 100px; padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; }
@@ -218,4 +243,29 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
 #sortAlbumsBtn { background: none; border: 1px solid rgba(139,94,131,.3); color: var(--plum); border-radius: 8px; padding: 4px 10px; font-size: 11px; }
 .album-group { margin-bottom: 16px; }
 .album-group-title { font-size: 13px; font-weight: 600; color: var(--ink); margin: 0 0 8px; border-left: 3px solid var(--berry); padding-left: 8px; }
+
+// ---------- Message feed ----------
+.message-compose-card { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px dashed rgba(139,94,131,0.2); }
+.message-compose-card textarea { width: 100%; min-height: 60px; margin-bottom: 8px; padding: 10px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; font-family: inherit; resize: vertical; }
+.message-feed { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; }
+.message-feed-item { border: 1px solid rgba(139,94,131,0.2); border-radius: 10px; padding: 10px; transition: opacity .2s; }
+.message-feed-header { display: flex; justify-content: space-between; font-size: 11px; color: var(--plum); margin-bottom: 4px; }
+.message-feed-content { font-size: 14px; margin: 0 0 8px; }
+.toggle-comments-btn { background: none; border: 1px solid rgba(139,94,131,.3); color: var(--plum); border-radius: 8px; padding: 4px 10px; font-size: 11px; }
+.message-comments { margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(139,94,131,0.15); }
+.comment-list { list-style: none; padding: 0; margin: 0 0 8px; font-size: 12px; display: flex; flex-direction: column; gap: 4px; }
+.comment-form { display: flex; gap: 6px; }
+.comment-form input { flex: 1; padding: 6px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; font-size: 12px; }
+.message-empty { color: var(--plum); font-size: 12px; list-style: none; }
+// ---------- Lightbox ----------
+.lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 100; flex-direction: column; padding: 20px; }
+.lightbox img { max-width: 90vw; max-height: 60vh; border-radius: 8px; object-fit: contain; }
+.lightbox-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
+.lightbox-prev, .lightbox-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); border: none; color: #fff; font-size: 28px; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; }
+.lightbox-prev { left: 12px; }
+.lightbox-next { right: 12px; }
+.lightbox-detail { background: var(--card); border-radius: 12px; padding: 16px; margin-top: 16px; max-width: 400px; width: 100%; }
+.lightbox-filename { font-weight: 600; margin: 0 0 4px; font-size: 13px; }
+.lightbox-meta { font-size: 11px; color: var(--plum); margin: 0 0 10px; }
+#lightboxCaption { width: 100%; min-height: 50px; padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; font-family: inherit; margin-bottom: 8px; }
 

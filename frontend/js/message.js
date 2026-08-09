@@ -18,7 +18,7 @@ function showApp(username) {
   loginSection.hidden = true;
   appSection.hidden = false;
   userDisplay.textContent = username;
-  loadMessage();
+  loadMessageFeed();
   if (typeof loadJournal === "function") loadJournal();
   if (typeof loadPhotos === "function") loadPhotos();
   if (typeof loadFund === "function") loadFund();
@@ -70,29 +70,93 @@ async function loadMessage() {
   }
   const data = await res.json();
   document.getElementById("messageDisplay").textContent = data.content || "(chưa có lời nhắn)";
-   if (typeof setCardSummary === "function") {
-    setCardSummary("section-message", data.content ? `"${data.content}"` : "Chưa có lời nhắn nào");
-  }
 }
 
 document.getElementById("messageSubmit").addEventListener("click", async () => {
   const content = document.getElementById("messageInput").value.trim();
   if (!content) return;
-
   const res = await fetch(`${API_BASE}/api/message`, {
     ...FETCH_OPTS,
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ content }),
   });
-
-  if (res.status === 401) {
-    showLogin();
-    return;
-  }
-
+  if (res.status === 401) { showLogin(); return; }
   document.getElementById("messageInput").value = "";
-  loadMessage();
+  loadMessageFeed();
+});
+
+function timeAgo(iso) {
+  if (!iso) return "";
+  return new Date(iso).toLocaleString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
+}
+
+function messageItemHtml(m, index) {
+  const opacity = Math.max(1 - index * 0.15, 0.35);
+  return `
+    <li class="message-feed-item" data-id="${m.id}" style="opacity:${opacity}">
+      <div class="message-feed-header">
+        <span class="message-feed-author">${escapeHtml(m.created_by || "?")}</span>
+        <span class="message-feed-time">${timeAgo(m.updated_at)}</span>
+      </div>
+      <p class="message-feed-content">${escapeHtml(m.content)}</p>
+      <button type="button" class="toggle-comments-btn" data-id="${m.id}">💬 Bình luận</button>
+      <div class="message-comments" hidden>
+        <ul class="comment-list"></ul>
+        <form class="comment-form" data-id="${m.id}">
+          <input type="text" class="comment-input" placeholder="Trả lời...">
+          <button type="submit">Gửi</button>
+        </form>
+      </div>
+    </li>`;
+}
+
+async function loadMessageFeed() {
+  const res = await fetch(`${API_BASE}/api/messages`, FETCH_OPTS);
+  if (res.status === 401) { showLogin(); return; }
+  const messages = await res.json();
+  const feed = document.getElementById("messageFeed");
+  feed.innerHTML = messages.length
+    ? messages.map((m, i) => messageItemHtml(m, i)).join("")
+    : '<li class="message-empty">Chưa có lời nhắn nào</li>';
+  if (typeof setCardSummary === "function") {
+    setCardSummary("section-message", messages.length ? `"${messages[0].content}"` : "Chưa có lời nhắn nào");
+  }
+}
+
+async function loadComments(messageId, listEl) {
+  const res = await fetch(`${API_BASE}/api/messages/${messageId}/comments`, FETCH_OPTS);
+  if (res.status === 401) { showLogin(); return; }
+  const comments = await res.json();
+  listEl.innerHTML = comments.length
+    ? comments.map((c) => `<li><strong>${escapeHtml(c.created_by)}:</strong> ${escapeHtml(c.content)}</li>`).join("")
+    : '<li class="message-empty">Chưa có bình luận</li>';
+}
+
+document.addEventListener("click", async (e) => {
+  if (e.target.matches(".toggle-comments-btn")) {
+    const item = e.target.closest(".message-feed-item");
+    const box = item.querySelector(".message-comments");
+    box.hidden = !box.hidden;
+    if (!box.hidden) await loadComments(e.target.dataset.id, box.querySelector(".comment-list"));
+  }
+});
+
+document.addEventListener("submit", async (e) => {
+  if (e.target.matches(".comment-form")) {
+    e.preventDefault();
+    const messageId = e.target.dataset.id;
+    const input = e.target.querySelector(".comment-input");
+    const content = input.value.trim();
+    if (!content) return;
+    await fetch(`${API_BASE}/api/messages/${messageId}/comments`, {
+      ...FETCH_OPTS, method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content }),
+    });
+    input.value = "";
+    await loadComments(messageId, e.target.closest(".message-comments").querySelector(".comment-list"));
+  }
 });
 
 (async () => {
