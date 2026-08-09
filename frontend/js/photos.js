@@ -34,14 +34,20 @@ function renderPhotoGrid() {
     return;
   }
   grid.innerHTML = sorted.map((album) => {
-    const photos = cachedPhotos.filter((p) => p.album_id === album.id);
+    // order photos by sort_order if present
+    const photos = cachedPhotos.filter((p) => p.album_id === album.id).sort((a, b) => {
+      const sa = (typeof a.sort_order === 'number') ? a.sort_order : 1e9;
+      const sb = (typeof b.sort_order === 'number') ? b.sort_order : 1e9;
+      if (sa !== sb) return sa - sb;
+      return new Date(b.created_at) - new Date(a.created_at);
+    });
     const state = getAlbumState(album.id);
     const totalPages = Math.max(1, Math.ceil(photos.length / PHOTOS_PER_PAGE));
     if (state.page >= totalPages) state.page = totalPages - 1;
     const pagePhotos = photos.slice(state.page * PHOTOS_PER_PAGE, (state.page + 1) * PHOTOS_PER_PAGE);
 
     return `
-      <div class="album-group">
+      <div class="album-group" data-album-id="${album.id}">
         <button type="button" class="album-toggle-btn" data-album-id="${album.id}">
           <span class="album-group-title">${escapeHtml(album.name)} · ${photos.length}</span>
           <span class="album-chevron ${state.collapsed ? "collapsed" : ""}">▾</span>
@@ -49,7 +55,7 @@ function renderPhotoGrid() {
         <div class="album-body ${state.collapsed ? "collapsed" : ""}"><div class="album-body-inner">
           <div class="album-photo-grid">
             ${pagePhotos.length
-              ? pagePhotos.map((p) => `<figure class="photo-item"><img src="${p.url}" data-photo-id="${p.id}" alt="${escapeHtml(album.name)}" loading="lazy"></figure>`).join("")
+              ? pagePhotos.map((p) => `<figure class="photo-item" draggable="true" data-photo-id="${p.id}"><img src="${p.url}" data-photo-id="${p.id}" alt="${escapeHtml(album.name)}" loading="lazy"></figure>`).join("")
               : '<p class="photo-empty">Chưa có ảnh trong album này</p>'}
           </div>
           ${totalPages > 1 ? `
@@ -61,6 +67,8 @@ function renderPhotoGrid() {
         </div></div>
       </div>`;
   }).join("");
+  // Attach drag/drop handlers via delegation
+  attachPhotoDragHandlers();
 }
 
 // Event delegation for album toggle and pagination
@@ -282,3 +290,129 @@ document.addEventListener("keydown", (e) => {
   else if (e.key === "ArrowLeft") { lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length; renderLightbox(); showLightboxControls(); }
   else if (e.key === "ArrowRight") { lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length; renderLightbox(); showLightboxControls(); }
 });
+
+// Info toggle: show read-only caption / info for 3s when pressing the inline 'i' button
+const infoToggleBtn = document.querySelector('.lightbox-info-toggle');
+if (infoToggleBtn) {
+  infoToggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const detailEl = document.getElementById('lightboxDetail');
+    if (!detailEl) return;
+    // Populate read-only view
+    const p = lightboxPhotos[lightboxIndex];
+    detailEl.querySelector('.detail-caption')?.remove?.();
+    const captionNode = document.createElement('div');
+    captionNode.className = 'detail-caption';
+    const captionText = p.caption ? p.caption : '(Không có ghi chú)';
+    const author = p.caption_author ? ` — ${p.caption_author}` : '';
+    captionNode.innerHTML = `<div class="caption-text">${escapeHtml(captionText)}</div><div class="meta">${escapeHtml(p.uploaded_by)} · ${new Date(p.created_at).toLocaleString('vi-VN')}${author}</div>`;
+    detailEl.appendChild(captionNode);
+    detailEl.hidden = false;
+    // hide menu if open
+    document.querySelector('.lightbox-menu').hidden = true;
+    // auto-hide after 3s
+    setTimeout(() => { detailEl.hidden = true; if (captionNode && captionNode.remove) captionNode.remove(); }, 3000);
+  });
+}
+
+// Touch swipe implementation for lightbox (7.4.3e)
+function setupLightboxTouch(el) {
+  let startX = 0, startY = 0, startT = 0, moved = false;
+  function onTouchStart(ev) {
+    if (!ev.touches || !ev.touches.length) return;
+    const t = ev.touches[0];
+    startX = t.clientX; startY = t.clientY; startT = Date.now(); moved = false;
+  }
+  function onTouchMove(ev) {
+    moved = true;
+  }
+  function onTouchEnd(ev) {
+    if (!moved) return; // treat as tap
+    const t = (ev.changedTouches && ev.changedTouches[0]) || ev;
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+    const dt = Date.now() - startT;
+    // require mostly horizontal movement
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) {
+        // swipe left -> next
+        lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length; renderLightbox(); showLightboxControls();
+      } else {
+        // swipe right -> prev
+        lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length; renderLightbox(); showLightboxControls();
+      }
+    }
+  }
+  el.removeEventListener('touchstart', onTouchStart);
+  el.removeEventListener('touchmove', onTouchMove);
+  el.removeEventListener('touchend', onTouchEnd);
+  el.addEventListener('touchstart', onTouchStart, {passive: true});
+  el.addEventListener('touchmove', onTouchMove, {passive: true});
+  el.addEventListener('touchend', onTouchEnd);
+}
+
+// Drag/drop reorder handlers (frontend) for album reordering (7.4.4)
+function attachPhotoDragHandlers() {
+  document.querySelectorAll('.album-photo-grid').forEach((grid) => {
+    if (grid._dragHandlersAttached) return; // idempotent
+    grid._dragHandlersAttached = true;
+    let dragSrc = null;
+    grid.addEventListener('dragstart', (e) => {
+      const fig = e.target.closest('.photo-item');
+      if (!fig) return;
+      dragSrc = fig;
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', fig.dataset.photoId); } catch (err) {}
+      fig.classList.add('dragging');
+    });
+    grid.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      const over = e.target.closest('.photo-item');
+      const after = over && (e.clientY > over.getBoundingClientRect().top + over.getBoundingClientRect().height/2);
+      const placeholder = grid.querySelector('.drop-placeholder') || (() => { const ph = document.createElement('div'); ph.className='drop-placeholder'; ph.style.height='6px'; return ph; })();
+      // remove existing placeholder
+      grid.querySelectorAll('.drop-placeholder').forEach(n=>n.remove());
+      if (!over) return;
+      if (after) over.insertAdjacentElement('afterend', placeholder);
+      else over.insertAdjacentElement('beforebegin', placeholder);
+    });
+    grid.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      const targetItem = e.target.closest('.photo-item');
+      if (!dragSrc) return;
+      // remove dragging class
+      dragSrc.classList.remove('dragging');
+      // find placeholder position
+      const placeholder = grid.querySelector('.drop-placeholder');
+      if (placeholder) {
+        placeholder.insertAdjacentElement('afterend', dragSrc);
+        placeholder.remove();
+      }
+      // compute new order
+      const albumEl = grid.closest('.album-group');
+      const albumId = parseInt(albumEl.dataset.albumId, 10);
+      const newOrder = Array.from(grid.querySelectorAll('.photo-item')).map(f => parseInt(f.dataset.photoId,10));
+      // Optimistically update UI and cachedPhotos
+      newOrder.forEach((pid, idx) => {
+        const p = cachedPhotos.find(cp => cp.id === pid);
+        if (p) p.sort_order = idx;
+      });
+      renderPhotoGrid();
+      // Post to backend
+      try {
+        const res = await fetch(`${API_BASE}/api/photos/reorder`, { ...FETCH_OPTS, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ album_id: albumId, ordered_photo_ids: newOrder }) });
+        if (!res.ok) throw new Error('Reorder failed');
+      } catch (err) {
+        alert('Không thể lưu thứ tự mới. Vui lòng thử lại.');
+        // reload from server to be safe
+        await loadPhotos();
+      }
+    });
+    grid.addEventListener('dragend', (e) => {
+      const fig = e.target.closest('.photo-item');
+      if (fig) fig.classList.remove('dragging');
+      grid.querySelectorAll('.drop-placeholder').forEach(n=>n.remove());
+      dragSrc = null;
+    });
+  });
+}

@@ -70,7 +70,7 @@ def list_photos(user: str = Depends(require_login), db: Session = Depends(get_db
     return [
         {"id": p.id, "album_id": p.album_id, "album_name": albums.get(p.album_id, "Chưa phân loại"),
          "url": p.url, "filename": p.filename, "file_size": p.file_size, "caption": p.caption,
-         "uploaded_by": p.uploaded_by, "created_at": p.created_at.isoformat()}
+         "uploaded_by": p.uploaded_by, "created_at": p.created_at.isoformat(), "sort_order": p.sort_order}
         for p in photos
     ]
 
@@ -81,3 +81,14 @@ def update_photo_caption(photo_id: int, data: CaptionIn, user: str = Depends(req
     if not photo:
         raise HTTPException(status_code=404, detail="Không tìm thấy ảnh")
     return {"status": "updated"}
+
+
+class ReorderIn(BaseModel):
+    album_id: int
+    ordered_photo_ids: list
+
+
+@router.post("/api/photos/reorder")
+def reorder_photos_endpoint(data: ReorderIn, user: str = Depends(require_login), db: Session = Depends(get_db)):
+    photo_repo.reorder_photos(db, data.album_id, data.ordered_photo_ids)
+    return {"status": "reordered"}
