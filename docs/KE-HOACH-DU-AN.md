@@ -114,11 +114,14 @@ Thu/chi quỹ chung, mục tiêu, hoạt động đôi.
 - **7.4** ✅ Album: bảng `albums` riêng, nhóm hiển thị theo tên album kèm số lượng, tạo/sort qua UI
   - 7.4.1 + 7.4.2 ✅ Upload nhiều ảnh 1 lượt (tối đa 30), nhớ album đã chọn lần trước, tự bỏ qua ảnh trùng (hash SHA-256)
   - 7.4.3 ✅ Xem ảnh toàn màn hình, duyệt ảnh, xem/sửa chi tiết (tên file, ngày, người tải, dung lượng, ghi chú)
+  - 7.4.3d ✅ Lightbox: giữ tỉ lệ ảnh gốc, nút fullscreen, menu 3 chấm, nút tự ẩn/hiện sau 3s
+  - 7.4.3e (mới, chưa làm) — Vuốt trái/phải để chuyển ảnh trên điện thoại (touch swipe)
+  - 7.4.3f (mới, chưa làm) — Tách nút (i) riêng cạnh nút 3 chấm để xem ghi chú (cùng cơ chế ẩn/hiện 3s như các nút khác). Ghi chú mặc định hiển thị: nội dung + thời gian đăng ảnh + người đăng ảnh + người viết ghi chú (nếu có) — chỉ ở dạng xem. Sửa ghi chú chuyển vào menu 3 chấm ("Chỉnh sửa ghi chú"), tách khỏi khung xem
   - 7.4.4 — Kéo thả sắp xếp lại vị trí ảnh trong album
 - **7.5** — Lời nhắn: tách card hiển thị/viết, lịch sử, đậm/mờ khi cuộn, bình luận/trả lời qua lại
-- **7.6** — Nhật ký: timeline dọc có đường nối + icon tròn theo mốc thời gian, thẻ nội dung kèm tên tác giả + nút sửa/xoá
-- **7.7** — Trang Settings (3 khối): Thông tin đôi / Thông báo webhook / Lời nhắn hằng ngày
-- **7.8** — Trang chủ dashboard: avatar viết tắt tên 2 người nối bằng ❤️ vào khối đồng hồ; khối "Xem gần đây" 2 cột cuối trang
+- **7.6** ✅ Nhật ký: timeline dọc có đường nối + icon tâm trạng, sửa/xoá bài viết tại chỗ
+- **7.7** — Trang Settings (3 khối): (1) Thông tin đôi — sửa ngày bắt đầu + tên gọi 2 người qua UI; (2) Thông báo — cấu hình Telegram/Discord webhook URL + nút Lưu/Gửi thử; (3) Lời nhắn hằng ngày — danh sách quản lý, hiện ngẫu nhiên 1 câu/ngày ở trang chủ. Không phân quyền admin/member (giữ đơn giản, 2 người cùng sửa được)
+- **7.8** — Trang chủ dashboard: thêm avatar viết tắt tên 2 người nối bằng ❤️ vào khối đồng hồ (lấy tên từ Settings 7.7); khối "Xem gần đây" 2 cột cuối trang (ví dụ: nhật ký gần đây | hoạt động gần đây) kiểu "Xem tất cả →"
 
 **Cân nhắc thêm/bớt so với mockup:**
 - **Lưới 6 nút truy cập nhanh ở trang chủ:** bỏ qua.
@@ -180,7 +183,46 @@ luvlog/
 
 1. Hoàn thiện Media Hub theo mockup: 7.3.3 + 7.3.5.
 2. Hoàn thiện album reorder: 7.4.4.
-3. Đổi lời nhắn sang cấu trúc mới: 7.5.
-4. Đổi nhật ký sang timeline: 7.6.
+3. Tinh chỉnh lời nhắn theo cấu trúc mới: 7.5.
+4. Tinh chỉnh nhật ký timeline theo mockup: 7.6.
 5. Thêm Settings: 7.7.
 6. Thêm dashboard mới: 7.8.
+
+> Ghi chú: `main` là nhánh bản chạy ổn định để deploy; mỗi feature nên làm trên nhánh riêng và merge lại sau khi test xong.
+
+---
+
+## 10. Design System (xác nhận qua ảnh mockup 07/08/2026)
+
+> Bố cục/pattern lấy từ ảnh mockup người dùng cung cấp. **Bảng màu và mô hình dữ liệu giữ nguyên như đã xây trước đó** — ảnh chỉ dùng để tham khảo cách trình bày, không phải để đổi màu hay đổi mô hình quỹ chung.
+
+**Không đổi (đã chốt):**
+- Bảng màu: tông giấy ấm hiện tại (`--ink`, `--plum`, `--berry`, `--paper`, `--card`) — **không** dùng gradient hồng-tím, **không** icon nhiều màu theo từng mục
+- Quỹ chung: giữ mô hình quỹ chung + mục tiêu tiết kiệm — **không** đổi sang mô hình chia tiền "ai nợ ai"
+
+**Áp dụng bố cục từ mockup (giữ màu hiện tại):**
+- Sidebar: mục đang chọn có nền nổi bo tròn (đã có), logo + tagline ở đầu (đã có), khối "Made with love" ở chân sidebar
+- Trang chủ: khối đồng hồ có avatar viết tắt tên 2 người nối bằng ❤️ (7.8); khối preview "xem gần đây" 2 cột cuối trang (7.8)
+- Nhật ký: timeline dọc có đường nối + icon theo mốc (7.6)
+- Album: nhóm theo tên album kèm số lượng, lưới ảnh vuông bo góc (7.4)
+- Hoạt động: pill lọc theo category kèm số đếm (bổ sung cho 7.3 pattern, áp dụng tương tự nếu cần)
+- Media Hub: 1 dropdown chọn loại + 1 ô tìm kiếm chung, khung gợi ý dạng danh sách hàng ngang, lưới poster dọc 2:3 kèm badge trạng thái (7.3.5)
+- Settings (trang mới): 3 khối — Thông tin đôi / Thông báo webhook / Lời nhắn hằng ngày (7.7)
+- Gamification (Giai đoạn 8): thẻ cấp độ + điểm + thanh tiến độ + hàng huy hiệu cuộn ngang
+
+**Không áp dụng / để dành:**
+- Lưới 6 nút truy cập nhanh ở trang chủ — trùng chức năng với sidebar, bỏ qua
+- Wishlist trang riêng biệt — để dành, chưa quyết
+- Mô hình quỹ chung chia tiền ai nợ ai — đã từ chối, giữ nguyên hiện tại
+
+---
+
+## 11. Bước tiếp theo
+
+Còn lại trong Giai đoạn 7:
+- **7.4.3e** — Vuốt trái/phải chuyển ảnh trên điện thoại (lightbox)
+- **7.4.3f** — Tách nút (i) xem ghi chú riêng khỏi menu 3 chấm, ghi chú hiện dạng xem trước (nội dung + thời gian + người đăng ảnh + người viết), sửa chuyển vào menu 3 chấm
+- **7.4.4** — Kéo thả sắp xếp lại vị trí ảnh trong album
+- **7.3.5** — Hợp nhất giao diện Media Hub theo mockup (1 dropdown chọn loại + 1 ô tìm kiếm chung, thay 3 khung tách riêng)
+
+Sau đó qua Giai đoạn 8 (gamification, domain, mobile) và Giai đoạn 9 (Google Calendar/Discord bot).

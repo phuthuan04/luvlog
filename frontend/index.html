@@ -89,10 +89,18 @@
         <div class="card-body"><div class="card-body-inner">
           <form id="journalForm" class="journal-form">
             <input type="text" id="journalTitle" placeholder="Tiêu đề..." required>
+            <select id="journalMood">
+              <option value="">🙂 Bình thường</option>
+              <option value="❤️">❤️ Yêu thương</option>
+              <option value="🎉">🎉 Vui vẻ</option>
+              <option value="😢">😢 Buồn</option>
+              <option value="✈️">✈️ Đi chơi</option>
+              <option value="🍽️">🍽️ Ăn uống</option>
+            </select>
             <textarea id="journalContent" placeholder="Hôm nay..." required></textarea>
             <button type="submit">Lưu</button>
           </form>
-          <ul id="journalList" class="journal-list">
+          <ul id="journalList" class="journal-timeline">
             <li class="journal-empty">Đang tải...</li>
           </ul>
         </div></div>

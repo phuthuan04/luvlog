@@ -257,6 +257,7 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
 .comment-form input { flex: 1; padding: 6px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; font-size: 12px; }
 .message-empty { color: var(--plum); font-size: 12px; list-style: none; }
 
+/* ---------- Lightbox ---------- */
 [hidden] { display: none !important; }
 
 .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 100; }
@@ -276,6 +277,7 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
 .lightbox-meta { font-size: 11px; color: var(--plum); margin: 0 0 10px; }
 #lightboxCaption { width: 100%; min-height: 50px; padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; font-family: inherit; margin-bottom: 8px; }
 
+/* ---------- Albums ---------- */
 .album-toggle-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; background: none; border: none; padding: 0; cursor: pointer; margin-bottom: 8px; }
 .album-chevron { color: var(--plum); font-size: 12px; transition: transform .2s; }
 .album-chevron.collapsed { transform: rotate(-90deg); }
@@ -287,3 +289,21 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
 .album-pagination button:disabled { opacity: .3; cursor: not-allowed; }
 .album-page-label { font-size: 12px; color: var(--plum); }
 
+/* ---------- Journal timeline ---------- */
+.journal-timeline { list-style: none; padding: 0; margin: 0; position: relative; }
+.journal-timeline::before { content: ""; position: absolute; left: 15px; top: 4px; bottom: 4px; width: 2px; background: rgba(139,94,131,0.2); }
+.timeline-item { position: relative; padding-left: 44px; margin-bottom: 20px; }
+.timeline-node { position: absolute; left: 0; top: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--card); border: 2px solid var(--berry); display: flex; align-items: center; justify-content: center; font-size: 15px; z-index: 1; }
+.timeline-card { background: var(--paper); border-radius: 12px; padding: 12px 14px; }
+.timeline-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.timeline-header h3 { font-family: 'Fraunces', serif; font-size: 15px; margin: 0; }
+.timeline-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.timeline-actions button { background: none; border: none; color: var(--plum); font-size: 13px; cursor: pointer; opacity: .6; }
+.timeline-actions button:hover { opacity: 1; }
+.timeline-card time { font-size: 11px; color: var(--plum); display: block; margin: 2px 0 6px; }
+.timeline-card p { font-size: 13px; margin: 0; }
+.timeline-edit-form { display: flex; flex-direction: column; gap: 6px; }
+.timeline-edit-form input, .timeline-edit-form select, .timeline-edit-form textarea { padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; font-family: inherit; font-size: 13px; }
+.timeline-edit-actions { display: flex; gap: 8px; }
+.timeline-edit-actions button { font-size: 12px; padding: 6px 12px; }
+.cancel-journal-btn { background: none; border: 1px solid rgba(139,94,131,.3); color: var(--plum); border-radius: 8px; }
