@@ -110,7 +110,7 @@ Thu/chi quỹ chung, mục tiêu, hoạt động đôi.
   - 7.3.2 ✅ Tích hợp OMDb (IMDb + Tomatometer, tra theo mã IMDb chính xác thay vì tên), click mở rộng xem tóm tắt, hiện nguồn gợi ý ("Dựa trên: ...")
   - 7.3.3 — Carousel: chỉ hiện 2–3 thẻ/lượt, cuộn/kéo xem thêm
   - 7.3.4 ✅ Sort "đã xem" theo ngày đánh dấu (asc/desc)
-  - 7.3.5 — Hợp nhất giao diện: 1 dropdown chọn loại + 1 ô tìm kiếm chung, thay vì 3 khung tách riêng; khung gợi ý dạng danh sách hàng ngang có sao đánh giá; lưới poster dọc 2:3 kèm badge trạng thái ("Đã xem xong" / "Dự định")
+  - 7.3.5 🔄 Hợp nhất giao diện: 1 dropdown chọn loại + 1 ô tìm kiếm chung, thay vì 3 khung tách riêng; khung gợi ý dạng danh sách hàng ngang có sao đánh giá; lưới poster dọc 2:3 kèm badge trạng thái ("Đã xem xong" / "Dự định")
 - **7.4** ✅ Album: bảng `albums` riêng, nhóm hiển thị theo tên album kèm số lượng, tạo/sort qua UI
   - 7.4.1 + 7.4.2 ✅ Upload nhiều ảnh 1 lượt (tối đa 30), nhớ album đã chọn lần trước, tự bỏ qua ảnh trùng (hash SHA-256)
   - 7.4.3 ✅ Xem ảnh toàn màn hình, duyệt ảnh, xem/sửa chi tiết (tên file, ngày, người tải, dung lượng, ghi chú)

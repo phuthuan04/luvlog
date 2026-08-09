@@ -119,6 +119,7 @@ MEDIA_SECTIONS.forEach((s) => {
 });
 
 const SEARCHABLE_TYPES = { movies: "/api/search/movies", books: "/api/search/books" };
+const MEDIA_HUB_SEARCH_ENDPOINTS = { movies: "/api/search/movies", books: "/api/search/books" };
 
 function renderSearchResults(container, results, endpoint) {
   if (!results.length) {
@@ -132,6 +133,26 @@ function renderSearchResults(container, results, endpoint) {
         <span>${escapeHtml(r.title)}${r.year ? ` (${r.year})` : ""}${r.authors ? ` — ${escapeHtml(r.authors)}` : ""}</span>
       </div>`)
     .join("");
+  container.dataset.results = JSON.stringify(results);
+}
+
+function renderMediaHubResults(container, results, type) {
+  if (!results.length) {
+    container.innerHTML = '<p class="media-empty">Không tìm thấy kết quả</p>';
+    return;
+  }
+  container.innerHTML = `
+    <div class="media-hub-results-list">
+      ${results.map((r, idx) => `
+        <button type="button" class="media-hub-result" data-type="${type}" data-index="${idx}">
+          ${r.cover_url ? `<img src="${r.cover_url}" alt="" class="media-cover-img">` : ""}
+          <span>
+            <strong>${escapeHtml(r.title)}</strong>
+            ${r.year ? `<small>${r.year}</small>` : ""}
+            ${r.authors ? `<small>${escapeHtml(r.authors)}</small>` : ""}
+          </span>
+        </button>`).join("")}
+    </div>`;
   container.dataset.results = JSON.stringify(results);
 }
 
@@ -155,6 +176,25 @@ Object.entries(SEARCHABLE_TYPES).forEach(([type, searchEndpoint]) => {
   });
 });
 
+const mediaHubForm = document.getElementById("mediaHubForm");
+const mediaHubResults = document.getElementById("mediaHubResults");
+
+if (mediaHubForm && mediaHubResults) {
+  mediaHubForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const type = document.getElementById("mediaHubType").value;
+    const q = document.getElementById("mediaHubQuery").value.trim();
+    if (!q) return;
+    const res = await fetch(`${API_BASE}${MEDIA_HUB_SEARCH_ENDPOINTS[type]}?q=${encodeURIComponent(q)}`, FETCH_OPTS);
+    if (res.status === 401) {
+      if (typeof showLogin === "function") showLogin();
+      return;
+    }
+    const results = await res.json();
+    renderMediaHubResults(mediaHubResults, results, type);
+  });
+}
+
 document.addEventListener("click", async (e) => {
   const resultEl = e.target.closest(".search-result");
   if (resultEl) {
@@ -173,6 +213,27 @@ document.addEventListener("click", async (e) => {
     });
     container.innerHTML = "";
     const type = MEDIA_SECTIONS.find((s) => s.endpoint === endpoint).type;
+    loadMediaSection(type, endpoint);
+    return;
+  }
+
+  const hubResultEl = e.target.closest(".media-hub-result");
+  if (hubResultEl) {
+    const container = hubResultEl.closest("#mediaHubResults");
+    const results = JSON.parse(container.dataset.results || "[]");
+    const item = results[hubResultEl.dataset.index];
+    const type = hubResultEl.dataset.type;
+    const endpoint = MEDIA_SECTIONS.find((s) => s.type === type).endpoint;
+    await fetch(`${API_BASE}${endpoint}`, {
+      ...FETCH_OPTS,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: item.title, cover_url: item.cover_url || "", status: "muon",
+        external_id: item.external_id || "", category: item.category || "",
+      }),
+    });
+    container.innerHTML = '<p class="media-empty">Đã thêm vào danh sách. Mở mục riêng để xem ngay.</p>';
     loadMediaSection(type, endpoint);
     return;
   }

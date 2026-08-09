@@ -184,6 +184,25 @@
         </div></div>
       </section>
 
+      <section id="section-media-hub" class="card media-box reveal collapsed" data-collapsible>
+        <button type="button" class="card-header">
+          <p class="eyebrow">🎯 media hub</p>
+          <span class="card-chevron">▾</span>
+        </button>
+        <p class="card-summary">Tìm phim/sách nhanh bằng một thanh duy nhất</p>
+        <div class="card-body"><div class="card-body-inner">
+          <form id="mediaHubForm" class="media-hub-form">
+            <select id="mediaHubType">
+              <option value="movies">🎬 Phim</option>
+              <option value="books">📚 Sách</option>
+            </select>
+            <input type="text" id="mediaHubQuery" placeholder="Tìm tên phim/sách..." required>
+            <button type="submit">Tìm</button>
+          </form>
+          <div id="mediaHubResults" class="media-hub-results"></div>
+        </div></div>
+      </section>
+
       <section id="section-movies" class="card media-box reveal collapsed" data-collapsible data-media="movies">
         <button type="button" class="card-header">
           <p class="eyebrow">🎬 phim</p>

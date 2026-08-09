@@ -157,6 +157,13 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
 .media-search-results { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
 .search-result { display: flex; gap: 8px; align-items: center; border: 1px solid rgba(139,94,131,0.2); border-radius: 8px; padding: 6px; cursor: pointer; font-size: 13px; transition: background .15s; }
 .search-result:hover { background: rgba(139,94,131,0.08); }
+.media-hub-form { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.media-hub-form select, .media-hub-form input { flex: 1; min-width: 120px; padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; font-family: inherit; }
+.media-hub-results { display: flex; flex-direction: column; gap: 8px; }
+.media-hub-result { display: flex; gap: 8px; align-items: center; width: 100%; padding: 8px; border: 1px solid rgba(139,94,131,0.2); border-radius: 10px; background: var(--paper); text-align: left; cursor: pointer; }
+.media-hub-result:hover { background: rgba(139,94,131,0.08); }
+.media-hub-result .media-cover-img { width: 40px; height: 56px; }
+.media-hub-result small { display: block; color: var(--plum); font-size: 11px; margin-top: 2px; }
 .media-list-wanted, .media-list-done, .media-list-suggested { list-style: none; padding: 0 0 6px; margin: 0 0 8px; display: flex; flex-direction: row; overflow-x: auto; gap: 10px; scroll-snap-type: x proximity; }
 .media-list-wanted .media-item, .media-list-done .media-item, .media-list-suggested .media-item { flex: 0 0 190px; scroll-snap-align: start; }
 .media-list-suggested { border-left: 3px solid var(--berry); padding-left: 8px; }

@@ -7,6 +7,7 @@
 - Hoàn thiện album: nhóm theo album, upload nhiều ảnh, lightbox xem ảnh và ghi chú.
 - Cập nhật docs để phản ánh tiến độ hiện tại.
 - Ghi rõ các mục tiếp theo trong giai đoạn 7: Media Hub unified UI, album reorder, lời nhắn, nhật ký timeline, settings, dashboard mới.
+- Thêm thanh tìm kiếm Media Hub dùng chung cho phim/sách, giúp giảm số khung tìm riêng trong giao diện.
 
 ## v0.7 — Refactor kiến trúc + Media Hub (06/08/2026)
 - Tách backend thành routers/services/repositories/models.
