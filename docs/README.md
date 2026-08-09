@@ -1,4 +1,4 @@
-# luvlog
+﻿# luvlog
 
 Website riêng tư ghi lại kỷ niệm của hai người.
 
@@ -16,20 +16,31 @@ Website riêng tư ghi lại kỷ niệm của hai người.
 - Đồng hồ đếm thời gian yêu nhau (năm/tháng/ngày/giờ/phút/giây)
 - Lời nhắn hằng ngày, đồng bộ giữa hai người
 - Đăng nhập bảo mật (session cookie + mật khẩu băm bcrypt)
+- Album ảnh với upload nhiều ảnh, nhóm theo album và lightbox xem ảnh
+- Media Hub với gợi ý phim/sách, OMDb detail, refresh suggestions
+- Quỹ chung & hoạt động đôi
 
 ## Kiến trúc
 
-```
+```text
 Frontend tĩnh (Vercel) <--REST API--> Backend FastAPI (Vercel Serverless) <--> Supabase PostgreSQL
 ```
 
-Chi tiết đầy đủ và lộ trình các giai đoạn tiếp theo: [`docs/KE-HOACH-DU-AN.md`](docs/KE-HOACH-DU-AN.md)
-Quy tắc làm việc của dự án: [`docs/QUY-TAC-LAM-VIEC.md`](docs/QUY-TAC-LAM-VIEC.md)
+Tài liệu chính cho kế hoạch: [`docs/KE-HOACH-DU-AN.md`](docs/KE-HOACH-DU-AN.md)
+
+Tài liệu API: [`docs/Documentations.md`](docs/Documentations.md)
+
+Quy tắc làm việc: [`docs/QUY-TAC-LAM-VIEC.md`](docs/QUY-TAC-LAM-VIEC.md)
+
 Lịch sử thay đổi: [`docs/CHANGELOG.md`](docs/CHANGELOG.md)
+
+## Trạng thái hiện tại
+
+Giai đoạn 7 đang được triển khai. Các phần đã có cơ bản: media detail với OMDb, album lightbox, upload nhiều ảnh, suggestions, auth và CRUD chính. Các mục tiếp theo ưu tiên là Media Hub mockup nâng cao, album reorder, lời nhắn, nhật ký timeline, settings và dashboard mới.
 
 ## Cấu trúc thư mục
 
-```
+```text
 luvlog/
 ├── frontend/       # HTML/CSS/JS tĩnh
 ├── backend/        # FastAPI (Vercel Serverless Functions)
@@ -48,6 +59,7 @@ venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
+
 Tạo file `backend/.env` theo mẫu `backend/.env.example`, điền giá trị thật (không commit file `.env`).
 
 ### Frontend

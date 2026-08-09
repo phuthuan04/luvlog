@@ -1,7 +1,6 @@
 # luvlog — Kế hoạch Dự án Website Kỷ Niệm Cặp Đôi
 
-> Cập nhật: chuyển hạ tầng sang Vercel (Serverless) + Supabase (PostgreSQL + Storage), bổ sung Media Hub (phim/sách/nhạc) với cron tự động.
-> Đích đến cuối cùng không đổi so với SRS gốc — chỉ khác cách đi và nền tảng hạ tầng.
+> Cập nhật: 09/08/2026. Hạ tầng hiện tại là frontend tĩnh + backend FastAPI trên Vercel + Supabase PostgreSQL/Storage. Tài liệu này là bản kế hoạch chính hiện hành cho giai đoạn 7 và các bước tiếp theo.
 
 ---
 
@@ -13,16 +12,20 @@ Website riêng tư cho hai người, gồm: đồng hồ đếm ngày yêu + l�
 
 ---
 
-## 2. Nguyên tắc làm việc (chi tiết đầy đủ ở file `QUY-TAC-LAM-VIEC.md`)
+## 2. Nguyên tắc làm việc
 
-Tóm tắt: từng bước nhỏ, test xong mới qua bước tiếp; không lặp lại khái niệm đã giới thiệu; không hard-code secrets; cập nhật docs mỗi khi đổi tính năng.
+Tóm tắt: từng bước nhỏ, test xong mới qua bước tiếp; không lặp lại khái niệm đã giới thiệu; không hard-code secrets; cập nhật docs mỗi khi đổi tính năng. Chi tiết đầy đủ ở file `QUY-TAC-LAM-VIEC.md`.
 
 ---
 
 ## 3. Trạng thái hiện tại
 
-> Làm lại toàn bộ từ đầu theo cấu trúc thư mục và hạ tầng mới (Vercel + Supabase) — coi như chưa làm bước nào.
+### 3.1 Tóm tắt nhanh
+- Trạng thái tổng thể: Giai đoạn 6 đã core xong; Giai đoạn 7 đang chạy ở mức “đã có nền, đang hoàn thiện UI theo mockup”.
+- Điểm đã có trong code: album, media detail, suggestions, auth, CRUD chính.
+- Điểm còn thiếu để chốt gần mockup: Media Hub unified UI, album reorder, lời nhắn, nhật ký timeline, settings, dashboard mới.
 
+### 3.2 Bảng giai đoạn
 | Giai đoạn | Trạng thái |
 |---|---|
 | 0 — Trang tĩnh | ✅ Xong |
@@ -33,30 +36,31 @@ Tóm tắt: từng bước nhỏ, test xong mới qua bước tiếp; không l�
 | 3 — Nhật ký & Timeline | ✅ Xong |
 | 4 — Album ảnh | ✅ Xong |
 | 5 — Quỹ chung & hoạt động đôi | ✅ Xong |
-| 6 — Kiến trúc 3 tầng + Media Hub + Cron | 🔄 Đang làm (6.1–6.4 xong; 6.5 Webhook còn lại; JWT: bỏ qua) |
-| 7 — Nâng cấp UI/UX | 🔄 Đang làm (7.1, 7.2, 7.2.5 xong; 7.3.1 Media Hub gợi ý xem trước đang làm) |
+| 6 — Kiến trúc 3 tầng + Media Hub + Cron | ✅ Core xong; còn polish cho cron/webhook và điều chỉnh nhỏ theo thực tế deploy |
+| 7 — Nâng cấp UI/UX | 🔄 Đang làm (7.3.3/7.3.5, 7.4.4, 7.5–7.8 là các mục còn lại) |
 | 8 — Gamification, domain, mobile | ⏳ Chưa bắt đầu |
+
+### 3.3 Trạng thái thực tế trong code (09/08/2026)
+- Backend: có router cho message, journal, albums/photos, fund, activities, media, suggestions và detail phim.
+- Frontend: có card thu gọn/mở rộng, đồng hồ, sidebar/bottom nav, album nhóm theo album, lightbox xem ảnh, upload nhiều ảnh, media detail với IMDb/Tomatometer.
+- Gap còn lại: Media Hub dùng chung 1 bộ lọc, drag/drop sắp xếp ảnh, redesign lời nhắn, redesign nhật ký timeline, settings, dashboard mới.
 
 ---
 
-## 4. Kiến trúc tổng thể (mục tiêu)
+## 4. Kiến trúc tổng thể
 
-```
+```text
 [Frontend tĩnh - Vercel Static]
-            |
-       REST API (fetch, credentials: include)
-            |
+           |
+      REST API (fetch, credentials: include)
+           |
 [Backend FastAPI - Vercel Serverless Functions]
-   |-- Auth: session cookie ký (itsdangerous) — không đổi khi lên serverless
-   |-- Database: Supabase PostgreSQL, qua Connection Pooler (cổng 6543)
-   |-- Storage: Supabase Storage — ảnh/media, không ghi ổ cứng cục bộ
-   |-- External APIs: TMDB (phim), Google Books (sách), YouTube Data (nhạc)
-   |-- Cron: Vercel Cron Jobs (00:00 UTC/đêm) — bảo vệ bằng header CRON_SECRET
+   |-- Auth: session cookie ký (itsdangerous)
+   |-- Database: Supabase PostgreSQL via Connection Pooler (6543)
+   |-- Storage: Supabase Storage cho ảnh/media
+   |-- External APIs: TMDB, Google Books, OMDb
+   |-- Cron: Vercel Cron Jobs, bảo vệ bằng CRON_SECRET
 ```
-
-**Lưu ý kỹ thuật quan trọng:** Vercel serverless có ổ đĩa tạm/ephemeral giống Render — SQLite file sẽ mất dữ liệu liên tục. Vì vậy **DB phải chuyển sang Supabase Postgres ngay ở Giai đoạn 1.5**, sớm hơn kế hoạch cũ (trước đây định để tới Giai đoạn 6), thay vì tiếp tục dùng SQLite khi deploy thật.
-
-Vercel Hobby (free) giới hạn ~10 giây xử lý/request — ảnh hưởng tới thiết kế cron crawl (giữ đúng giới hạn 5–10 mục/đêm như đã tính).
 
 ---
 
@@ -66,39 +70,37 @@ Vercel Hobby (free) giới hạn ~10 giây xử lý/request — ảnh hưởng t
 Trang HTML/CSS/JS đếm ngày yêu nhau. (Xong)
 
 ### Giai đoạn 0.5 — Git + GitHub Private ✅
-(Xong — deploy tĩnh sẽ chuyển sang Vercel ở bước 1.5)
+(Xong)
 
 ### Giai đoạn 1 — Backend cơ bản (local) ✅
-FastAPI 1 file + SQLite local + API lời nhắn hôm nay, frontend gọi API thật. (Xong)
+FastAPI + SQLite local + API lời nhắn hôm nay. (Xong)
 
-### Giai đoạn 1.5 — Hạ tầng Vercel + Supabase (MỚI)
-- Tạo project Supabase, lấy connection string Postgres (pooler cổng 6543)
-- Đổi `database.py` từ SQLite sang Postgres
+### Giai đoạn 1.5 — Hạ tầng Vercel + Supabase ✅
+- Tạo project Supabase, dùng connection string Postgres (pooler cổng 6543)
+- Đổi backend sang Postgres
 - Deploy backend lên Vercel (Serverless Functions)
 - Deploy frontend lên Vercel (Static)
-- **Đầu ra:** Cùng chức năng như cũ (lời nhắn hôm nay) nhưng chạy trên hạ tầng mới, không còn lag 40s.
 
-### Giai đoạn 2 — Đăng nhập bảo mật 🔄
-Session cookie + bcrypt trực tiếp, 2 tài khoản định sẵn. (Đang làm lại)
+### Giai đoạn 2 — Đăng nhập bảo mật ✅
+Session cookie + bcrypt, 2 tài khoản định sẵn.
 
-### Giai đoạn 3 — Nhật ký & Timeline
-Bảng Journal, form nhập bài viết, hiển thị theo thời gian giảm dần.
+### Giai đoạn 3 — Nhật ký & Timeline ✅
+Bảng journal, form nhập bài viết, hiển thị theo thời gian giảm dần.
 
-### Giai đoạn 4 — Album ảnh
-Upload lên Supabase Storage (đã có sẵn từ 1.5), tổ chức theo album.
+### Giai đoạn 4 — Album ảnh ✅
+Upload ảnh lên Supabase Storage, tổ chức theo album.
 
-### Giai đoạn 5 — Quỹ chung & hoạt động đôi
-Thu/chi quỹ chung, thanh tiến độ mục tiêu, danh sách địa điểm đã đi.
+### Giai đoạn 5 — Quỹ chung & hoạt động đôi ✅
+Thu/chi quỹ chung, mục tiêu, hoạt động đôi.
 
-### Giai đoạn 6 — Kiến trúc 3 tầng + Media Hub + Tự động hoá
-- Tách backend: `routers/` / `services/` / `repositories/`
-- Media Hub: phim (TMDB), sách (Google Books), nhạc (YouTube Data API trước, Spotify để sau do cần xin quyền OAuth phức tạp hơn)
-- Vercel Cron Job chạy đêm, endpoint `/api/v1/cron/auto-crawl`, bảo vệ bằng `CRON_SECRET`
-- Webhook Telegram/Discord báo cập nhật mới
-- (Tuỳ chọn) đổi session sang JWT
+### Giai đoạn 6 — Kiến trúc 3 tầng + Media Hub + Tự động hoá ✅
+- Tách backend thành `routers/`, `services/`, `repositories/`, `models/`
+- Media Hub: phim/sách/nhạc, suggestions, refresh suggestions
+- Cron tự động thêm suggestions, endpoint bảo vệ bằng `CRON_SECRET`
+- Webhook Telegram/Discord còn là mục mở rộng ở giai đoạn sau nếu cần
 
-### Giai đoạn 7 — Nâng cấp UI/UX (cập nhật 07/08/2026 sau khi đối chiếu ảnh mockup)
-> Bố cục/kiểu trình bày lấy cảm hứng từ ảnh mockup do người dùng cung cấp — **bảng màu và mô hình quỹ chung giữ nguyên như đã xây** (không đổi sang hồng-tím/icon nhiều màu, không đổi sang mô hình chia tiền ai nợ ai). Chi tiết đầy đủ ở mục 10 — Design System.
+### Giai đoạn 7 — Nâng cấp UI/UX (cập nhật 09/08/2026)
+> Mục tiêu hiện tại là đưa giao diện gần với mockup hơn mà vẫn giữ bảng màu và mô hình dữ liệu hiện tại.
 
 - **7.1** ✅ Cơ chế card thu gọn/mở rộng dùng chung
 - **7.2** ✅ Đồng hồ: tổng số ngày + năm/tháng/ngày + "Quen nhau từ...–nay" + đồng hồ giờ thật
@@ -106,28 +108,28 @@ Thu/chi quỹ chung, thanh tiến độ mục tiêu, danh sách địa điểm �
 - **7.3** 🔄 Media Hub:
   - 7.3.1 ✅ Gợi ý dạng xem trước (bảng `suggestions` riêng), nút Thêm/Bỏ qua, nút làm mới gợi ý
   - 7.3.2 ✅ Tích hợp OMDb (IMDb + Tomatometer, tra theo mã IMDb chính xác thay vì tên), click mở rộng xem tóm tắt, hiện nguồn gợi ý ("Dựa trên: ...")
-  - 7.3.3 — Carousel: chỉ hiện 2-3 thẻ/lượt (gợi ý, muốn xem, đã xem), cuộn/kéo xem thêm
-  - 7.3.4 — Sort "đã xem" theo ngày đánh dấu (asc/desc)
-  - 7.3.5 (mới, từ mockup) — Hợp nhất giao diện: 1 dropdown chọn loại (Phim/Sách/Nhạc) + 1 ô tìm kiếm chung, thay vì 3 khung tách riêng như hiện tại; khung gợi ý dạng danh sách hàng ngang có sao đánh giá; lưới poster tỉ lệ dọc 2:3 kèm badge trạng thái ("Đã xem xong"/"Dự định")
+  - 7.3.3 — Carousel: chỉ hiện 2–3 thẻ/lượt, cuộn/kéo xem thêm
+  - 7.3.4 ✅ Sort "đã xem" theo ngày đánh dấu (asc/desc)
+  - 7.3.5 — Hợp nhất giao diện: 1 dropdown chọn loại + 1 ô tìm kiếm chung, thay vì 3 khung tách riêng; khung gợi ý dạng danh sách hàng ngang có sao đánh giá; lưới poster dọc 2:3 kèm badge trạng thái ("Đã xem xong" / "Dự định")
 - **7.4** ✅ Album: bảng `albums` riêng, nhóm hiển thị theo tên album kèm số lượng, tạo/sort qua UI
   - 7.4.1 + 7.4.2 ✅ Upload nhiều ảnh 1 lượt (tối đa 30), nhớ album đã chọn lần trước, tự bỏ qua ảnh trùng (hash SHA-256)
-  - 7.4.3 (đang làm) — Xem ảnh toàn màn hình, duyệt ảnh, xem/sửa chi tiết (tên file, ngày, người tải, dung lượng, ghi chú)
+  - 7.4.3 ✅ Xem ảnh toàn màn hình, duyệt ảnh, xem/sửa chi tiết (tên file, ngày, người tải, dung lượng, ghi chú)
   - 7.4.4 — Kéo thả sắp xếp lại vị trí ảnh trong album
 - **7.5** — Lời nhắn: tách card hiển thị/viết, lịch sử, đậm/mờ khi cuộn, bình luận/trả lời qua lại
-- **7.6** — Nhật ký: timeline dọc có đường nối + icon tròn theo mốc thời gian, thẻ nội dung kèm tên tác giả + nút sửa/xoá (thay cho pattern feed đơn giản đã định trước đó)
-- **7.7** — Trang Settings (3 khối): (1) Thông tin đôi — sửa ngày bắt đầu + tên gọi 2 người qua UI; (2) Thông báo — cấu hình Telegram/Discord webhook URL + nút Lưu/Gửi thử; (3) Lời nhắn hằng ngày — danh sách quản lý, hiện ngẫu nhiên 1 câu/ngày ở trang chủ. Không phân quyền admin/member (giữ đơn giản, 2 người cùng sửa được)
-- **7.8** — Trang chủ dashboard: thêm avatar viết tắt tên 2 người nối bằng ❤️ vào khối đồng hồ (lấy tên từ Settings 7.7); khối "Xem gần đây" 2 cột cuối trang (ví dụ: nhật ký gần đây | hoạt động gần đây) kiểu "Xem tất cả →"
+- **7.6** — Nhật ký: timeline dọc có đường nối + icon tròn theo mốc thời gian, thẻ nội dung kèm tên tác giả + nút sửa/xoá
+- **7.7** — Trang Settings (3 khối): Thông tin đôi / Thông báo webhook / Lời nhắn hằng ngày
+- **7.8** — Trang chủ dashboard: avatar viết tắt tên 2 người nối bằng ❤️ vào khối đồng hồ; khối "Xem gần đây" 2 cột cuối trang
 
 **Cân nhắc thêm/bớt so với mockup:**
-- **Lưới 6 nút truy cập nhanh ở trang chủ:** không cần thiết — sidebar đã liệt kê đủ 9 mục thường trực, thêm lưới sẽ trùng chức năng. Bỏ qua.
-- **Wishlist (trang riêng biệt):** vẫn để dành, chưa thêm vào giai đoạn nào.
-- **Quỹ chung mô hình chia tiền ai nợ ai:** đã xác nhận **không đổi**, giữ nguyên quỹ chung + mục tiêu hiện tại.
+- **Lưới 6 nút truy cập nhanh ở trang chủ:** bỏ qua.
+- **Wishlist (trang riêng biệt):** để dành.
+- **Quỹ chung mô hình chia tiền ai nợ ai:** giữ nguyên quỹ chung + mục tiêu tiết kiệm.
 
 ### Giai đoạn 8 — Gamification, domain riêng, tối ưu, định hướng mobile
-Thẻ gamification ở trang chủ (tham khảo mockup): cấp độ hiện tại + điểm số, thanh tiến độ lên cấp tiếp theo, hàng huy hiệu cuộn ngang (đã mở khoá tô màu, chưa mở khoá viền xám nhạt). Ý tưởng huy hiệu: Khởi đầu, Nhà văn, Nhiếp ảnh gia, Quản gia, Du hành gia, 100 ngày, Một năm... Ngoài ra: mua domain riêng (giải quyết lỗi cookie Safari), responsive, chuẩn bị backend cho app Flutter.
+Thẻ gamification ở trang chủ, domain riêng, responsive và chuẩn bị backend cho app Flutter.
 
-### Giai đoạn 9 (mới) — Tích hợp nâng cao
-Google Calendar auto-sync (Activities/Wishlist → Calendar, cần OAuth), Discord slash command nhập liệu nhanh (`/nhatky`, `/quy`, `/hoatdong` — cần dựng Discord Bot riêng, phức tạp hơn Webhook thông báo ở 6.5).
+### Giai đoạn 9 — Tích hợp nâng cao
+Google Calendar auto-sync, Discord slash command nhập liệu nhanh.
 
 ---
 
@@ -143,72 +145,42 @@ Google Calendar auto-sync (Activities/Wishlist → Calendar, cần OAuth), Disco
 | 3 | Không có công nghệ mới lớn |
 | 4 | Supabase Storage |
 | 5 | Không có công nghệ mới lớn |
-| 6 | Kiến trúc 3 tầng, TMDB API, Google Books API, YouTube Data API, Vercel Cron Jobs, Webhook, (tuỳ chọn) JWT |
-| 7 | OMDb API (IMDb + Tomatometer), không có hạ tầng lớn mới khác |
+| 6 | Kiến trúc 3 tầng, TMDB API, Google Books API, OMDb API, Vercel Cron Jobs |
+| 7 | Không có hạ tầng mới lớn |
 | 8 | Domain + SSL, Responsive design, (định hướng) Flutter |
 
 ---
 
 ## 7. Cấu trúc thư mục
 
-```
+```text
 luvlog/
 ├── frontend/
 │   ├── index.html
 │   ├── css/
 │   └── js/
 ├── backend/
-│   ├── main.py              # entrypoint Vercel nhận diện tự động
+│   ├── main.py
 │   ├── database.py
 │   ├── requirements.txt
 │   └── .env.example
 ├── docs/
 │   ├── KE-HOACH-DU-AN.md
+│   ├── Documentations.md
+│   ├── PRD_ver2.md
 │   ├── QUY-TAC-LAM-VIEC.md
-│   └── CHANGELOG.md
+│   └── README.md
 ├── .gitignore
 └── README.md
 ```
 
-Triển khai: **2 project Vercel riêng** (1 cho `frontend/`, 1 cho `backend/`) — giống mô hình 2 service tách biệt đã dùng với Render trước đây, tránh cấu hình routing phức tạp trong 1 project.
-
-Từ Giai đoạn 6, `backend/` tách thêm `routers/`, `services/`, `repositories/`, `models/`.
-
-`.gitignore` tối thiểu: `.env`, `venv/`, `__pycache__/`, `*.db`, `.vercel/`.
-
 ---
 
-## 8. Quản lý nhánh Git
+## 8. Bước tiếp theo ưu tiên
 
-`main` = bản chạy ổn định để deploy. `feature/ten-tinh-nang` = nhánh riêng cho mỗi tính năng, merge vào `main` khi xong & test ổn. Dùng branch từ Giai đoạn 1 trở đi.
-
----
-
-## 10. Design System (xác nhận qua ảnh mockup 07/08/2026)
-
-> Bố cục/pattern lấy từ ảnh mockup người dùng cung cấp. **Bảng màu và mô hình dữ liệu giữ nguyên như đã xây trước đó** — ảnh chỉ dùng để tham khảo cách trình bày, không phải để đổi màu hay đổi mô hình quỹ chung.
-
-**Không đổi (đã chốt):**
-- Bảng màu: tông giấy ấm hiện tại (`--ink`, `--plum`, `--berry`, `--paper`, `--card`) — **không** dùng gradient hồng-tím, **không** icon nhiều màu theo từng mục
-- Quỹ chung: giữ mô hình quỹ chung + mục tiêu tiết kiệm — **không** đổi sang mô hình chia tiền "ai nợ ai"
-
-**Áp dụng bố cục từ mockup (giữ màu hiện tại):**
-- Sidebar: mục đang chọn có nền nổi bo tròn (đã có), logo + tagline ở đầu (đã có), khối "Made with love" ở chân sidebar
-- Trang chủ: khối đồng hồ có avatar viết tắt tên 2 người nối bằng ❤️ (7.8); khối preview "xem gần đây" 2 cột cuối trang (7.8)
-- Nhật ký: timeline dọc có đường nối + icon theo mốc (7.6)
-- Album: nhóm theo tên album kèm số lượng, lưới ảnh vuông bo góc (7.4)
-- Hoạt động: pill lọc theo category kèm số đếm (bổ sung cho 7.3 pattern, áp dụng tương tự nếu cần)
-- Media Hub: 1 dropdown chọn loại + 1 ô tìm kiếm chung, khung gợi ý dạng danh sách hàng ngang, lưới poster dọc 2:3 kèm badge trạng thái (7.3.5)
-- Settings (trang mới): 3 khối — Thông tin đôi / Thông báo webhook / Lời nhắn hằng ngày (7.7)
-- Gamification (Giai đoạn 8): thẻ cấp độ + điểm + thanh tiến độ + hàng huy hiệu cuộn ngang
-
-**Không áp dụng / để dành:**
-- Lưới 6 nút truy cập nhanh ở trang chủ — trùng chức năng với sidebar, bỏ qua
-- Wishlist trang riêng biệt — để dành, chưa quyết
-- Mô hình quỹ chung chia tiền ai nợ ai — đã từ chối, giữ nguyên hiện tại
-
----
-
-## 11. Bước tiếp theo
-
-Đang ở Giai đoạn 7 — 7.1, 7.2, 7.2.5, 7.3.1 đã xong. Tiếp theo: **7.3.2** (tích hợp OMDb — IMDb + Tomatometer, click mở rộng xem tóm tắt).
+1. Hoàn thiện Media Hub theo mockup: 7.3.3 + 7.3.5.
+2. Hoàn thiện album reorder: 7.4.4.
+3. Đổi lời nhắn sang cấu trúc mới: 7.5.
+4. Đổi nhật ký sang timeline: 7.6.
+5. Thêm Settings: 7.7.
+6. Thêm dashboard mới: 7.8.
