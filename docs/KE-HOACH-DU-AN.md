@@ -34,7 +34,7 @@ Tóm tắt: từng bước nhỏ, test xong mới qua bước tiếp; không l�
 | 4 — Album ảnh | ✅ Xong |
 | 5 — Quỹ chung & hoạt động đôi | ✅ Xong |
 | 6 — Kiến trúc 3 tầng + Media Hub + Cron | 🔄 Đang làm (6.1–6.4 xong; 6.5 Webhook còn lại; JWT: bỏ qua) |
-| 7 — Nâng cấp UI/UX | 🔄 Đang làm (7.1, 7.2, 7.2.5 xong; 7.3.1 Media Hub gợi ý xem trước đang làm) |
+| 7 — Nâng cấp UI/UX | 🔄 Đang làm (7.1–7.2.5, 7.3, 7.4 (trừ 7.4.3e/f, 7.4.4), 7.5, 7.6 xong) |
 | 8 — Gamification, domain, mobile | ⏳ Chưa bắt đầu |
 
 ---
@@ -112,9 +112,12 @@ Thu/chi quỹ chung, thanh tiến độ mục tiêu, danh sách địa điểm �
 - **7.4** ✅ Album: bảng `albums` riêng, nhóm hiển thị theo tên album kèm số lượng, tạo/sort qua UI
   - 7.4.1 + 7.4.2 ✅ Upload nhiều ảnh 1 lượt (tối đa 30), nhớ album đã chọn lần trước, tự bỏ qua ảnh trùng (hash SHA-256)
   - 7.4.3 (đang làm) — Xem ảnh toàn màn hình, duyệt ảnh, xem/sửa chi tiết (tên file, ngày, người tải, dung lượng, ghi chú)
+  - 7.4.3d ✅ Lightbox: giữ tỉ lệ ảnh gốc, nút fullscreen, menu 3 chấm, nút tự ẩn/hiện sau 3s
+  - 7.4.3e (mới, chưa làm) — Vuốt trái/phải để chuyển ảnh trên điện thoại (touch swipe)
+  - 7.4.3f (mới, chưa làm) — Tách nút (i) riêng cạnh nút 3 chấm để xem ghi chú (cùng cơ chế ẩn/hiện 3s như các nút khác). Ghi chú mặc định hiển thị: nội dung + thời gian đăng ảnh + người đăng ảnh + người viết ghi chú (nếu có) — chỉ ở dạng xem. Sửa ghi chú chuyển vào menu 3 chấm ("Chỉnh sửa ghi chú"), tách khỏi khung xem
   - 7.4.4 — Kéo thả sắp xếp lại vị trí ảnh trong album
-- **7.5** — Lời nhắn: tách card hiển thị/viết, lịch sử, đậm/mờ khi cuộn, bình luận/trả lời qua lại
-- **7.6** — Nhật ký: timeline dọc có đường nối + icon tròn theo mốc thời gian, thẻ nội dung kèm tên tác giả + nút sửa/xoá (thay cho pattern feed đơn giản đã định trước đó)
+- **7.5** ✅ Lời nhắn: tách khối viết/xem, lịch sử (feed đậm/mờ), bình luận/trả lời qua lại
+- **7.6** ✅ Nhật ký: timeline dọc có đường nối + icon tâm trạng, sửa/xoá bài viết tại chỗ
 - **7.7** — Trang Settings (3 khối): (1) Thông tin đôi — sửa ngày bắt đầu + tên gọi 2 người qua UI; (2) Thông báo — cấu hình Telegram/Discord webhook URL + nút Lưu/Gửi thử; (3) Lời nhắn hằng ngày — danh sách quản lý, hiện ngẫu nhiên 1 câu/ngày ở trang chủ. Không phân quyền admin/member (giữ đơn giản, 2 người cùng sửa được)
 - **7.8** — Trang chủ dashboard: thêm avatar viết tắt tên 2 người nối bằng ❤️ vào khối đồng hồ (lấy tên từ Settings 7.7); khối "Xem gần đây" 2 cột cuối trang (ví dụ: nhật ký gần đây | hoạt động gần đây) kiểu "Xem tất cả →"
 
@@ -211,4 +214,10 @@ Từ Giai đoạn 6, `backend/` tách thêm `routers/`, `services/`, `repositori
 
 ## 11. Bước tiếp theo
 
-Đang ở Giai đoạn 7 — 7.1, 7.2, 7.2.5, 7.3.1 đã xong. Tiếp theo: **7.3.2** (tích hợp OMDb — IMDb + Tomatometer, click mở rộng xem tóm tắt).
+Còn lại trong Giai đoạn 7:
+- **7.4.3e** — Vuốt trái/phải chuyển ảnh trên điện thoại (lightbox)
+- **7.4.3f** — Tách nút (i) xem ghi chú riêng khỏi menu 3 chấm, ghi chú hiện dạng xem trước (nội dung + thời gian + người đăng ảnh + người viết), sửa chuyển vào menu 3 chấm
+- **7.4.4** — Kéo thả sắp xếp lại vị trí ảnh trong album
+- **7.3.5** — Hợp nhất giao diện Media Hub theo mockup (1 dropdown chọn loại + 1 ô tìm kiếm chung, thay 3 khung tách riêng)
+
+Sau đó qua Giai đoạn 8 (gamification, domain, mobile) và Giai đoạn 9 (Google Calendar/Discord bot).
