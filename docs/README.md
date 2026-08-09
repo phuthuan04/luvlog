@@ -1,60 +1,68 @@
 # luvlog
 
-Website riêng tư cho hai người — đồng hồ đếm ngày yêu, lời nhắn hằng ngày, và các tính năng sẽ mở rộng dần.
+Website riêng tư ghi lại kỷ niệm của hai người.
 
-## Live
+> 💌 luvlog được làm dành cho Khánh Đan, người yêu của anh.
+>
+> Mong rằng nơi này sẽ lưu giữ được thật nhiều kỷ niệm đẹp của hai đứa mình.
+>
+> Anh yêu em.
+>
+> — phuthuan04
 
-| Thành phần | URL |
-|---|---|
-| Frontend | https://luvlog-frontend.vercel.app |
-| Backend API | https://luvlog.vercel.app |
+---
 
-## Trạng thái hiện tại
+## Tính năng hiện tại
+- Đồng hồ đếm thời gian yêu nhau (năm/tháng/ngày/giờ/phút/giây)
+- Lời nhắn hằng ngày, đồng bộ giữa hai người
+- Đăng nhập bảo mật (session cookie + mật khẩu băm bcrypt)
 
-- ✅ Trang tĩnh (đồng hồ đếm ngày)
-- ✅ Backend FastAPI trên Vercel + Supabase PostgreSQL
-- ✅ Đăng nhập session cookie + bcrypt (2 tài khoản)
-- ✅ Lời nhắn hôm nay (yêu cầu đăng nhập)
-- ✅ Nhật ký & Timeline (form nhập + hiển thị theo thời gian)
-- ✅ Album ảnh (upload + xem theo album, lưu trên Supabase Storage)
-- ✅ Quỹ chung (nhiều mục tiêu song song, mỗi mục tiêu theo dõi tiến độ riêng)
-- ✅ Hoạt động đôi (địa điểm đã đi, phân loại, đếm số lần trùng)
-- ✅ Kiến trúc backend 3 tầng (routers/services/repositories)
-- ✅ Media Hub: phim/sách (tìm kiếm qua TMDB + Google Books, watchlist + đánh giá) và nhạc (nhập tay)
-- ✅ Cron tự động gợi ý phim/sách mỗi đêm (dựa trên đánh giá ≥ 4 sao), hiện riêng khung "Gợi ý cho hôm nay"
+## Kiến trúc
 
-## Cấu trúc
+```
+Frontend tĩnh (Vercel) <--REST API--> Backend FastAPI (Vercel Serverless) <--> Supabase PostgreSQL
+```
+
+Chi tiết đầy đủ và lộ trình các giai đoạn tiếp theo: [`docs/KE-HOACH-DU-AN.md`](docs/KE-HOACH-DU-AN.md)
+Quy tắc làm việc của dự án: [`docs/QUY-TAC-LAM-VIEC.md`](docs/QUY-TAC-LAM-VIEC.md)
+Lịch sử thay đổi: [`docs/CHANGELOG.md`](docs/CHANGELOG.md)
+
+## Cấu trúc thư mục
 
 ```
 luvlog/
-├── frontend/          # HTML/CSS/JS tĩnh — deploy Vercel Static
-├── backend/           # FastAPI — deploy Vercel Serverless
-├── docs/              # Kế hoạch & quy tắc làm việc nội bộ
-├── README.md          # Tổng quan nhanh (file này)
-└── Documentations.md  # Tài liệu kỹ thuật đầy đủ
+├── frontend/       # HTML/CSS/JS tĩnh
+├── backend/        # FastAPI (Vercel Serverless Functions)
+├── docs/           # Tài liệu dự án
+├── .gitignore
+└── README.md
 ```
 
 ## Chạy local
 
 ### Backend
-
 ```powershell
 cd backend
 python -m venv venv
-.\venv\Scripts\Activate.ps1
+venv\Scripts\activate
 pip install -r requirements.txt
-copy .env.example .env   # điền giá trị thật
 uvicorn main:app --reload
 ```
+Tạo file `backend/.env` theo mẫu `backend/.env.example`, điền giá trị thật (không commit file `.env`).
 
 ### Frontend
+```powershell
+start frontend/index.html
+```
 
-Mở `frontend/index.html` bằng Live Server, hoặc serve tĩnh. Khi dev local, cần thêm origin frontend vào CORS trong `backend/main.py`.
+## Deploy
 
-## Tài liệu
+| Phần | Nền tảng | Link |
+|---|---|---|
+| Frontend | Vercel Static | https://luvlog-frontend.vercel.app |
+| Backend | Vercel Serverless | https://luvlog.vercel.app |
+| Database | Supabase PostgreSQL | — |
 
-- [Documentations.md](./Documentations.md) — API, biến môi trường, kiến trúc, changelog
-- [docs/KE-HOACH-DU-AN.md](./docs/KE-HOACH-DU-AN.md) — lộ trình đầy đủ
-- [docs/QUY-TAC-LAM-VIEC.md](./docs/QUY-TAC-LAM-VIEC.md) — quy tắc phát triển
+## Công nghệ
 
-> **Quy ước:** Mỗi khi thêm/sửa tính năng, cập nhật song song `README.md`, `Documentations.md`, và `docs/KE-HOACH-DU-AN.md`.
+Python, FastAPI, SQLAlchemy, bcrypt, Vercel (Serverless + Static), Supabase (PostgreSQL + Storage).

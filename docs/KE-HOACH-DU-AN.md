@@ -34,7 +34,7 @@ Tóm tắt: từng bước nhỏ, test xong mới qua bước tiếp; không l�
 | 4 — Album ảnh | ✅ Xong |
 | 5 — Quỹ chung & hoạt động đôi | ✅ Xong |
 | 6 — Kiến trúc 3 tầng + Media Hub + Cron | 🔄 Đang làm (6.1–6.4 xong; 6.5 Webhook còn lại; JWT: bỏ qua) |
-| 7 — Nâng cấp UI/UX | 🔄 Đang làm (7.1, 7.2 xong; 7.2.5 điều hướng sidebar tiếp theo) |
+| 7 — Nâng cấp UI/UX | 🔄 Đang làm (7.1, 7.2, 7.2.5 xong; 7.3.1 Media Hub gợi ý xem trước đang làm) |
 | 8 — Gamification, domain, mobile | ⏳ Chưa bắt đầu |
 
 ---
@@ -97,21 +97,34 @@ Thu/chi quỹ chung, thanh tiến độ mục tiêu, danh sách địa điểm �
 - Webhook Telegram/Discord báo cập nhật mới
 - (Tuỳ chọn) đổi session sang JWT
 
-### Giai đoạn 7 — Nâng cấp UI/UX (cập nhật 06/08/2026 sau khi đối chiếu PRD v2)
+### Giai đoạn 7 — Nâng cấp UI/UX (cập nhật 07/08/2026 sau khi đối chiếu ảnh mockup)
+> Bố cục/kiểu trình bày lấy cảm hứng từ ảnh mockup do người dùng cung cấp — **bảng màu và mô hình quỹ chung giữ nguyên như đã xây** (không đổi sang hồng-tím/icon nhiều màu, không đổi sang mô hình chia tiền ai nợ ai). Chi tiết đầy đủ ở mục 10 — Design System.
+
 - **7.1** ✅ Cơ chế card thu gọn/mở rộng dùng chung
 - **7.2** ✅ Đồng hồ: tổng số ngày + năm/tháng/ngày + "Quen nhau từ...–nay" + đồng hồ giờ thật
-- **7.2.5** (mới) — Đổi điều hướng: thanh tab ngang → **sidebar cố định (desktop) + thanh điều hướng dưới (mobile)**
-- **7.3** — Media Hub: ẩn rating/review ở gợi ý, nút thêm khi hover, nút làm mới gợi ý (endpoint `require_login` riêng), carousel 2-3 thẻ, sort đã xem theo ngày, tích hợp OMDb (IMDb + Tomatometer), giữ tóm tắt TMDB tiếng Việt có sẵn
-- **7.4** — Album: bảng `albums` riêng, tạo/sort qua UI
+- **7.2.5** ✅ Điều hướng: sidebar cố định (desktop) + thanh dưới (mobile)
+- **7.3** 🔄 Media Hub:
+  - 7.3.1 ✅ Gợi ý dạng xem trước (bảng `suggestions` riêng), nút Thêm/Bỏ qua, nút làm mới gợi ý
+  - 7.3.2 ✅ Tích hợp OMDb (IMDb + Tomatometer, tra theo mã IMDb chính xác thay vì tên), click mở rộng xem tóm tắt, hiện nguồn gợi ý ("Dựa trên: ...")
+  - 7.3.3 — Carousel: chỉ hiện 2-3 thẻ/lượt (gợi ý, muốn xem, đã xem), cuộn/kéo xem thêm
+  - 7.3.4 — Sort "đã xem" theo ngày đánh dấu (asc/desc)
+  - 7.3.5 (mới, từ mockup) — Hợp nhất giao diện: 1 dropdown chọn loại (Phim/Sách/Nhạc) + 1 ô tìm kiếm chung, thay vì 3 khung tách riêng như hiện tại; khung gợi ý dạng danh sách hàng ngang có sao đánh giá; lưới poster tỉ lệ dọc 2:3 kèm badge trạng thái ("Đã xem xong"/"Dự định")
+- **7.4** ✅ Album: bảng `albums` riêng, nhóm hiển thị theo tên album kèm số lượng, tạo/sort qua UI
+  - 7.4.1 + 7.4.2 ✅ Upload nhiều ảnh 1 lượt (tối đa 30), nhớ album đã chọn lần trước, tự bỏ qua ảnh trùng (hash SHA-256)
+  - 7.4.3 (đang làm) — Xem ảnh toàn màn hình, duyệt ảnh, xem/sửa chi tiết (tên file, ngày, người tải, dung lượng, ghi chú)
+  - 7.4.4 — Kéo thả sắp xếp lại vị trí ảnh trong album
 - **7.5** — Lời nhắn: tách card hiển thị/viết, lịch sử, đậm/mờ khi cuộn, bình luận/trả lời qua lại
-- **7.6** — Nhật ký: pattern feed tương tự lời nhắn/album
-- **7.7** (mới) — Trang Settings: sửa ngày kỷ niệm qua UI (thay vì sửa code `startDate`), quản lý danh sách daily quote — không phân quyền admin/member (giữ đơn giản, 2 người cùng sửa được)
-- **7.8** (mới) — Daily quote card ở trang chủ, lấy ngẫu nhiên từ danh sách quản lý ở 7.7
+- **7.6** — Nhật ký: timeline dọc có đường nối + icon tròn theo mốc thời gian, thẻ nội dung kèm tên tác giả + nút sửa/xoá (thay cho pattern feed đơn giản đã định trước đó)
+- **7.7** — Trang Settings (3 khối): (1) Thông tin đôi — sửa ngày bắt đầu + tên gọi 2 người qua UI; (2) Thông báo — cấu hình Telegram/Discord webhook URL + nút Lưu/Gửi thử; (3) Lời nhắn hằng ngày — danh sách quản lý, hiện ngẫu nhiên 1 câu/ngày ở trang chủ. Không phân quyền admin/member (giữ đơn giản, 2 người cùng sửa được)
+- **7.8** — Trang chủ dashboard: thêm avatar viết tắt tên 2 người nối bằng ❤️ vào khối đồng hồ (lấy tên từ Settings 7.7); khối "Xem gần đây" 2 cột cuối trang (ví dụ: nhật ký gần đây | hoạt động gần đây) kiểu "Xem tất cả →"
 
-**Ý tưởng dự phòng (chưa thêm vào giai đoạn nào):** Wishlist riêng biệt (khác quỹ chung + mục tiêu hiện tại).
+**Cân nhắc thêm/bớt so với mockup:**
+- **Lưới 6 nút truy cập nhanh ở trang chủ:** không cần thiết — sidebar đã liệt kê đủ 9 mục thường trực, thêm lưới sẽ trùng chức năng. Bỏ qua.
+- **Wishlist (trang riêng biệt):** vẫn để dành, chưa thêm vào giai đoạn nào.
+- **Quỹ chung mô hình chia tiền ai nợ ai:** đã xác nhận **không đổi**, giữ nguyên quỹ chung + mục tiêu hiện tại.
 
 ### Giai đoạn 8 — Gamification, domain riêng, tối ưu, định hướng mobile
-Thử thách cặp đôi, mua domain riêng (cũng giải quyết lỗi cookie Safari), responsive, chuẩn bị backend cho app Flutter. Badge ý tưởng tham khảo từ PRD v2: Khởi đầu, Nhà văn, Nhiếp ảnh gia, Quản gia, Du hành gia, 100 ngày, Một năm...
+Thẻ gamification ở trang chủ (tham khảo mockup): cấp độ hiện tại + điểm số, thanh tiến độ lên cấp tiếp theo, hàng huy hiệu cuộn ngang (đã mở khoá tô màu, chưa mở khoá viền xám nhạt). Ý tưởng huy hiệu: Khởi đầu, Nhà văn, Nhiếp ảnh gia, Quản gia, Du hành gia, 100 ngày, Một năm... Ngoài ra: mua domain riêng (giải quyết lỗi cookie Safari), responsive, chuẩn bị backend cho app Flutter.
 
 ### Giai đoạn 9 (mới) — Tích hợp nâng cao
 Google Calendar auto-sync (Activities/Wishlist → Calendar, cần OAuth), Discord slash command nhập liệu nhanh (`/nhatky`, `/quy`, `/hoatdong` — cần dựng Discord Bot riêng, phức tạp hơn Webhook thông báo ở 6.5).
@@ -171,6 +184,31 @@ Từ Giai đoạn 6, `backend/` tách thêm `routers/`, `services/`, `repositori
 
 ---
 
-## 9. Bước tiếp theo
+## 10. Design System (xác nhận qua ảnh mockup 07/08/2026)
 
-Đang ở Giai đoạn 6 (6.1 xong, tiếp 6.2 Media Hub). Giai đoạn 7 (UI/UX) đã chốt kế hoạch, làm sau khi xong Giai đoạn 6.
+> Bố cục/pattern lấy từ ảnh mockup người dùng cung cấp. **Bảng màu và mô hình dữ liệu giữ nguyên như đã xây trước đó** — ảnh chỉ dùng để tham khảo cách trình bày, không phải để đổi màu hay đổi mô hình quỹ chung.
+
+**Không đổi (đã chốt):**
+- Bảng màu: tông giấy ấm hiện tại (`--ink`, `--plum`, `--berry`, `--paper`, `--card`) — **không** dùng gradient hồng-tím, **không** icon nhiều màu theo từng mục
+- Quỹ chung: giữ mô hình quỹ chung + mục tiêu tiết kiệm — **không** đổi sang mô hình chia tiền "ai nợ ai"
+
+**Áp dụng bố cục từ mockup (giữ màu hiện tại):**
+- Sidebar: mục đang chọn có nền nổi bo tròn (đã có), logo + tagline ở đầu (đã có), khối "Made with love" ở chân sidebar
+- Trang chủ: khối đồng hồ có avatar viết tắt tên 2 người nối bằng ❤️ (7.8); khối preview "xem gần đây" 2 cột cuối trang (7.8)
+- Nhật ký: timeline dọc có đường nối + icon theo mốc (7.6)
+- Album: nhóm theo tên album kèm số lượng, lưới ảnh vuông bo góc (7.4)
+- Hoạt động: pill lọc theo category kèm số đếm (bổ sung cho 7.3 pattern, áp dụng tương tự nếu cần)
+- Media Hub: 1 dropdown chọn loại + 1 ô tìm kiếm chung, khung gợi ý dạng danh sách hàng ngang, lưới poster dọc 2:3 kèm badge trạng thái (7.3.5)
+- Settings (trang mới): 3 khối — Thông tin đôi / Thông báo webhook / Lời nhắn hằng ngày (7.7)
+- Gamification (Giai đoạn 8): thẻ cấp độ + điểm + thanh tiến độ + hàng huy hiệu cuộn ngang
+
+**Không áp dụng / để dành:**
+- Lưới 6 nút truy cập nhanh ở trang chủ — trùng chức năng với sidebar, bỏ qua
+- Wishlist trang riêng biệt — để dành, chưa quyết
+- Mô hình quỹ chung chia tiền ai nợ ai — đã từ chối, giữ nguyên hiện tại
+
+---
+
+## 11. Bước tiếp theo
+
+Đang ở Giai đoạn 7 — 7.1, 7.2, 7.2.5, 7.3.1 đã xong. Tiếp theo: **7.3.2** (tích hợp OMDb — IMDb + Tomatometer, click mở rộng xem tóm tắt).

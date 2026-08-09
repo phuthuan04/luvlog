@@ -14,8 +14,22 @@
 ## 3. Terminal
 - Chỉ dùng **Terminal tích hợp trong VS Code**, không mở PowerShell rời. Bản chất vẫn là PowerShell chạy bên trong VS Code.
 
+## 3.5 File `index.html`
+- Mỗi khi có thay đổi ở `frontend/index.html`, cập nhật lại bản đầy đủ trong artifact (không chỉ đưa diff) — để người dùng copy nguyên khối, tránh lỗi vị trí/layout khi tự chèn diff vào file HTML.
+
 ## 4. Debug
 Khi có lỗi, theo đúng thứ tự: tái hiện lỗi → lấy traceback đầy đủ → đọc toàn bộ → xác định nguyên nhân gốc → cô lập → sửa từng vấn đề một → chạy lại xác nhận → giải thích vì sao lỗi xảy ra → cách tránh lần sau. Không đoán, không đưa nhiều hướng sửa cùng lúc khi chưa rõ nguyên nhân.
+
+## 4.5 Test local — quy trình cố định
+Thiết lập 1 lần: extension **Live Server** (VS Code), CORS backend cho phép `http://127.0.0.1:5500`, `API_BASE` ở `message.js` tự nhận diện local/production.
+
+Mỗi lần test local, luôn hướng dẫn đủ các bước:
+1. Terminal VS Code: `cd backend` → `venv\Scripts\activate` → `uvicorn main:app --reload`
+2. Chuột phải `frontend/index.html` → **"Open with Live Server"** (không double-click file, không test qua `file://`)
+3. Test trên `http://127.0.0.1:5500/...`
+4. Chỉ push khi test local không lỗi
+
+Test qua `/docs` (Swagger) vẫn dùng được cho riêng backend, không cần Live Server.
 
 ## 5. Bảo mật
 - Không hard-code secrets. Luôn `.env` (local) + Environment Variables trên nền tảng deploy (Vercel, Supabase).
@@ -23,17 +37,12 @@ Khi có lỗi, theo đúng thứ tự: tái hiện lỗi → lấy traceback đ�
 
 ## 6. Git
 - Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`...).
-+ feat: Thêm tính năng mới (feature).fix: Sửa lỗi (bug fix).
-+ docs: Thay đổi tài liệu, hướng dẫn (documentation).
-+ style: Định dạng code, sửa khoảng trắng, thiếu dấu chấm phẩy (không ảnh hưởng logic).
-+ refactor: Tái cấu trúc code (không sửa lỗi, không thêm tính năng).
-+ test: Thêm hoặc sửa các bài kiểm thử (unit test).
-+ chore: Cấu hình, thay đổi công cụ build, file phụ trợ.
 - Từ Giai đoạn 1 trở đi, mỗi tính năng làm trên nhánh riêng `feature/ten-tinh-nang`, merge vào `main` khi xong & test ổn.
+- Mỗi khi đề xuất commit/push, luôn kèm sẵn nội dung commit message cụ thể (đúng chuẩn Conventional Commits) — không để trống cho người dùng tự nghĩ.
 
 ## 7. Documentation
-- Mỗi khi đổi/thêm tính năng: tự động cập nhật `Documentations.md`, `README.md`, và `docs/KE-HOACH-DU-AN.md`, không cần nhắc.
-- Changelog ghi trong `Documentations.md` mục 8, theo định dạng: `### vX.Y — Tên thay đổi (DD/MM/YYYY)`.
+- Mỗi khi đổi/thêm tính năng: tự động cập nhật `docs/KE-HOACH-DU-AN.md` và `docs/CHANGELOG.md`, không cần nhắc.
+- Changelog theo định dạng: `### vX.Y — Tên thay đổi (DD/MM/YYYY)`.
 
 ## 8. Hạ tầng (từ Giai đoạn 1.5)
 - Backend: FastAPI trên Vercel Serverless Functions (entrypoint `main.py`).
