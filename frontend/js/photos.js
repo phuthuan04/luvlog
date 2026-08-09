@@ -13,53 +13,75 @@ function populateAlbumSelect() {
   }
 }
 
-// Render the photo grid with albums and their photos
+// Album UI state: collapsed/expanded and current page
+const albumUiState = {};
+const PHOTOS_PER_PAGE = 9;
+
+function getAlbumState(albumId) {
+  if (!albumUiState[albumId]) albumUiState[albumId] = { collapsed: false, page: 0 };
+  return albumUiState[albumId];
+}
+
+// Render the photo grid with albums and photos
 function renderPhotoGrid() {
   const sorted = [...cachedAlbums].sort((a, b) =>
-    albumSort === "name"
-      ? a.name.localeCompare(b.name)
-      : new Date(b.created_at) - new Date(a.created_at)
+    albumSort === "name" ? a.name.localeCompare(b.name) : new Date(b.created_at) - new Date(a.created_at)
   );
-// Get the photo grid container
   const grid = document.getElementById("photoGrid");
-  if (!grid) return; // Tránh lỗi nếu chưa load xong DOM
-
+  if (!grid) return;
   if (!sorted.length) {
     grid.innerHTML = '<p class="photo-empty">Chưa có album nào</p>';
     return;
   }
-// Render albums and their photos
-  grid.innerHTML = sorted
-    .map((album) => {
-      const photos = cachedPhotos.filter((p) => p.album_id === album.id);
-      return `
-        <div class="album-group">
-          <p class="album-group-title">${escapeHtml(album.name)} · ${photos.length}</p>
+  grid.innerHTML = sorted.map((album) => {
+    const photos = cachedPhotos.filter((p) => p.album_id === album.id);
+    const state = getAlbumState(album.id);
+    const totalPages = Math.max(1, Math.ceil(photos.length / PHOTOS_PER_PAGE));
+    if (state.page >= totalPages) state.page = totalPages - 1;
+    const pagePhotos = photos.slice(state.page * PHOTOS_PER_PAGE, (state.page + 1) * PHOTOS_PER_PAGE);
+
+    return `
+      <div class="album-group">
+        <button type="button" class="album-toggle-btn" data-album-id="${album.id}">
+          <span class="album-group-title">${escapeHtml(album.name)} · ${photos.length}</span>
+          <span class="album-chevron ${state.collapsed ? "collapsed" : ""}">▾</span>
+        </button>
+        <div class="album-body ${state.collapsed ? "collapsed" : ""}"><div class="album-body-inner">
           <div class="album-photo-grid">
-            ${
-              photos.length
-                ? photos
-                    .map(
-                      (p) => `
-                      <figure class="photo-item">
-                        <img 
-                          src="${p.url}" 
-                          data-photo-id="${p.id}" 
-                          data-caption="${escapeHtml(p.caption || '')}"
-                          data-filename="${escapeHtml(p.filename || '')}"
-                          alt="${escapeHtml(album.name)}" 
-                          loading="lazy"
-                        >
-                      </figure>`
-                    )
-                    .join("")
-                : '<p class="photo-empty">Chưa có ảnh trong album này</p>'
-            }
+            ${pagePhotos.length
+              ? pagePhotos.map((p) => `<figure class="photo-item"><img src="${p.url}" data-photo-id="${p.id}" alt="${escapeHtml(album.name)}" loading="lazy"></figure>`).join("")
+              : '<p class="photo-empty">Chưa có ảnh trong album này</p>'}
           </div>
-        </div>`;
-    })
-    .join("");
+          ${totalPages > 1 ? `
+            <div class="album-pagination">
+              <button type="button" class="album-page-prev" data-album-id="${album.id}" ${state.page === 0 ? "disabled" : ""}>‹</button>
+              <span class="album-page-label">${state.page + 1}/${totalPages}</span>
+              <button type="button" class="album-page-next" data-album-id="${album.id}" ${state.page >= totalPages - 1 ? "disabled" : ""}>›</button>
+            </div>` : ""}
+        </div></div>
+      </div>`;
+  }).join("");
 }
+
+// Event delegation for album toggle and pagination
+document.addEventListener("click", (e) => {
+  const toggleBtn = e.target.closest(".album-toggle-btn");
+  if (toggleBtn) {
+    const state = getAlbumState(toggleBtn.dataset.albumId);
+    state.collapsed = !state.collapsed;
+    renderPhotoGrid();
+    return;
+  }
+  if (e.target.matches(".album-page-prev")) {
+    getAlbumState(e.target.dataset.albumId).page -= 1;
+    renderPhotoGrid();
+    return;
+  }
+  if (e.target.matches(".album-page-next")) {
+    getAlbumState(e.target.dataset.albumId).page += 1;
+    renderPhotoGrid();
+  }
+});
 
 // Load albums from the backend
 async function loadAlbums() {
@@ -142,26 +164,34 @@ document.getElementById("sortAlbumsBtn").addEventListener("click", (e) => {
 });
 
 
-// Lightbox functionality
 let lightboxPhotos = [];
 let lightboxIndex = 0;
+let controlsTimeout = null;
 
-// Format bytes to KB or MB
 function formatBytes(bytes) {
   if (!bytes) return "";
   const kb = bytes / 1024;
   return kb > 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${kb.toFixed(0)} KB`;
 }
 
-// Open the lightbox with a specific photo
+function showLightboxControls() {
+  document.querySelector(".lightbox-controls").classList.remove("hidden-controls");
+  clearTimeout(controlsTimeout);
+  controlsTimeout = setTimeout(() => {
+    document.querySelector(".lightbox-controls").classList.add("hidden-controls");
+  }, 3000);
+}
+
 function openLightbox(photos, index) {
   lightboxPhotos = photos;
   lightboxIndex = index;
+  document.getElementById("lightboxDetail").hidden = true;
+  document.querySelector(".lightbox-menu").hidden = true;
   renderLightbox();
   document.getElementById("lightbox").hidden = false;
+  showLightboxControls();
 }
 
-// Render the lightbox with the current photo
 function renderLightbox() {
   const p = lightboxPhotos[lightboxIndex];
   document.getElementById("lightboxImg").src = p.url;
@@ -171,7 +201,32 @@ function renderLightbox() {
   document.getElementById("lightboxCaption").value = p.caption || "";
 }
 
-// Event delegation for photo grid and lightbox
+const lightboxEl = document.getElementById("lightbox");
+lightboxEl.addEventListener("mousemove", showLightboxControls);
+lightboxEl.addEventListener("touchstart", showLightboxControls);
+
+document.getElementById("lightboxImg").addEventListener("click", (e) => {
+  e.stopPropagation();
+  const controls = document.querySelector(".lightbox-controls");
+  if (controls.classList.contains("hidden-controls")) showLightboxControls();
+  else { clearTimeout(controlsTimeout); controls.classList.add("hidden-controls"); }
+});
+
+document.querySelector(".lightbox-fullscreen").addEventListener("click", () => {
+  if (!document.fullscreenElement) lightboxEl.requestFullscreen?.();
+  else document.exitFullscreen?.();
+});
+
+document.querySelector(".lightbox-menu-btn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  document.querySelector(".lightbox-menu").hidden = !document.querySelector(".lightbox-menu").hidden;
+});
+
+document.querySelector(".lightbox-info-btn").addEventListener("click", () => {
+  document.getElementById("lightboxDetail").hidden = false;
+  document.querySelector(".lightbox-menu").hidden = true;
+});
+
 document.addEventListener("click", (e) => {
   if (e.target.matches(".photo-item img")) {
     const photoId = parseInt(e.target.dataset.photoId, 10);
@@ -182,69 +237,48 @@ document.addEventListener("click", (e) => {
   }
   if (e.target.id === "lightbox" || e.target.matches(".lightbox-close")) {
     document.getElementById("lightbox").hidden = true;
+    if (document.fullscreenElement) document.exitFullscreen?.();
     return;
   }
   if (e.target.matches(".lightbox-prev")) {
     lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
-    renderLightbox();
+    renderLightbox(); showLightboxControls();
     return;
   }
   if (e.target.matches(".lightbox-next")) {
     lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length;
-    renderLightbox();
+    renderLightbox(); showLightboxControls();
     return;
   }
-  // Save caption button in lightbox
   if (e.target.id === "lightboxSaveCaption") {
     (async () => {
       const btn = e.target;
       const originalText = btn.textContent;
-      btn.textContent = "Đang lưu...";
-      btn.disabled = true;
-
+      btn.textContent = "Đang lưu..."; btn.disabled = true;
       try {
         const p = lightboxPhotos[lightboxIndex];
         const caption = document.getElementById("lightboxCaption").value.trim();
         const res = await fetch(`${API_BASE}/api/photos/${p.id}`, {
-          ...FETCH_OPTS, 
-          method: "PATCH",
+          ...FETCH_OPTS, method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ caption }),
         });
-
         if (res.ok) {
           p.caption = caption;
           const cached = cachedPhotos.find((cp) => cp.id === p.id);
           if (cached) cached.caption = caption;
           btn.textContent = "Đã lưu";
-        } else {
-          btn.textContent = "Lỗi khi lưu";
-        }
-      } catch (err) {
-        console.error("Save caption error:", err);
-        btn.textContent = "Lỗi kết nối";
-      } finally {
-        setTimeout(() => {
-          btn.textContent = originalText;
-          btn.disabled = false;
-        }, 1500);
-      }
+        } else btn.textContent = "Lỗi khi lưu";
+      } catch { btn.textContent = "Lỗi kết nối"; }
+      finally { setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 1500); }
     })();
   }
 });
 
-// Keyboard navigation for lightbox
 document.addEventListener("keydown", (e) => {
   const lightbox = document.getElementById("lightbox");
   if (!lightbox || lightbox.hidden) return;
-
-  if (e.key === "Escape") {
-    lightbox.hidden = true;
-  } else if (e.key === "ArrowLeft") {
-    lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
-    renderLightbox();
-  } else if (e.key === "ArrowRight") {
-    lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length;
-    renderLightbox();
-  }
+  if (e.key === "Escape") lightbox.hidden = true;
+  else if (e.key === "ArrowLeft") { lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length; renderLightbox(); showLightboxControls(); }
+  else if (e.key === "ArrowRight") { lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length; renderLightbox(); showLightboxControls(); }
 });

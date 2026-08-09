@@ -59,6 +59,7 @@
         <p class="hero-since" id="sinceLabel">Đang tải...</p>
         <div class="hero-clock">
           <span id="liveClock">00:00:00</span>
+          <span class="hero-clock-label">GMT+7</span>
         </div>
       </main>
 
@@ -110,8 +111,8 @@
           </form>
           <form id="photoForm" class="photo-form">
             <select id="photoAlbumSelect" required><option value="">Chọn album...</option></select>
-            <input type="file" id="photoFile" accept="image/*" multiple required>
-            <button type="submit" id="photoUploadBtn">Tải lên</button>
+            <input type="file" id="photoFile" accept="image/*" required>
+            <button type="submit">Tải lên</button>
           </form>
           <div class="album-sort-controls">
             <button type="button" id="sortAlbumsBtn" data-sort="date">Sắp xếp: Mới nhất</button>
@@ -240,20 +241,27 @@
     </div>
 
   </div>
-  
   <div id="lightbox" class="lightbox" hidden>
-    <button type="button" class="lightbox-close">✕</button>
-    <button type="button" class="lightbox-prev">‹</button>
+    <div class="lightbox-controls">
+      <button type="button" class="lightbox-close">✕</button>
+      <div class="lightbox-top-right">
+        <button type="button" class="lightbox-fullscreen">⛶</button>
+        <button type="button" class="lightbox-menu-btn">⋮</button>
+      </div>
+      <div class="lightbox-menu" hidden>
+        <button type="button" class="lightbox-info-btn">Xem thông tin ảnh</button>
+      </div>
+      <button type="button" class="lightbox-prev">‹</button>
+      <button type="button" class="lightbox-next">›</button>
+    </div>
     <img id="lightboxImg" src="" alt="">
-    <button type="button" class="lightbox-next">›</button>
-    <div class="lightbox-detail">
+    <div class="lightbox-detail" id="lightboxDetail" hidden>
       <p class="lightbox-filename" id="lightboxFilename"></p>
       <p class="lightbox-meta" id="lightboxMeta"></p>
       <textarea id="lightboxCaption" placeholder="Thêm ghi chú cho ảnh này..."></textarea>
       <button type="button" id="lightboxSaveCaption">Lưu ghi chú</button>
     </div>
   </div>
-
   <script src="js/message.js"></script>
   <script src="js/journal.js"></script>
   <script src="js/photos.js"></script>
