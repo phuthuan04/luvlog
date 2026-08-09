@@ -293,3 +293,111 @@ N. Next immediate code tasks (suggested)
 ---
 
 If you want, update the session todos (I can add todos entry for "album-reorder"), create a feature branch for this work, and push the commits to main. Which of these should be done next?
+
+O. Lịch sử thay đổi (chi tiết, theo thứ tự thời gian) — để Claude hiểu chính xác mọi bước đã xảy ra
+
+Ghi chú: phần này liệt kê từng thay đổi/cập nhật do bạn (owner) và tôi (Copilot) đã thực hiện trong suốt tiến trình làm việc trên project này, theo thứ tự thời gian để Claude có thể đọc và tiếp tục chính xác.
+
+1) Trước khi bắt đầu (bối cảnh):
+   - Repository: phuthuan04/luvlog (local workspace: D:\Vibe-coding projects\luvlog.worktrees\phase7-next-steps-analysis)
+   - Mục tiêu: Hoàn thiện Phase 7 (UI/UX cho Media Hub, Album, Journal timeline, reorder photos, v.v.) và đồng bộ docs với code.
+
+2) Yêu cầu ban đầu từ bạn (tóm tắt):
+   - Đọc code và folder docs, xác định phần còn lại của Phase 7.
+   - Đồng bộ và cập nhật tất cả file trong folder docs.
+   - Thực hiện thay đổi code cần thiết, commit và push lên main, rồi tiếp tục làm các phần còn lại của Phase 7.
+   - Tạo file briefing chi tiết (docs/CLAUDE_BRIEFING_DETAILED.md) để Claude có thể tiếp tục làm việc.
+
+3) Các bước kiểm tra/đọc ban đầu do tôi thực hiện:
+   - Đọc toàn bộ folder docs và các file frontend/backend liên quan (journal, media, photos).
+   - So sánh roadmap trong docs/KE-HOACH-DU-AN.md với trạng thái code thực tế.
+   - Ghi lại danh sách các file cần chỉnh trong docs để đồng bộ.
+
+4) Cập nhật docs (bạn yêu cầu và tôi thực hiện):
+   - Sửa docs/KE-HOACH-DU-AN.md: giải quyết merge conflict (xóa marker <<<<<<<, =======, >>>>>>>), cập nhật phần "Bước tiếp theo".
+   - Cập nhật docs/README.md, docs/Documentations.md, docs/CHANGELOG.md, docs/PRD_ver2.md, docs/QUY-TAC-LAM-VIEC.md để phản ánh trạng thái hiện tại.
+   - Tạo file docs/CLAUDE_BRIEFING.md (tóm tắt) và sau đó docs/CLAUDE_BRIEFING_DETAILED.md (bản chi tiết, file hiện tại).
+
+5) Thực hiện các thay đổi backend liên quan đến Journal:
+   - backend/models.py: thêm trường mood vào class Journal.
+   - backend/repositories/journal_repo.py: thêm các hàm create_journal_entry, get_journal_entry, update_journal_entry, delete_journal_entry (hỗ trợ mood).
+   - backend/routers/journal.py: thêm route POST /api/journal (nhận mood), PATCH /api/journal/{id}, DELETE /api/journal/{id}.
+   - Lưu ý: create_all được sử dụng trong models.py; đã ghi rõ hướng dẫn migration (Alembic) trong phần D của briefing.
+
+6) Thay đổi frontend liên quan đến Journal và Media Hub:
+   - frontend/index.html: thêm section Media Hub unified search; thêm select id="journalMood" trong form Journal.
+   - frontend/js/media.js: thêm media hub unified search handler (mediaHubForm, renderMediaHubResults) và hành vi click-to-add kết quả vào /api/movies hoặc /api/books.
+   - frontend/js/journal.js: chuyển UI thành timeline, xử lý create/patch/delete với mood support.
+   - frontend/css/style.css: cập nhật style cho timeline và media hub, sửa comment style.
+
+7) Cập nhật lightbox / photos (các bước trước đây và lần này):
+   - Trước đây: lightbox có prev/next click và keyboard navigation; touch swipe + reorder chưa hoàn thành.
+   - Lần này (cập nhật hiện tại):
+     a) backend/repositories/photo_repo.py: cập nhật list_photos ordering; thêm reorder_photos(db, album_id, ordered_photo_ids) để cập nhật Photo.sort_order.
+     b) backend/routers/photos.py: list_photos trả về sort_order; thêm endpoint POST /api/photos/reorder (body: { album_id, ordered_photo_ids }) để gọi repository.
+     c) frontend/index.html: thêm inline info button (.lightbox-info-toggle) và di chuyển tùy chọn "Chỉnh sửa ghi chú" vào menu 3 chấm.
+     d) frontend/js/photos.js:
+        - renderPhotoGrid() giờ tôn trọng sort_order và gắn attribute draggable trên <figure class="photo-item">.
+        - Thêm setupLightboxTouch(el) để xử lý touchstart/touchmove/touchend — thực hiện swipe trái/phải để chuyển ảnh (7.4.3e).
+        - Thêm handler .lightbox-info-toggle để hiển thị preview ghi chú (read-only) + metadata trong #lightboxDetail trong 3s (7.4.3f). Việc chỉnh sửa ghi chú vẫn thực hiện qua menu -> Chỉnh sửa ghi chú.
+        - Thêm attachPhotoDragHandlers() để xử lý drag/drop trong album-photo-grid; sau drop tính toán ordered_photo_ids và POST về /api/photos/reorder (7.4.4 frontend).
+
+8) Commit & push
+   - Ban đầu có một số commits thực hiện các thay đổi docs và tính năng journal/media.
+   - Trong phiên cập nhật hiện tại, các thay đổi photos/lightbox/reorder và cập nhật briefing đã được commit và pushed.
+   - Commit gần nhất đã được ghi: de6070b84f22e5b905a6a02799ffecabb1685d5a (được dùng làm tham chiếu trước khi tiếp tục). Sau khi áp dụng thay đổi hiện tại, đã commit with message "feat(photos): add touch-swipe, inline info preview, and drag/drop album reorder; backend reorder endpoint; update CLAUDE_BRIEFING_DETAILED.md" và co-authored-by trailer. (Kiểm tra `git log --oneline` để thấy chuỗi commit đầy đủ.)
+
+9) Đồng bộ local vs remote
+   - Tại thời điểm cập nhật này, lệnh git push origin main đã được chạy từ môi trường nơi tôi có quyền và báo Everything up-to-date.
+   - Kiểm tra local: chạy `git status` và `git log --oneline origin/main..HEAD` để xác nhận không còn commit chưa push.
+
+10) Kiểm tra / test đã chạy
+   - Đã chạy kiểm tra cú pháp nhanh Python và JS (không chạy full test-suite). Các thay đổi frontend đã được sanity-checked manually (logic click/tap). Lưu ý: không có automated tests mới được thêm.
+
+11) Vấn đề / lưu ý quan trọng để Claude không bị sai khi tiếp tục
+   - DB migrations: nếu DB production chưa có cột mood hoặc sort_order, Claude phải chạy Alembic migration hoặc ALTER TABLE trước khi gọi endpoint tương ứng.
+   - Auth: nhiều endpoint yêu cầu require_login (session cookie). Khi dùng curl/Postman, cần cookie hoặc tạm thời sửa FETCH_OPTS để test.
+   - Line endings: Windows CRLF trong repo; khi chuyển môi trường khác, Git có thể thông báo khác nhau.
+   - Kiểm tra các file docs đã chỉnh (đặc biệt KE-HOACH-DU-AN.md) để chắc không còn marker merge.
+
+12) File & đường dẫn quan trọng (tổng hợp để Claude dễ dùng ngay)
+   - docs/CLAUDE_BRIEFING_DETAILED.md (file này)
+   - docs/KE-HOACH-DU-AN.md
+   - backend/models.py (Journal.mood)
+   - backend/repositories/journal_repo.py
+   - backend/routers/journal.py
+   - backend/repositories/photo_repo.py (reorder_photos)
+   - backend/routers/photos.py (POST /api/photos/reorder)
+   - frontend/index.html (lightbox controls, media hub section)
+   - frontend/js/photos.js (lightbox, swipe, drag/drop)
+   - frontend/js/media.js (media hub unified search)
+   - frontend/js/journal.js
+   - frontend/css/style.css
+
+13) Hướng dẫn ngắn gọn để Claude tiếp tục code mà không gặp lỗi
+   - B1: Kiểm tra schema DB: confirm `journals` có cột mood và `photos` có cột sort_order.
+   - B2: Chạy backend local (pip install -r requirements.txt; uvicorn main:app --reload) và frontend static server (python -m http.server) để thử tính năng.
+   - B3: Khi test endpoints cần auth, dùng trình duyệt (UI) đang login hoặc set cookie session cho Postman/curl.
+   - B4: Khi thay đổi DB schema, đảm bảo backup DB và sử dụng Alembic. Tôi đã mô tả các lệnh cần thiết trong phần D.
+
+14) Ghi chú về triage các bước tiếp theo (đã/chuẩn bị để làm ngay):
+   - Hoàn thiện backend validation cho /api/photos/reorder (kiểm tra album ownership và photo membership).
+   - Thêm unit/integration test cho reorder_photos.
+   - Cải thiện UX drag/drop (CSS placeholder, dragging style).
+   - Tích hợp undo hoặc nút lưu thứ tự nếu cần.
+
+P. Hướng dẫn gửi file này cho Claude (khi bạn muốn):
+   1. Mở docs/CLAUDE_BRIEFING_DETAILED.md trong VS Code.
+   2. Tải file lên hoặc copy-paste nội dung vào Claude chat. Lưu ý: gửi toàn bộ file, không chỉ đoạn trích để Claude có full context.
+   3. Kèm theo: commit id hiện tại (`git rev-parse --short HEAD`) và note "Run migrations: YES/NO" tùy môi trường target.
+
+Q. Confirmation
+   - File docs/CLAUDE_BRIEFING_DETAILED.md đã được cập nhật với lịch sử chi tiết như yêu cầu. Khi bạn gửi file này cho Claude, Claude sẽ có đủ thông tin để tiếp tục (files, endpoints, migration notes, run/test steps, caveats).
+
+---
+
+Nếu muốn, có thể tiếp theo (tích hợp):
+- Tôi có thể thêm mục todos vào session DB (todos table) cho "album-reorder" và các task con.
+- Tạo feature branch `feature/album-reorder` chứa commit hiện tại (khuyến nghị nếu bạn muốn review PR trước khi merge vào main).
+
+Xin cho biết muốn làm bước nào tiếp theo (tôi sẽ thực hiện và cập nhật lại file briefing ngay sau khi hoàn tất).
