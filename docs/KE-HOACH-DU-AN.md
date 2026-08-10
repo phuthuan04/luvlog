@@ -38,6 +38,7 @@ Website riêng tư cho hai người, gồm: đồng hồ đếm ngày yêu, lờ
 - Next.js App Router đã có
 - Middleware auth allowlist theo `SUPABASE_ALLOWED_USER_IDS`
 - CRUD route handlers cho journal, album, photos, fund, activities, messages, media, settings, quotes
+- Trang Album đã có form tạo album + upload ảnh để test trực tiếp
 - Build Next.js pass
 
 ---

@@ -19,6 +19,7 @@ Website riêng tư ghi lại kỷ niệm của hai người.
 - App Router + route handlers cho các module chính
 - Album ảnh, quỹ chung, hoạt động đôi, nhật ký, media hub
 - Ảnh hiện được upload lên Google Drive và lưu `drive_file_id` trong database
+- Trang Album hiện đã có form tạo album + upload ảnh để test trực tiếp
 
 ## Kiến trúc hiện tại
 

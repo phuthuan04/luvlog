@@ -71,6 +71,7 @@ Tài liệu kỹ thuật chính thức của dự án. Cập nhật song song v�
 ### Photos upload
 - `POST /api/photos` chấp nhận multipart form-data với `album_id`, `file`, và optional `caption`
 - Ảnh được upload lên Google Drive, lưu `drive_file_id`, và public URL theo format `https://lh3.googleusercontent.com/d/{drive_file_id}`
+- Trang `/album` hiện có UI để tạo album và upload ảnh trực tiếp từ trình duyệt
 
 ---
 

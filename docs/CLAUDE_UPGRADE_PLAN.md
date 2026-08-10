@@ -51,6 +51,7 @@ Nâng cấp dự án theo spec mới: chuyển sang kiến trúc Next.js App Rou
 - Đã tạo các route API nền cho auth, journal, albums, photos, fund, activities, messages, settings, quotes, media
 - Đã thêm CRUD routes cho movies/books/songs, messages/comments, và các DELETE route còn thiếu cho albums/fund/activities/quotes
 - Đã chuyển `/api/photos` sang Google Drive upload pipeline qua service account và lưu `drive_file_id`
+- Đã làm trang Album có form tạo album và upload ảnh thật để test ngay trên UI
 - Đã tạo các page route cho login, dashboard, diary, album, budget, activities, media, settings
 - Build Next.js đã chạy thành công sau khi fix lazy Supabase init ở login form
 - Chưa hoàn thiện: Spotify, Calendar, Discord, RBAC theo user IDs, và UI redesign cuối cùng
