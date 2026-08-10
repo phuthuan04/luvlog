@@ -40,6 +40,7 @@ Website riêng tư cho hai người, gồm: đồng hồ đếm ngày yêu, lờ
 - CRUD route handlers cho journal, album, photos, fund, activities, messages, media, settings, quotes
 - Trang Album đã có form tạo album + upload ảnh để test trực tiếp
 - Build Next.js pass
+- Nếu thiếu env Supabase public trên Vercel, middleware sẽ bỏ qua auth thay vì làm site crash
 
 ---
 

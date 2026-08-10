@@ -68,6 +68,8 @@ Tài liệu kỹ thuật chính thức của dự án. Cập nhật song song v�
 - `GOOGLE_PRIVATE_KEY`
 - `GOOGLE_DRIVE_FOLDER_ID`
 
+Nếu thiếu 2 biến Supabase public trên Vercel, middleware sẽ không crash nữa nhưng auth/upload API sẽ không hoạt động đầy đủ.
+
 ### Photos upload
 - `POST /api/photos` chấp nhận multipart form-data với `album_id`, `file`, và optional `caption`
 - Ảnh được upload lên Google Drive, lưu `drive_file_id`, và public URL theo format `https://lh3.googleusercontent.com/d/{drive_file_id}`

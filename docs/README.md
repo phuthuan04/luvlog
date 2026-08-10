@@ -51,6 +51,7 @@ npm run dev
 ```
 
 Tạo file `.env.local` theo mẫu `.env.example`.
+Nhớ khai báo đủ biến Supabase/Google Drive thì middleware và upload mới chạy đầy đủ.
 
 ## Deploy
 
