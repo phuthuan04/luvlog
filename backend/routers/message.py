@@ -28,7 +28,8 @@ def list_messages(user: str = Depends(require_login), db: Session = Depends(get_
     items = message_repo.list_messages(db)
     return [
         {"id": m.id, "content": m.content, "created_by": m.created_by,
-         "updated_at": m.updated_at.isoformat() if m.updated_at else None}
+         "updated_at": m.updated_at.isoformat() if m.updated_at else None,
+         "comment_count": message_repo.count_comments(db, m.id)}
         for m in items
     ]
 

@@ -110,18 +110,18 @@ Thu/chi quỹ chung, mục tiêu, hoạt động đôi.
   - 7.3.2 ✅ Tích hợp OMDb (IMDb + Tomatometer, tra theo mã IMDb chính xác thay vì tên), click mở rộng xem tóm tắt, hiện nguồn gợi ý ("Dựa trên: ...")
   - 7.3.3 — Carousel: chỉ hiện 2–3 thẻ/lượt, cuộn/kéo xem thêm
   - 7.3.4 ✅ Sort "đã xem" theo ngày đánh dấu (asc/desc)
-  - 7.3.5 🔄 Hợp nhất giao diện: 1 dropdown chọn loại + 1 ô tìm kiếm chung, thay vì 3 khung tách riêng; khung gợi ý dạng danh sách hàng ngang có sao đánh giá; lưới poster dọc 2:3 kèm badge trạng thái ("Đã xem xong" / "Dự định")
+  - 7.3.5 ✅ Hợp nhất giao diện: 1 dropdown chọn loại + 1 ô tìm kiếm chung, thay vì 3 khung tách riêng; khung gợi ý dạng danh sách hàng ngang; lưới poster dọc 2:3 kèm badge trạng thái ("Đã xem xong" / "Dự định")
 - **7.4** ✅ Album: bảng `albums` riêng, nhóm hiển thị theo tên album kèm số lượng, tạo/sort qua UI
   - 7.4.1 + 7.4.2 ✅ Upload nhiều ảnh 1 lượt (tối đa 30), nhớ album đã chọn lần trước, tự bỏ qua ảnh trùng (hash SHA-256)
   - 7.4.3 ✅ Xem ảnh toàn màn hình, duyệt ảnh, xem/sửa chi tiết (tên file, ngày, người tải, dung lượng, ghi chú)
   - 7.4.3d ✅ Lightbox: giữ tỉ lệ ảnh gốc, nút fullscreen, menu 3 chấm, nút tự ẩn/hiện sau 3s
-  - 7.4.3e (mới, chưa làm) — Vuốt trái/phải để chuyển ảnh trên điện thoại (touch swipe)
-  - 7.4.3f (mới, chưa làm) — Tách nút (i) riêng cạnh nút 3 chấm để xem ghi chú (cùng cơ chế ẩn/hiện 3s như các nút khác). Ghi chú mặc định hiển thị: nội dung + thời gian đăng ảnh + người đăng ảnh + người viết ghi chú (nếu có) — chỉ ở dạng xem. Sửa ghi chú chuyển vào menu 3 chấm ("Chỉnh sửa ghi chú"), tách khỏi khung xem
-  - 7.4.4 — Kéo thả sắp xếp lại vị trí ảnh trong album
-- **7.5** — Lời nhắn: tách card hiển thị/viết, lịch sử, đậm/mờ khi cuộn, bình luận/trả lời qua lại
+  - 7.4.3e ✅ Vuốt trái/phải để chuyển ảnh trên điện thoại (touch swipe)
+  - 7.4.3f ✅ Tách nút (i) riêng cạnh nút 3 chấm để xem ghi chú (cùng cơ chế ẩn/hiện 3s như các nút khác). Ghi chú hiện dạng xem trước với metadata người viết/thời gian; sửa ghi chú chuyển vào menu 3 chấm ("Chỉnh sửa ghi chú")
+  - 7.4.4 ✅ Kéo thả sắp xếp lại vị trí ảnh trong album
+- **7.5** ✅ Lời nhắn: tách card hiển thị/viết, lịch sử, đậm/mờ khi cuộn, bình luận/trả lời qua lại
 - **7.6** ✅ Nhật ký: timeline dọc có đường nối + icon tâm trạng, sửa/xoá bài viết tại chỗ
-- **7.7** — Trang Settings (3 khối): (1) Thông tin đôi — sửa ngày bắt đầu + tên gọi 2 người qua UI; (2) Thông báo — cấu hình Telegram/Discord webhook URL + nút Lưu/Gửi thử; (3) Lời nhắn hằng ngày — danh sách quản lý, hiện ngẫu nhiên 1 câu/ngày ở trang chủ. Không phân quyền admin/member (giữ đơn giản, 2 người cùng sửa được)
-- **7.8** — Trang chủ dashboard: thêm avatar viết tắt tên 2 người nối bằng ❤️ vào khối đồng hồ (lấy tên từ Settings 7.7); khối "Xem gần đây" 2 cột cuối trang (ví dụ: nhật ký gần đây | hoạt động gần đây) kiểu "Xem tất cả →"
+- **7.7** ✅ Trang Settings (3 khối): (1) Thông tin đôi — sửa ngày bắt đầu + tên gọi 2 người qua UI; (2) Thông báo — cấu hình Telegram/Discord webhook URL + nút Lưu/Gửi thử; (3) Lời nhắn hằng ngày — danh sách quản lý, hiện ngẫu nhiên 1 câu/ngày ở trang chủ. Không phân quyền admin/member (giữ đơn giản, 2 người cùng sửa được)
+- **7.8** ✅ Trang chủ dashboard: thêm avatar viết tắt tên 2 người nối bằng ❤️ vào khối đồng hồ (lấy tên từ Settings 7.7); khối "Xem gần đây" 2 cột cuối trang (ví dụ: nhật ký gần đây | hoạt động gần đây) kiểu "Xem tất cả →"
 
 **Cân nhắc thêm/bớt so với mockup:**
 - **Lưới 6 nút truy cập nhanh ở trang chủ:** bỏ qua.
@@ -181,12 +181,9 @@ luvlog/
 
 ## 8. Bước tiếp theo ưu tiên
 
-1. Hoàn thiện Media Hub theo mockup: 7.3.3 + 7.3.5.
-2. Hoàn thiện album reorder: 7.4.4.
-3. Tinh chỉnh lời nhắn theo cấu trúc mới: 7.5.
-4. Tinh chỉnh nhật ký timeline theo mockup: 7.6.
-5. Thêm Settings: 7.7.
-6. Thêm dashboard mới: 7.8.
+1. Tiếp tục polish Media Hub theo hành vi thực tế desktop/mobile nếu cần.
+2. Kiểm tra regression cho album/lightbox + message/journal + settings/dashboard sau các thay đổi UI.
+3. Chuẩn bị cho Giai đoạn 8 (gamification, domain, mobile) khi cần.
 
 > Ghi chú: `main` là nhánh bản chạy ổn định để deploy; mỗi feature nên làm trên nhánh riêng và merge lại sau khi test xong.
 
@@ -220,9 +217,7 @@ luvlog/
 ## 11. Bước tiếp theo
 
 Còn lại trong Giai đoạn 7:
-- **7.4.3e** — Vuốt trái/phải chuyển ảnh trên điện thoại (lightbox)
-- **7.4.3f** — Tách nút (i) xem ghi chú riêng khỏi menu 3 chấm, ghi chú hiện dạng xem trước (nội dung + thời gian + người đăng ảnh + người viết), sửa chuyển vào menu 3 chấm
-- **7.4.4** — Kéo thả sắp xếp lại vị trí ảnh trong album
-- **7.3.5** — Hợp nhất giao diện Media Hub theo mockup (1 dropdown chọn loại + 1 ô tìm kiếm chung, thay 3 khung tách riêng)
+- Polish thêm nếu cần cho Media Hub và lightbox sau test thực tế
+- Kiểm tra regression tổng thể trước khi chốt đợt nâng cấp hiện tại
 
 Sau đó qua Giai đoạn 8 (gamification, domain, mobile) và Giai đoạn 9 (Google Calendar/Discord bot).

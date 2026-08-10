@@ -1,6 +1,6 @@
 ﻿# luvlog — Documentations
 
-Tài liệu kỹ thuật chính thức của dự án. Cập nhật song song với mọi thay đổi code. Tài liệu này phản ánh triển khai hiện tại của repo (09/08/2026).
+Tài liệu kỹ thuật chính thức của dự án. Cập nhật song song với mọi thay đổi code. Tài liệu này phản ánh triển khai hiện tại của repo (10/08/2026).
 
 ---
 
@@ -42,17 +42,22 @@ Base URL hiện tại: `https://luvlog.vercel.app`
 | POST | `/api/logout` | Không | Xóa session |
 | GET | `/api/message` | Có | Lấy lời nhắn mới nhất |
 | POST | `/api/message` | Có | Body: `{ content }` → lưu lời nhắn mới |
-| GET | `/api/messages` | Có | Danh sách lịch sử lời nhắn |
+| GET | `/api/messages` | Có | Danh sách lịch sử lời nhắn, kèm `comment_count` |
 | GET | `/api/messages/{message_id}/comments` | Có | Bình luận của một lời nhắn |
 | POST | `/api/messages/{message_id}/comments` | Có | Body: `{ content }` |
+| GET | `/api/settings` | Có | Lấy cấu hình đôi + webhook URLs |
+| POST | `/api/settings` | Có | Lưu từng phần settings (cho phép gửi partial fields) |
+| POST | `/api/settings/notifications/test` | Có | Body: `{ provider: "telegram" \| "discord" }` → gửi test webhook |
+| GET | `/api/quotes` | Có | Danh sách lời nhắn hằng ngày |
 | GET | `/api/journal` | Có | Danh sách nhật ký (mới nhất trước) |
 | POST | `/api/journal` | Có | Body: `{ title, content }` |
 | GET | `/api/albums` | Có | Danh sách album |
 | POST | `/api/albums` | Có | Body: `{ name }` |
 | DELETE | `/api/albums/{album_id}` | Có | Xóa album nếu không còn ảnh |
-| GET | `/api/photos` | Có | Danh sách ảnh |
+| GET | `/api/photos` | Có | Danh sách ảnh, kèm `sort_order`, `caption_author`, `caption_updated_at` |
 | POST | `/api/photos` | Có | Multipart: `album_id`, `file`, `file_hash` |
-| PATCH | `/api/photos/{photo_id}` | Có | Body: `{ caption }` |
+| PATCH | `/api/photos/{photo_id}` | Có | Body: `{ caption }` → cập nhật ghi chú + metadata người sửa/thời gian sửa |
+| POST | `/api/photos/reorder` | Có | Body: `{ album_id, ordered_photo_ids[] }` |
 | GET | `/api/fund` | Có | Số dư tổng + mục tiêu + giao dịch |
 | POST | `/api/fund/transactions` | Có | Body: `{ amount, description, goal_id? }` |
 | DELETE | `/api/fund/transactions/{id}` | Có | Xoá giao dịch |
@@ -155,7 +160,10 @@ await fetch("https://luvlog.vercel.app/api/login", {
 | `filename` | String | Tên file gốc |
 | `file_size` | Integer | Dung lượng file |
 | `caption` | String | Ghi chú |
+| `caption_author` | String | Người cập nhật ghi chú gần nhất |
+| `caption_updated_at` | DateTime | Thời điểm cập nhật ghi chú gần nhất |
 | `file_hash` | String | SHA-256 để tránh trùng |
+| `sort_order` | Integer | Thứ tự hiển thị ảnh trong album |
 | `uploaded_by` | String | Người upload |
 | `created_at` | DateTime | Thời điểm tạo |
 
@@ -183,12 +191,13 @@ Các bảng này vẫn giữ cấu trúc như đã mô tả ở các giai đoạ
 |---|---|
 | `index.html` | Layout chính: login + các section card |
 | `js/counter.js` | Đồng hồ đếm ngày yêu |
-| `js/message.js` | Lời nhắn + comment |
-| `js/journal.js` | Nhật ký |
-| `js/photos.js` | Album + upload + lightbox |
+| `js/message.js` | Lời nhắn: spotlight, lịch sử, phản hồi |
+| `js/journal.js` | Nhật ký timeline + chỉnh sửa tại chỗ |
+| `js/photos.js` | Album + upload + lightbox + swipe/reorder/note metadata |
 | `js/fund.js` | Quỹ chung |
-| `js/activities.js` | Hoạt động |
-| `js/media.js` | Media Hub, search, suggestions, OMDb detail |
+| `js/activities.js` | Hoạt động + preview cho dashboard |
+| `js/media.js` | Media Hub hợp nhất: search, suggestions, poster grid, OMDb detail |
+| `js/settings.js` | Cài đặt: thông tin đôi, webhook, lời nhắn hằng ngày |
 | `css/style.css` | Giao diện chung |
 
 ---

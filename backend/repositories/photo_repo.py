@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from models import Photo
+from datetime import datetime
 
 def list_photos(db: Session):
     # Order by album then sort_order (if set) then created_at desc
@@ -16,11 +17,17 @@ def hash_exists(db: Session, file_hash: str):
         return False
     return db.query(Photo).filter(Photo.file_hash == file_hash).first() is not None
 
-def update_caption(db: Session, photo_id: int, caption: str):
+def update_caption(db: Session, photo_id: int, caption: str, author: str):
     photo = db.query(Photo).filter(Photo.id == photo_id).first()
     if not photo:
         return None
     photo.caption = caption
+    if caption:
+        photo.caption_author = author
+        photo.caption_updated_at = datetime.utcnow()
+    else:
+        photo.caption_author = None
+        photo.caption_updated_at = None
     db.commit()
     return photo
 

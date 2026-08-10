@@ -24,6 +24,9 @@ class MediaUpdateIn(BaseModel):
     review: str | None = None
     experienced_at: str | None = None
 
+
+MODEL_BY_TYPE = {"movies": Movie, "books": Book, "songs": Song}
+
 def serialize(item):
     return {
         "id": item.id, "title": item.title, "cover_url": item.cover_url,
@@ -122,12 +125,17 @@ def search_books_endpoint(q: str, user: str = Depends(require_login)):
     except requests.RequestException:
         raise HTTPException(status_code=502, detail="Không thể kết nối tới Google Books")
 
-    MODEL_BY_TYPE = {"movies": Movie, "books": Book, "songs": Song}
-
 @router.get("/api/suggestions/{media_type}")
 def list_suggestions(media_type: str, user: str = Depends(require_login), db: Session = Depends(get_db)):
     items = suggestion_repo.list_suggestions(db, media_type)
-    return [{"id": s.id, "title": s.title, "cover_url": s.cover_url, "external_id": s.external_id, "based_on": s.based_on} for s in items]
+    return [{
+        "id": s.id,
+        "title": s.title,
+        "cover_url": s.cover_url,
+        "external_id": s.external_id,
+        "category": s.category,
+        "based_on": s.based_on,
+    } for s in items]
 
 @router.post("/api/suggestions/{suggestion_id}/accept")
 def accept_suggestion(suggestion_id: int, user: str = Depends(require_login), db: Session = Depends(get_db)):
@@ -135,6 +143,8 @@ def accept_suggestion(suggestion_id: int, user: str = Depends(require_login), db
     if not s:
         raise HTTPException(status_code=404, detail="Không tìm thấy gợi ý")
     model = MODEL_BY_TYPE.get(s.media_type)
+    if not model:
+        raise HTTPException(status_code=400, detail="Loại media không hợp lệ")
     media_repo.create_item(db, model, s.title, s.cover_url, "muon", user, s.external_id, s.category)
     suggestion_repo.delete_suggestion(db, suggestion_id)
     return {"status": "added"}

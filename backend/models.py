@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from datetime import datetime
-from database import Base, engine
+from database import Base, engine, ensure_schema
 
 class Message(Base):
     __tablename__ = "messages"
@@ -42,6 +42,8 @@ class Photo(Base):
     file_size = Column(Integer)
     file_hash = Column(String)
     caption = Column(String)
+    caption_author = Column(String)
+    caption_updated_at = Column(DateTime)
     sort_order = Column(Integer, default=0)
     uploaded_by = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -117,3 +119,4 @@ class DailyQuote(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 Base.metadata.create_all(engine)
+ensure_schema()
