@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply min-h-screen bg-[#f7f2f8] text-slate-800;
+}
+
+* {
+  @apply box-border;
+}

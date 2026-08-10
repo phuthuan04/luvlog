@@ -1,204 +1,82 @@
-﻿# luvlog — Documentations
+# luvlog — Documentations
 
-Tài liệu kỹ thuật chính thức của dự án. Cập nhật song song với mọi thay đổi code. Tài liệu này phản ánh triển khai hiện tại của repo (09/08/2026).
+Tài liệu kỹ thuật chính thức của dự án. Cập nhật song song với mọi thay đổi code.
 
 ---
 
 ## 1. Kiến trúc
 
 ```text
-[Frontend — Vercel Static]
-  https://luvlog-frontend.vercel.app
-            |
-       fetch (credentials: include)
-            |
-[Backend — Vercel Serverless]
-  https://luvlog.vercel.app
-            |
-[Supabase PostgreSQL — Connection Pooler :6543]
+[Next.js App Router]
+        |
+   route handlers + middleware
+        |
+[Supabase Auth + PostgreSQL]
 ```
 
-- **2 project Vercel riêng:** 1 cho `frontend/`, 1 cho `backend/`
-- **Auth:** session cookie ký bằng `itsdangerous` (Starlette SessionMiddleware)
-- **Cross-origin cookie:** `SameSite=None; Secure` (frontend và backend khác subdomain)
-- **Backend chia 4 tầng:** `routers/` → `services/` → `repositories/` → `models.py`
+- Auth: Supabase SSR + HTTP-only cookies
+- Guard: middleware allowlist theo `SUPABASE_ALLOWED_USER_IDS`
+- Data access: route handlers trong `src/app/api/*`
+- Legacy code `frontend/` và `backend/` vẫn còn trong repo để migrate dần
 
 ---
 
-## 2. API Reference
+## 2. API reference
 
-### 2.1 Mục tiêu sử dụng
-- Dùng cho frontend hiện tại và bất kỳ client nào cần gọi API.
-- Tất cả request cần auth dùng `credentials: "include"`.
+### Auth
+- `GET /api/auth/me`
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
 
-### 2.2 Base URL
-Base URL hiện tại: `https://luvlog.vercel.app`
+### Modules
+- `GET/POST/DELETE /api/journal`
+- `GET/POST/DELETE /api/albums`
+- `GET/POST/PATCH/DELETE /api/photos`
+- `POST /api/photos/reorder`
+- `GET /api/fund`
+- `POST/DELETE /api/fund/goals`
+- `POST/DELETE /api/fund/transactions`
+- `GET/POST/DELETE /api/activities`
+- `GET/POST/PATCH/DELETE /api/messages`
+- `GET/POST/DELETE /api/messages/{messageId}/comments`
+- `GET/POST/PATCH/DELETE /api/movies`
+- `GET/POST/PATCH/DELETE /api/books`
+- `GET/POST/PATCH/DELETE /api/songs`
+- `GET/POST /api/settings`
+- `GET /api/quotes/random`
 
-| Method | Endpoint | Auth | Mô tả |
-|---|---|---|---|
-| GET | `/api/health` | Không | Health check |
-| GET | `/api/me` | Không | Trả về `{ "user": "..." \| null }` |
-| POST | `/api/login` | Không | Body: `{ username, password }` → session cookie |
-| POST | `/api/logout` | Không | Xóa session |
-| GET | `/api/message` | Có | Lấy lời nhắn mới nhất |
-| POST | `/api/message` | Có | Body: `{ content }` → lưu lời nhắn mới |
-| GET | `/api/messages` | Có | Danh sách lịch sử lời nhắn |
-| GET | `/api/messages/{message_id}/comments` | Có | Bình luận của một lời nhắn |
-| POST | `/api/messages/{message_id}/comments` | Có | Body: `{ content }` |
-| GET | `/api/journal` | Có | Danh sách nhật ký (mới nhất trước) |
-| POST | `/api/journal` | Có | Body: `{ title, content }` |
-| GET | `/api/albums` | Có | Danh sách album |
-| POST | `/api/albums` | Có | Body: `{ name }` |
-| DELETE | `/api/albums/{album_id}` | Có | Xóa album nếu không còn ảnh |
-| GET | `/api/photos` | Có | Danh sách ảnh |
-| POST | `/api/photos` | Có | Multipart: `album_id`, `file`, `file_hash` |
-| PATCH | `/api/photos/{photo_id}` | Có | Body: `{ caption }` |
-| GET | `/api/fund` | Có | Số dư tổng + mục tiêu + giao dịch |
-| POST | `/api/fund/transactions` | Có | Body: `{ amount, description, goal_id? }` |
-| DELETE | `/api/fund/transactions/{id}` | Có | Xoá giao dịch |
-| POST | `/api/fund/goals` | Có | Body: `{ name, target_amount }` |
-| DELETE | `/api/fund/goals/{id}` | Có | Xoá mục tiêu |
-| GET | `/api/activities` | Có | Danh sách hoạt động |
-| POST | `/api/activities` | Có | Body: `{ place_name, category, visited_at, note? }` |
-| DELETE | `/api/activities/{id}` | Có | Xoá hoạt động |
-| GET | `/api/movies` | Có | Danh sách phim |
-| POST | `/api/movies` | Có | Body: `{ title, cover_url?, status, external_id?, category? }` |
-| PATCH | `/api/movies/{id}` | Có | Body: `{ status, rating?, review?, experienced_at? }` |
-| DELETE | `/api/movies/{id}` | Có | Xoá phim |
-| GET | `/api/books` | Có | Danh sách sách |
-| POST | `/api/books` | Có | Body: `{ title, cover_url?, status, external_id?, category? }` |
-| PATCH | `/api/books/{id}` | Có | Body: `{ status, rating?, review?, experienced_at? }` |
-| DELETE | `/api/books/{id}` | Có | Xoá sách |
-| GET | `/api/songs` | Có | Danh sách nhạc |
-| POST | `/api/songs` | Có | Body: `{ title, cover_url?, status }` |
-| PATCH | `/api/songs/{id}` | Có | Body: `{ status, rating?, review?, experienced_at? }` |
-| DELETE | `/api/songs/{id}` | Có | Xoá nhạc |
-| GET | `/api/search/movies?q=` | Có | Tìm phim qua TMDB |
-| GET | `/api/search/books?q=` | Có | Tìm sách qua Google Books |
-| GET | `/api/suggestions/{media_type}` | Có | Danh sách gợi ý phim/sách |
-| POST | `/api/suggestions/{suggestion_id}/accept` | Có | Chấp nhận gợi ý |
-| DELETE | `/api/suggestions/{suggestion_id}` | Có | Bỏ qua gợi ý |
-| POST | `/api/movies/refresh-suggestions` | Có | Làm mới gợi ý phim |
-| POST | `/api/books/refresh-suggestions` | Có | Làm mới gợi ý sách |
-| GET | `/api/movies/detail?external_id=...&title=...` | Có | Lấy tóm tắt + IMDb/Tomatometer |
-| GET | `/api/v1/cron/auto-crawl` | Cron secret | Tự động thêm suggestions từ dữ liệu đã đánh giá |
-
-### Ví dụ
-
-```javascript
-await fetch("https://luvlog.vercel.app/api/login", {
-  method: "POST",
-  credentials: "include",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ username: "...", password: "..." }),
-});
-```
+### Media/search
+- `GET /api/search/movies`
+- `GET /api/search/books`
+- `GET /api/suggestions/{media_type}`
+- `POST /api/suggestions/{suggestion_id}/accept`
+- `DELETE /api/suggestions/{suggestion_id}`
+- `POST /api/movies/refresh-suggestions`
+- `POST /api/books/refresh-suggestions`
+- `GET /api/movies/detail`
+- `GET /api/v1/cron/auto-crawl`
 
 ---
 
-## 3. Biến môi trường (Backend)
+## 3. Biến môi trường
 
-| Biến | Bắt buộc | Mô tả |
-|---|---|---|
-| `DATABASE_URL` | Có | Supabase Postgres pooler, cổng **6543** |
-| `SESSION_SECRET` | Có | Key ký session cookie |
-| `ADMIN1_USER` | Có | Tên đăng nhập tài khoản 1 |
-| `ADMIN1_PASS_HASH` | Có | Bcrypt hash mật khẩu tài khoản 1 |
-| `ADMIN2_USER` | Có | Tên đăng nhập tài khoản 2 |
-| `ADMIN2_PASS_HASH` | Có | Bcrypt hash mật khẩu tài khoản 2 |
-| `SUPABASE_URL` | Có | URL project Supabase (dùng cho Storage) |
-| `SUPABASE_SECRET_KEY` | Có | Service role key — toàn quyền, không đưa vào frontend |
-| `TMDB_API_KEY` | Có | Key TMDB, dùng cho tìm kiếm phim |
-| `GOOGLE_BOOKS_API_KEY` | Có | Key Google Books, dùng cho tìm kiếm sách |
-| `OMDB_API_KEY` | Có | Key OMDb dùng cho IMDb/Tomatometer |
-| `CRON_SECRET` | Có | Xác thực request từ Vercel Cron |
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_ALLOWED_USER_IDS`
+- `GOOGLE_SERVICE_ACCOUNT_EMAIL`
+- `GOOGLE_PRIVATE_KEY`
+- `GOOGLE_DRIVE_FOLDER_ID`
+
+### Photos upload
+- `POST /api/photos` chấp nhận multipart form-data với `album_id`, `file`, và optional `caption`
+- Ảnh được upload lên Google Drive, lưu `drive_file_id`, và public URL theo format `https://lh3.googleusercontent.com/d/{drive_file_id}`
 
 ---
 
-## 4. Database
+## 4. Trạng thái hiện tại
 
-### Bảng `messages`
-
-| Cột | Kiểu | Mô tả |
-|---|---|---|
-| `id` | Integer PK | Auto increment |
-| `content` | String | Nội dung lời nhắn |
-| `created_by` | String | Người tạo |
-| `updated_at` | DateTime | Thời điểm cập nhật |
-
-### Bảng `message_comments`
-
-| Cột | Kiểu | Mô tả |
-|---|---|---|
-| `id` | Integer PK | Auto increment |
-| `message_id` | Integer FK | Thuộc lời nhắn nào |
-| `content` | String | Nội dung bình luận |
-| `created_by` | String | Người tạo |
-| `created_at` | DateTime | Thời điểm tạo |
-
-### Bảng `albums`
-
-| Cột | Kiểu | Mô tả |
-|---|---|---|
-| `id` | Integer PK | Auto increment |
-| `name` | String | Tên album |
-| `created_by` | String | Người tạo |
-| `created_at` | DateTime | Thời điểm tạo |
-
-### Bảng `photos`
-
-| Cột | Kiểu | Mô tả |
-|---|---|---|
-| `id` | Integer PK | Auto increment |
-| `album_id` | Integer FK | Thuộc album nào |
-| `url` | String | Public URL ảnh |
-| `filename` | String | Tên file gốc |
-| `file_size` | Integer | Dung lượng file |
-| `caption` | String | Ghi chú |
-| `file_hash` | String | SHA-256 để tránh trùng |
-| `uploaded_by` | String | Người upload |
-| `created_at` | DateTime | Thời điểm tạo |
-
-### Bảng `suggestions`
-
-| Cột | Kiểu | Mô tả |
-|---|---|---|
-| `id` | Integer PK | Auto increment |
-| `media_type` | String | `movies` / `books` |
-| `title` | String | Tên đề xuất |
-| `cover_url` | String | Ảnh bìa |
-| `external_id` | String | ID gốc bên ngoài |
-| `category` | String | Thể loại |
-| `based_on` | String | Gợi ý xuất phát từ mục nào |
-
-### Bảng `fund_goals`, `fund_transactions`, `activities`, `movies`, `books`, `songs`
-
-Các bảng này vẫn giữ cấu trúc như đã mô tả ở các giai đoạn trước, với các trường bổ sung cho media và photo metadata.
-
----
-
-## 5. Frontend
-
-| File | Vai trò |
-|---|---|
-| `index.html` | Layout chính: login + các section card |
-| `js/counter.js` | Đồng hồ đếm ngày yêu |
-| `js/message.js` | Lời nhắn + comment |
-| `js/journal.js` | Nhật ký |
-| `js/photos.js` | Album + upload + lightbox |
-| `js/fund.js` | Quỹ chung |
-| `js/activities.js` | Hoạt động |
-| `js/media.js` | Media Hub, search, suggestions, OMDb detail |
-| `css/style.css` | Giao diện chung |
-
----
-
-## 6. Deploy
-
-### Backend (Vercel)
-- Root directory: `backend/`
-- Entrypoint: `main.py`
-
-### Frontend (Vercel)
-- Root directory: `frontend/`
-- Static hosting
+- Next.js build đã pass
+- Middleware allowlist UUID đã bật
+- CRUD route handlers core đã migrate xong
+- Phase tiếp theo: Google Drive storage, integrations, UI redesign
