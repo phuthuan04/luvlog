@@ -1,5 +1,6 @@
 function initUI() {
   initCollapsibleCards();
+  loadDailyQuote();
   const sections = document.querySelectorAll(".reveal");
   const tabs = document.querySelectorAll(".tab-link");
 
@@ -37,4 +38,16 @@ function initCollapsibleCards() {
 function setCardSummary(sectionId, text) {
   const el = document.querySelector(`#${sectionId} .card-summary`);
   if (el) el.textContent = text;
+}
+
+async function loadDailyQuote() {
+  const el = document.getElementById("dailyQuoteText");
+  if (!el) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/quotes/random`, FETCH_OPTS);
+    if (res.ok) {
+      const data = await res.json();
+      el.textContent = data.content;
+    }
+  } catch (e) {}
 }

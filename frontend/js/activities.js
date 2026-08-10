@@ -23,6 +23,7 @@ function renderActivities(items) {
     .join("");
 }
 
+// Load activities on page load
 async function loadActivities() {
   const res = await fetch(`${API_BASE}/api/activities`, FETCH_OPTS);
   if (res.status === 401) {
@@ -31,11 +32,16 @@ async function loadActivities() {
   }
   const items = await res.json();
   renderActivities(items);
+  const previewEl = document.getElementById("previewActivities");
+  if (previewEl) {
+    previewEl.innerHTML = items.slice(0, 2).map((a) => `<li>${escapeHtml(a.place_name)}</li>`).join("") || '<li class="preview-empty">Chưa có gì</li>';
+  }
   if (typeof setCardSummary === "function") {
     setCardSummary("section-activities", items.length ? `${items.length} hoạt động đã ghi` : "Chưa có hoạt động nào");
   }
 }
 
+// Handle activity form submission
 activityForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const place_name = document.getElementById("activityPlace").value.trim();

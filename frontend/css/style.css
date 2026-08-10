@@ -314,3 +314,21 @@ form button[type="submit"]:hover, .message-box button:hover, .photo-form button:
 .timeline-edit-actions { display: flex; gap: 8px; }
 .timeline-edit-actions button { font-size: 12px; padding: 6px 12px; }
 .cancel-journal-btn { background: none; border: 1px solid rgba(139,94,131,.3); color: var(--plum); border-radius: 8px; }
+
+//---------- Hero (avatar + quote) ----------
+.hero-avatar { font-size: 20px; margin: 0 0 6px; }
+.daily-quote-card { text-align: center; font-style: italic; color: var(--plum); }
+.preview-grid { display: flex; gap: 20px; flex-wrap: wrap; }
+.preview-col { flex: 1; min-width: 140px; }
+.preview-list { list-style: none; padding: 0; margin: 0; font-size: 12px; display: flex; flex-direction: column; gap: 4px; }
+.preview-empty { color: var(--plum); }
+.settings-form { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.settings-form label { font-size: 11px; color: var(--plum); margin-top: 4px; }
+.settings-form input { padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; font-family: inherit; }
+.quote-list { list-style: none; padding: 0; margin: 0 0 8px; font-size: 12px; display: flex; flex-direction: column; gap: 4px; }
+.quote-form { display: flex; gap: 8px; }
+.quote-form input { flex: 1; padding: 8px; border: 1px solid rgba(139,94,131,0.3); border-radius: 8px; }
+.sidebar-footer { display: none; }
+@media (min-width: 860px) {
+  .sidebar-footer { display: block; margin-top: auto; padding: 12px; background: rgba(198,85,90,0.08); border-radius: 12px; font-size: 11px; color: var(--berry); text-align: center; }
+}

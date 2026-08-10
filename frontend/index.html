@@ -45,12 +45,15 @@
         <a href="#section-movies" class="tab-link">🎬 <span>Phim</span></a>
         <a href="#section-books" class="tab-link">📚 <span>Sách</span></a>
         <a href="#section-songs" class="tab-link">🎵 <span>Nhạc</span></a>
+        <a href="#section-settings" class="tab-link">⚙️ <span>Cài đặt</span></a>
+        <div class="sidebar-footer">💕 Made with love 💕<br><small>For you, my love</small></div>
       </nav>
 
       <div class="content-grid">
       <main id="section-counter" class="card hero-card reveal">
-        <p class="eyebrow">💕 tụi mình đã bên nhau</p>
-        <p class="hero-days-total"><span id="totalDays">0</span> ngày</p>
+        <p class="eyebrow">💕 TỤI MÌNH ĐÃ BÊN NHAU 💕</p>
+        <p class="hero-avatar" id="avatarInitials">💕</p>
+        <p class="hero-days-total">
         <div class="counter">
           <div class="unit"><span id="years">0</span><label>năm</label></div>
           <div class="unit"><span id="months">0</span><label>tháng</label></div>
@@ -59,9 +62,24 @@
         <p class="hero-since" id="sinceLabel">Đang tải...</p>
         <div class="hero-clock">
           <span id="liveClock">00:00:00</span>
-          <span class="hero-clock-label">GMT+7</span>
         </div>
       </main>
+
+      <div class="card daily-quote-card reveal">
+        <p class="eyebrow">✨ lời nhắn ngẫu nhiên hôm nay</p>
+        <p id="dailyQuoteText">Đang tải...</p>
+      </div>
+
+      <div class="card preview-grid reveal">
+        <div class="preview-col">
+          <p class="eyebrow">📓 nhật ký gần đây</p>
+          <ul id="previewJournal" class="preview-list"></ul>
+        </div>
+        <div class="preview-col">
+          <p class="eyebrow">🗺️ hoạt động gần đây</p>
+          <ul id="previewActivities" class="preview-list"></ul>
+        </div>
+      </div>
 
       <section id="section-message" class="card message-box reveal collapsed" data-collapsible>
         <button type="button" class="card-header">
@@ -267,6 +285,33 @@
       </div>
     </div>
 
+      <section id="section-settings" class="card settings-box reveal collapsed" data-collapsible>
+        <button type="button" class="card-header">
+          <p class="eyebrow">⚙️ cài đặt</p>
+          <span class="card-chevron">▾</span>
+        </button>
+        <p class="card-summary">Đang tải...</p>
+        <div class="card-body"><div class="card-body-inner">
+          <h4>Thông tin đôi</h4>
+          <form id="settingsForm" class="settings-form">
+            <label>Ngày bắt đầu yêu</label>
+            <input type="date" id="settingsStartDate" required>
+            <label>Tên bạn</label>
+            <input type="text" id="settingsName1" placeholder="Bạn" required>
+            <label>Tên người ấy</label>
+            <input type="text" id="settingsName2" placeholder="Người ấy" required>
+            <button type="submit">Lưu</button>
+          </form>
+          <h4>Lời nhắn hằng ngày</h4>
+          <ul id="quoteList" class="quote-list"></ul>
+          <form id="quoteForm" class="quote-form">
+            <input type="text" id="quoteInput" placeholder="Thêm 1 câu mới...">
+            <button type="submit">Thêm</button>
+          </form>
+        </div></div>
+      </section>
+
+
   </div>
   <div id="lightbox" class="lightbox" hidden>
     <div class="lightbox-controls">
@@ -298,6 +343,7 @@
   <script src="js/fund.js"></script>
   <script src="js/activities.js"></script>
   <script src="js/media.js"></script>
+  <script src="js/settings.js"></script>
   <script src="js/counter.js"></script>
   <script src="js/ui.js"></script>
 </body>

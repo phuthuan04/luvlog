@@ -105,4 +105,15 @@ class Suggestion(Base):
     based_on = Column(String)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+class Setting(Base):
+    __tablename__ = "settings"
+    key = Column(String, primary_key=True)
+    value = Column(String)
+
+class DailyQuote(Base):
+    __tablename__ = "daily_quotes"
+    id = Column(Integer, primary_key=True)
+    content = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
 Base.metadata.create_all(engine)

@@ -52,16 +52,22 @@ function renderJournal(entries) {
   journalList.innerHTML = entries.length ? entries.map(journalItemHtml).join("") : '<li class="journal-empty">Chưa có bài viết nào</li>';
 }
 
+// Load journal entries on page load
 async function loadJournal() {
   const res = await fetch(`${API_BASE}/api/journal`, FETCH_OPTS);
   if (res.status === 401) { if (typeof showLogin === "function") showLogin(); return; }
   const entries = await res.json();
   renderJournal(entries);
+  const previewEl = document.getElementById("previewJournal");
+  if (previewEl) {
+    previewEl.innerHTML = entries.slice(0, 2).map((e) => `<li>${escapeHtml(e.title)}</li>`).join("") || '<li class="preview-empty">Chưa có gì</li>';
+  }
   if (typeof setCardSummary === "function") {
     setCardSummary("section-journal", entries.length ? `Mới nhất: "${entries[0].title}"` : "Chưa có bài viết nào");
   }
 }
 
+// Handle journal form submission
 journalForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const title = document.getElementById("journalTitle").value.trim();

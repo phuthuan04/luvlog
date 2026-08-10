@@ -1,5 +1,18 @@
-// ⚠️ SỬA NGÀY NÀY THÀNH NGÀY BẮT ĐẦU YÊU NHAU
-const startDate = new Date("2025-04-07T00:00:00");
+// Ngày bắt đầu yêu nhau, mặc định là 7/4/2025 nếu chưa cài Settings
+let startDate = new Date("2025-04-07T00:00:00"); // fallback nếu chưa cài Settings
+
+async function initCounter() {
+  try {
+    const res = await fetch(`${API_BASE}/api/settings`, FETCH_OPTS);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.start_date) startDate = new Date(data.start_date + "T00:00:00");
+      const el = document.getElementById("avatarInitials");
+      if (el) el.textContent = `${(data.name_1 || "B")[0]}❤️${(data.name_2 || "N")[0]}`;
+    }
+  } catch (e) {}
+  updateCounter();
+}
 
 function formatDMY(date) {
   const d = String(date.getDate()).padStart(2, "0");
@@ -44,7 +57,6 @@ function updateClock() {
   document.getElementById("liveClock").textContent = `${hours}:${minutes}:${seconds}`;
 }
 
-updateCounter();
 updateClock();
 setInterval(updateCounter, 60000);
 setInterval(updateClock, 1000);
