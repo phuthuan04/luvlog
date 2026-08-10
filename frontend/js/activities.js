@@ -2,6 +2,11 @@ const activityForm = document.getElementById("activityForm");
 const activityList = document.getElementById("activityList");
 const categoryLabel = { an_uong: "Ăn uống", vui_choi: "Vui chơi", khac: "Khác" };
 
+function formatActivityPreviewDate(iso) {
+  if (!iso) return "";
+  return new Date(iso).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit" });
+}
+
 function renderActivities(items) {
   if (!items.length) {
     activityList.innerHTML = '<li class="activity-empty">Chưa có hoạt động nào</li>';
@@ -34,7 +39,11 @@ async function loadActivities() {
   renderActivities(items);
   const previewEl = document.getElementById("previewActivities");
   if (previewEl) {
-    previewEl.innerHTML = items.slice(0, 2).map((a) => `<li>${escapeHtml(a.place_name)}</li>`).join("") || '<li class="preview-empty">Chưa có gì</li>';
+    previewEl.innerHTML = items.slice(0, 2).map((a) => `
+      <li class="preview-entry">
+        <span class="preview-entry-title">${escapeHtml(a.place_name)}</span>
+        <span class="preview-entry-meta">${formatActivityPreviewDate(a.visited_at)}</span>
+      </li>`).join("") || '<li class="preview-empty">Chưa có gì</li>';
   }
   if (typeof setCardSummary === "function") {
     setCardSummary("section-activities", items.length ? `${items.length} hoạt động đã ghi` : "Chưa có hoạt động nào");

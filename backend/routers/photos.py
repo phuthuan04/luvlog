@@ -26,6 +26,23 @@ class CaptionIn(BaseModel):
     caption: str
 
 
+def serialize_photo(photo, albums: dict[int, str]):
+    return {
+        "id": photo.id,
+        "album_id": photo.album_id,
+        "album_name": albums.get(photo.album_id, "Chưa phân loại"),
+        "url": photo.url,
+        "filename": photo.filename,
+        "file_size": photo.file_size,
+        "caption": photo.caption,
+        "caption_author": photo.caption_author,
+        "caption_updated_at": photo.caption_updated_at.isoformat() if photo.caption_updated_at else None,
+        "uploaded_by": photo.uploaded_by,
+        "created_at": photo.created_at.isoformat(),
+        "sort_order": photo.sort_order,
+    }
+
+
 @router.get("/api/albums")
 def list_albums(user: str = Depends(require_login), db: Session = Depends(get_db)):
     items = album_repo.list_albums(db)
@@ -67,25 +84,22 @@ async def upload_photo(
 def list_photos(user: str = Depends(require_login), db: Session = Depends(get_db)):
     photos = photo_repo.list_photos(db)
     albums = {a.id: a.name for a, _ in album_repo.list_albums(db)}
-    return [
-        {"id": p.id, "album_id": p.album_id, "album_name": albums.get(p.album_id, "Chưa phân loại"),
-         "url": p.url, "filename": p.filename, "file_size": p.file_size, "caption": p.caption,
-         "uploaded_by": p.uploaded_by, "created_at": p.created_at.isoformat(), "sort_order": p.sort_order}
-        for p in photos
-    ]
+    return [serialize_photo(photo, albums) for photo in photos]
 
 
 @router.patch("/api/photos/{photo_id}")
 def update_photo_caption(photo_id: int, data: CaptionIn, user: str = Depends(require_login), db: Session = Depends(get_db)):
-    photo = photo_repo.update_caption(db, photo_id, data.caption)
+    photo = photo_repo.update_caption(db, photo_id, data.caption, user)
     if not photo:
         raise HTTPException(status_code=404, detail="Không tìm thấy ảnh")
-    return {"status": "updated"}
+    album = album_repo.get_album(db, photo.album_id) if photo.album_id else None
+    albums = {photo.album_id: album.name if album else "Chưa phân loại"}
+    return {"status": "updated", "photo": serialize_photo(photo, albums)}
 
 
 class ReorderIn(BaseModel):
     album_id: int
-    ordered_photo_ids: list
+    ordered_photo_ids: list[int]
 
 
 @router.post("/api/photos/reorder")

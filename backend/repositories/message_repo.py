@@ -13,6 +13,10 @@ def create_message(db: Session, content: str, created_by: str):
     db.commit()
     return msg
 
+
+def count_comments(db: Session, message_id: int):
+    return db.query(MessageComment).filter(MessageComment.message_id == message_id).count()
+
 def list_comments(db: Session, message_id: int):
     return db.query(MessageComment).filter(MessageComment.message_id == message_id).order_by(MessageComment.created_at.asc()).all()
 

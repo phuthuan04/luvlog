@@ -42,9 +42,7 @@
         <a href="#section-photos" class="tab-link">📷 <span>Ảnh</span></a>
         <a href="#section-fund" class="tab-link">💰 <span>Quỹ chung</span></a>
         <a href="#section-activities" class="tab-link">🗺️ <span>Hoạt động</span></a>
-        <a href="#section-movies" class="tab-link">🎬 <span>Phim</span></a>
-        <a href="#section-books" class="tab-link">📚 <span>Sách</span></a>
-        <a href="#section-songs" class="tab-link">🎵 <span>Nhạc</span></a>
+        <a href="#section-media-hub" class="tab-link">🎯 <span>Media Hub</span></a>
         <a href="#section-settings" class="tab-link">⚙️ <span>Cài đặt</span></a>
         <div class="sidebar-footer">💕 Made with love 💕<br><small>For you, my love</small></div>
       </nav>
@@ -75,11 +73,17 @@
 
       <div class="card preview-grid reveal">
         <div class="preview-col">
-          <p class="eyebrow">📓 nhật ký gần đây</p>
+          <div class="preview-head">
+            <p class="eyebrow">📓 nhật ký gần đây</p>
+            <a href="#section-journal" class="preview-link">Xem tất cả →</a>
+          </div>
           <ul id="previewJournal" class="preview-list"></ul>
         </div>
         <div class="preview-col">
-          <p class="eyebrow">🗺️ hoạt động gần đây</p>
+          <div class="preview-head">
+            <p class="eyebrow">🗺️ hoạt động gần đây</p>
+            <a href="#section-activities" class="preview-link">Xem tất cả →</a>
+          </div>
           <ul id="previewActivities" class="preview-list"></ul>
         </div>
       </div>
@@ -91,12 +95,29 @@
         </button>
         <p class="card-summary">Đang tải...</p>
         <div class="card-body"><div class="card-body-inner">
-          <div class="message-compose-card">
-            <textarea id="messageInput" placeholder="Nhắn gì đó..."></textarea>
-            <button id="messageSubmit" type="button">Gửi</button>
+          <div id="messageSpotlight" class="message-spotlight">
+            <p class="message-empty">Đang tải lời nhắn mới nhất...</p>
           </div>
-          <div class="message-feed-card">
-            <ul id="messageFeed" class="message-feed"></ul>
+          <div class="message-shell">
+            <div class="message-compose-card">
+              <div class="section-block-head">
+                <div>
+                  <h4>Viết lời nhắn mới</h4>
+                  <p class="section-block-meta">Mỗi lời nhắn sẽ xuất hiện trong lịch sử chung của hai bạn.</p>
+                </div>
+              </div>
+              <textarea id="messageInput" placeholder="Nhắn gì đó..."></textarea>
+              <button id="messageSubmit" type="button">Gửi</button>
+            </div>
+            <div class="message-feed-card">
+              <div class="section-block-head">
+                <div>
+                  <h4>Lịch sử gần đây</h4>
+                  <p id="messageFeedMeta" class="section-block-meta">Đang tải...</p>
+                </div>
+              </div>
+              <ul id="messageFeed" class="message-feed"></ul>
+            </div>
           </div>
         </div></div>
       </section>
@@ -108,22 +129,40 @@
         </button>
         <p class="card-summary">Đang tải...</p>
         <div class="card-body"><div class="card-body-inner">
-          <form id="journalForm" class="journal-form">
-            <input type="text" id="journalTitle" placeholder="Tiêu đề..." required>
-            <select id="journalMood">
-              <option value="">🙂 Bình thường</option>
-              <option value="❤️">❤️ Yêu thương</option>
-              <option value="🎉">🎉 Vui vẻ</option>
-              <option value="😢">😢 Buồn</option>
-              <option value="✈️">✈️ Đi chơi</option>
-              <option value="🍽️">🍽️ Ăn uống</option>
-            </select>
-            <textarea id="journalContent" placeholder="Hôm nay..." required></textarea>
-            <button type="submit">Lưu</button>
-          </form>
-          <ul id="journalList" class="journal-timeline">
-            <li class="journal-empty">Đang tải...</li>
-          </ul>
+          <div class="journal-shell">
+            <div class="journal-compose-card">
+              <div class="section-block-head">
+                <div>
+                  <h4>Viết một mốc mới</h4>
+                  <p class="section-block-meta">Lưu lại cảm xúc, kỷ niệm và những điều nhỏ xíu trong ngày.</p>
+                </div>
+              </div>
+              <form id="journalForm" class="journal-form">
+                <input type="text" id="journalTitle" placeholder="Tiêu đề..." required>
+                <select id="journalMood">
+                  <option value="">🙂 Bình thường</option>
+                  <option value="❤️">❤️ Yêu thương</option>
+                  <option value="🎉">🎉 Vui vẻ</option>
+                  <option value="😢">😢 Buồn</option>
+                  <option value="✈️">✈️ Đi chơi</option>
+                  <option value="🍽️">🍽️ Ăn uống</option>
+                </select>
+                <textarea id="journalContent" placeholder="Hôm nay..." required></textarea>
+                <button type="submit">Lưu</button>
+              </form>
+            </div>
+            <div class="journal-timeline-card">
+              <div class="section-block-head">
+                <div>
+                  <h4>Dòng thời gian</h4>
+                  <p id="journalMeta" class="section-block-meta">Đang tải...</p>
+                </div>
+              </div>
+              <ul id="journalList" class="journal-timeline">
+                <li class="journal-empty">Đang tải...</li>
+              </ul>
+            </div>
+          </div>
         </div></div>
       </section>
 
@@ -141,7 +180,7 @@
           <form id="photoForm" class="photo-form">
             <select id="photoAlbumSelect" required><option value="">Chọn album...</option></select>
             <input type="file" id="photoFile" accept="image/*" required>
-            <button type="submit">Tải lên</button>
+            <button id="photoUploadBtn" type="submit">Tải lên</button>
           </form>
           <div class="album-sort-controls">
             <button type="button" id="sortAlbumsBtn" data-sort="date">Sắp xếp: Mới nhất</button>
@@ -216,73 +255,30 @@
             <select id="mediaHubType">
               <option value="movies">🎬 Phim</option>
               <option value="books">📚 Sách</option>
+              <option value="songs">🎵 Nhạc</option>
             </select>
-            <input type="text" id="mediaHubQuery" placeholder="Tìm tên phim/sách..." required>
+            <input type="text" id="mediaHubQuery" placeholder="Tìm tên phim, sách hoặc nhập tên bài hát..." required>
             <button type="submit">Tìm</button>
           </form>
+          <p id="mediaHubHelp" class="media-hub-help">Tìm phim/sách từ API hiện có hoặc nhập nhanh tên bài hát để thêm vào danh sách muốn nghe.</p>
           <div id="mediaHubResults" class="media-hub-results"></div>
-        </div></div>
-      </section>
-
-      <section id="section-movies" class="card media-box reveal collapsed" data-collapsible data-media="movies">
-        <button type="button" class="card-header">
-          <p class="eyebrow">🎬 phim</p>
-          <span class="card-chevron">▾</span>
-        </button>
-        <p class="card-summary">Đang tải...</p>
-        <div class="card-body"><div class="card-body-inner">
-          <div class="media-suggestions">
+          <section id="mediaHubSuggestionsBlock" class="media-hub-suggestions-block">
             <div class="suggestions-header">
-              <h4>Gợi ý cho hôm nay</h4>
-              <button type="button" class="refresh-suggestions-btn">🔄 Làm mới</button>
+              <h4 id="mediaHubSuggestionsTitle">Gợi ý cho hôm nay</h4>
+              <button type="button" id="refreshMediaSuggestionsBtn" class="refresh-suggestions-btn">🔄 Làm mới</button>
             </div>
-            <ul class="media-list-suggested"></ul>
-          </div>
-          <form class="media-search-form">
-            <input type="text" class="media-search-input" placeholder="Tìm tên phim...">
-            <button type="submit">Tìm</button>
-          </form>
-          <div class="media-search-results"></div>
-          <div class="media-list"></div>
-        </div></div>
-      </section>
-
-      <section id="section-books" class="card media-box reveal collapsed" data-collapsible data-media="books">
-        <button type="button" class="card-header">
-          <p class="eyebrow">📚 sách</p>
-          <span class="card-chevron">▾</span>
-        </button>
-        <p class="card-summary">Đang tải...</p>
-        <div class="card-body"><div class="card-body-inner">
-          <div class="media-suggestions">
-            <div class="suggestions-header">
-              <h4>Gợi ý cho hôm nay</h4>
-              <button type="button" class="refresh-suggestions-btn">🔄 Làm mới</button>
+            <div id="mediaHubSuggestions" class="media-hub-suggestions"></div>
+          </section>
+          <section class="media-hub-collection">
+            <div class="media-hub-collection-head">
+              <div>
+                <h4 id="mediaHubCollectionTitle">Danh sách phim</h4>
+                <p id="mediaHubCollectionMeta" class="media-hub-meta">Đang tải...</p>
+              </div>
+              <button type="button" id="mediaHubSortDoneBtn" class="sort-done-btn">↓ Mới nhất</button>
             </div>
-            <ul class="media-list-suggested"></ul>
-          </div>
-          <form class="media-search-form">
-            <input type="text" class="media-search-input" placeholder="Tìm tên sách...">
-            <button type="submit">Tìm</button>
-          </form>
-          <div class="media-search-results"></div>
-          <div class="media-list"></div>
-        </div></div>
-      </section>
-
-      <section id="section-songs" class="card media-box reveal collapsed" data-collapsible data-media="songs">
-        <button type="button" class="card-header">
-          <p class="eyebrow">🎵 nhạc</p>
-          <span class="card-chevron">▾</span>
-        </button>
-        <p class="card-summary">Đang tải...</p>
-        <div class="card-body"><div class="card-body-inner">
-          <form class="media-form">
-            <input type="text" class="media-title" placeholder="Tên bài hát..." required>
-            <input type="text" class="media-cover" placeholder="Link ảnh bìa (không bắt buộc)">
-            <button type="submit">Thêm vào muốn nghe</button>
-          </form>
-          <div class="media-list"></div>
+            <div id="mediaHubCollection" class="media-hub-collection-body"></div>
+          </section>
         </div></div>
       </section>
       </div>
@@ -295,22 +291,62 @@
         </button>
         <p class="card-summary">Đang tải...</p>
         <div class="card-body"><div class="card-body-inner">
-          <h4>Thông tin đôi</h4>
-          <form id="settingsForm" class="settings-form">
-            <label>Ngày bắt đầu yêu</label>
-            <input type="date" id="settingsStartDate" required>
-            <label>Tên bạn</label>
-            <input type="text" id="settingsName1" placeholder="Bạn" required>
-            <label>Tên người ấy</label>
-            <input type="text" id="settingsName2" placeholder="Người ấy" required>
-            <button type="submit">Lưu</button>
-          </form>
-          <h4>Lời nhắn hằng ngày</h4>
-          <ul id="quoteList" class="quote-list"></ul>
-          <form id="quoteForm" class="quote-form">
-            <input type="text" id="quoteInput" placeholder="Thêm 1 câu mới...">
-            <button type="submit">Thêm</button>
-          </form>
+          <div class="settings-stack">
+            <section class="settings-panel">
+              <div class="section-block-head">
+                <div>
+                  <h4>Thông tin đôi</h4>
+                  <p class="section-block-meta">Điều chỉnh ngày bắt đầu và tên hiển thị của hai bạn trên toàn bộ giao diện.</p>
+                </div>
+              </div>
+              <form id="settingsForm" class="settings-form">
+                <label>Ngày bắt đầu yêu</label>
+                <input type="date" id="settingsStartDate" required>
+                <label>Tên bạn</label>
+                <input type="text" id="settingsName1" placeholder="Bạn" required>
+                <label>Tên người ấy</label>
+                <input type="text" id="settingsName2" placeholder="Người ấy" required>
+                <button type="submit">Lưu thông tin đôi</button>
+              </form>
+            </section>
+
+            <section class="settings-panel">
+              <div class="section-block-head">
+                <div>
+                  <h4>Thông báo webhook</h4>
+                  <p class="section-block-meta">Lưu URL Telegram/Discord để dùng lại sau này và bấm gửi thử trực tiếp từ đây.</p>
+                </div>
+              </div>
+              <form id="notificationSettingsForm" class="settings-form">
+                <label>Telegram webhook URL</label>
+                <input type="url" id="telegramWebhookUrl" placeholder="https://api.telegram.org/...">
+                <div class="settings-inline-actions">
+                  <button type="submit">Lưu webhook</button>
+                  <button type="button" id="testTelegramWebhookBtn" class="secondary-btn">Gửi thử Telegram</button>
+                </div>
+                <label>Discord webhook URL</label>
+                <input type="url" id="discordWebhookUrl" placeholder="https://discord.com/api/webhooks/...">
+                <div class="settings-inline-actions">
+                  <button type="button" id="testDiscordWebhookBtn" class="secondary-btn">Gửi thử Discord</button>
+                </div>
+                <p id="notificationTestStatus" class="settings-status" hidden></p>
+              </form>
+            </section>
+
+            <section class="settings-panel">
+              <div class="section-block-head">
+                <div>
+                  <h4>Lời nhắn hằng ngày</h4>
+                  <p class="section-block-meta">Quản lý danh sách câu hiện ngẫu nhiên ngoài trang chủ mỗi ngày.</p>
+                </div>
+              </div>
+              <ul id="quoteList" class="quote-list"></ul>
+              <form id="quoteForm" class="quote-form">
+                <input type="text" id="quoteInput" placeholder="Thêm 1 câu mới...">
+                <button type="submit">Thêm</button>
+              </form>
+            </section>
+          </div>
         </div></div>
       </section>
 
@@ -334,10 +370,18 @@
     </div>
     <img id="lightboxImg" src="" alt="">
     <div class="lightbox-detail" id="lightboxDetail" hidden>
-      <p class="lightbox-filename" id="lightboxFilename"></p>
-      <p class="lightbox-meta" id="lightboxMeta"></p>
-      <textarea id="lightboxCaption" placeholder="Thêm ghi chú cho ảnh này..."></textarea>
-      <button type="button" id="lightboxSaveCaption">Lưu ghi chú</button>
+      <div id="lightboxInfoView" hidden>
+        <p class="lightbox-filename" id="lightboxFilename"></p>
+        <p class="lightbox-meta" id="lightboxMeta"></p>
+        <p class="lightbox-caption-text" id="lightboxCaptionText"></p>
+        <p class="lightbox-caption-meta" id="lightboxCaptionMeta"></p>
+      </div>
+      <div id="lightboxEditView" hidden>
+        <p class="lightbox-filename" id="lightboxEditFilename"></p>
+        <p class="lightbox-meta" id="lightboxEditMeta"></p>
+        <textarea id="lightboxCaption" placeholder="Thêm ghi chú cho ảnh này..."></textarea>
+        <button type="button" id="lightboxSaveCaption">Lưu ghi chú</button>
+      </div>
     </div>
   </div>
   <script src="js/message.js"></script>
