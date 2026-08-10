@@ -1,22 +1,27 @@
 # luvlog — Documentations
 
-Tài liệu kỹ thuật chính thức của dự án. Cập nhật song song với mọi thay đổi code.
+Tài liệu kỹ thuật chính thức của dự án. Cập nhật song song với mọi thay đổi code. Bản này phản ánh production hiện tại trên `main` (10/08/2026).
 
 ---
 
 ## 1. Kiến trúc
 
 ```text
-[Next.js App Router]
+[Vercel project: luvlog-frontend]
+        |
+ [Next.js App Router]
         |
    route handlers + middleware
         |
 [Supabase Auth + PostgreSQL]
+        |
+[Google Drive upload pipeline]
 ```
 
 - Auth: Supabase SSR + HTTP-only cookies
 - Guard: middleware allowlist theo `SUPABASE_ALLOWED_USER_IDS`
 - Data access: route handlers trong `src/app/api/*`
+- Deploy production dùng 2 project Vercel riêng: `luvlog-frontend` cho app và `luvlog_backend` cho legacy backend còn giữ lại trong repo
 - Legacy code `frontend/` và `backend/` vẫn còn trong repo để migrate dần
 
 ---
@@ -68,7 +73,11 @@ Tài liệu kỹ thuật chính thức của dự án. Cập nhật song song v�
 - `GOOGLE_PRIVATE_KEY`
 - `GOOGLE_DRIVE_FOLDER_ID`
 
-Nếu thiếu 2 biến Supabase public trên Vercel, middleware sẽ không crash nữa nhưng auth/upload API sẽ không hoạt động đầy đủ.
+### Ghi chú vận hành production
+
+- Nếu thiếu `NEXT_PUBLIC_SUPABASE_URL` hoặc `NEXT_PUBLIC_SUPABASE_ANON_KEY`, form ở `src/app/login/page.tsx` sẽ báo thiếu cấu hình Supabase public env và không thể sign in.
+- Nếu thiếu `SUPABASE_ALLOWED_USER_IDS`, hoặc danh sách không chứa UUID thật của user trong Supabase Auth, middleware ở `src/middleware.ts` sẽ coi user là không hợp lệ và redirect về `/login`.
+- Production đã được xác nhận sửa xong lỗi login bằng cách khai báo đủ 3 biến trên trong project `luvlog-frontend` rồi redeploy.
 
 ### Photos upload
 - `POST /api/photos` chấp nhận multipart form-data với `album_id`, `file`, và optional `caption`
@@ -82,4 +91,6 @@ Nếu thiếu 2 biến Supabase public trên Vercel, middleware sẽ không cras
 - Next.js build đã pass
 - Middleware allowlist UUID đã bật
 - CRUD route handlers core đã migrate xong
-- Phase tiếp theo: Google Drive storage, integrations, UI redesign
+- Production frontend đang link repo `luvlog`, branch `main`
+- Trang đăng nhập production đã hoạt động trở lại sau khi bổ sung env Supabase public + allowlist UUID
+- Phase tiếp theo: hoàn thiện UI/UX cho các module còn placeholder, tiếp tục migrate logic cũ sang App Router
